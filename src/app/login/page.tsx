@@ -16,7 +16,7 @@ const initialForgotState = {
   success: false,
 }
 
-export default function LoginPage() {
+function LoginFormContent() {
   const [isForgotMode, setIsForgotMode] = React.useState(false)
   const [loginState, loginAction, isLoginPending] = useActionState(login, initialLoginState)
   const [forgotState, forgotAction, isForgotPending] = useActionState(requestPasswordReset, initialForgotState)
@@ -35,8 +35,7 @@ export default function LoginPage() {
   }
 
   return (
-    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
-      <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-fuchsia-500 shadow-lg shadow-purple-500/20">
@@ -247,6 +246,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <LoginFormContent />
     </React.Suspense>
   )
 }

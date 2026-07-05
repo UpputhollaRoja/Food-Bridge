@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function saveContentAction(formData: FormData) {
+export async function saveContentAction(prevState: unknown, formData: FormData) {
   const supabase = await createClient()
 
   // Verify caller is admin

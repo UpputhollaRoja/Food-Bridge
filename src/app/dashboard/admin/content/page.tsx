@@ -17,7 +17,7 @@ export default async function ContentEditorPage() {
     .order('sort_order')
 
   // Group by page
-  const pages: Record<string, typeof rows> = {}
+  const pages: Record<string, any[]> = {}
   for (const row of rows ?? []) {
     if (!pages[row.page]) pages[row.page] = []
     pages[row.page]!.push(row)
