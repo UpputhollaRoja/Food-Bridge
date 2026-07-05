@@ -1,0 +1,257 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Refined Color System mapped to Tailwind custom variables */
+  --color-bg-page: var(--bg-page);
+  --color-bg-card: var(--bg-card);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-hover: var(--brand-green-hover);
+  --color-success-bg: var(--success-bg);
+  --color-success-text: var(--success-text);
+  --color-urgent-bg: var(--urgent-bg);
+  --color-urgent-text: var(--urgent-text);
+  --color-pending-bg: var(--pending-bg);
+  --color-pending-text: var(--pending-text);
+  --color-border-hairline: var(--border-hairline);
+}
+
+:root {
+  --bg-page: #F7F4EC;
+  --bg-card: #FFFFFF;
+  --text-primary: #23291F;
+  --text-secondary: #6B675C;
+  --brand-green: #1F5D3D;
+  --brand-green-hover: #17452D;
+  --success-bg: #EAF3DE;
+  --success-text: #27500A;
+  --urgent-bg: #FBEAF0;
+  --urgent-text: #791313;
+  --pending-bg: #FAEEDA;
+  --pending-text: #633806;
+  --border-hairline: #E4DFCE;
+
+  /* Standard shadcn/Tailwind map */
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-card);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-green);
+  --primary-foreground: #FFFFFF;
+  --secondary: var(--text-secondary);
+  --secondary-foreground: #FFFFFF;
+  --muted: #EAF3DE;
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--brand-green);
+  --accent-foreground: #FFFFFF;
+  --destructive: var(--urgent-text);
+  --border: var(--border-hairline);
+  --input: var(--border-hairline);
+  --ring: var(--brand-green);
+
+  --body-bg: var(--bg-page);
+  --body-text: var(--text-primary);
+  
+  --card-bg: var(--bg-card);
+  --card-border: 1px solid var(--border-hairline);
+  --card-shadow: 0 4px 6px -1px rgba(35, 41, 31, 0.04), 0 2px 4px -1px rgba(35, 41, 31, 0.02);
+  --card-accent-border: 1px solid var(--brand-green);
+  --card-accent-shadow: 0 4px 6px -1px rgba(31, 93, 61, 0.08);
+  
+  --input-bg: var(--bg-card);
+  --input-border: 1px solid var(--border-hairline);
+  --input-focus-border: var(--brand-green);
+  --input-focus-shadow: 0 0 0 3px rgba(31, 93, 61, 0.15);
+
+  --bubble-opacity-1: 0;
+  --bubble-opacity-2: 0;
+  --bubble-opacity-3: 0;
+}
+
+.dark {
+  --bg-page: #151813;
+  --bg-card: #1C2219;
+  --text-primary: #F0F2EF;
+  --text-secondary: #A3A89E;
+  --brand-green: #34A066;
+  --brand-green-hover: #267E4F;
+  --success-bg: #274E18;
+  --success-text: #EAF3DE;
+  --urgent-bg: #630C2C;
+  --urgent-text: #FBEAF0;
+  --pending-bg: #5C3204;
+  --pending-text: #FAEEDA;
+  --border-hairline: #2D3627;
+
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-card);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-green);
+  --primary-foreground: #FFFFFF;
+  --secondary: var(--text-secondary);
+  --secondary-foreground: #FFFFFF;
+  --muted: #1E241B;
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--brand-green);
+  --accent-foreground: #FFFFFF;
+  --destructive: var(--urgent-text);
+  --border: var(--border-hairline);
+  --input: var(--border-hairline);
+  --ring: var(--brand-green);
+
+  --body-bg: var(--bg-page);
+  --body-text: var(--text-primary);
+  
+  --card-bg: var(--bg-card);
+  --card-border: 1px solid var(--border-hairline);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --card-accent-border: 1px solid var(--brand-green);
+  --card-accent-shadow: 0 4px 6px -1px rgba(52, 160, 102, 0.15);
+  
+  --input-bg: #11140F;
+  --input-border: 1px solid var(--border-hairline);
+  --input-focus-border: var(--brand-green);
+  --input-focus-shadow: 0 0 0 3px rgba(52, 160, 102, 0.25);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    background: var(--body-bg);
+    color: var(--body-text);
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+.glass-card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+  color: var(--body-text);
+}
+
+.glass-card-accent {
+  background: var(--card-bg);
+  border: var(--card-accent-border);
+  box-shadow: var(--card-accent-shadow);
+  color: var(--body-text);
+}
+
+.glass-input {
+  background: var(--input-bg);
+  border: var(--input-border);
+  box-shadow: var(--input-shadow);
+  color: var(--body-text);
+}
+
+.glass-input:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+  outline: none;
+}
+
+/* --- Refined Motion System --- */
+
+/* 1. Freshness ring animation */
+@keyframes fillRing {
+  from {
+    stroke-dashoffset: 37.7; /* 2 * PI * 6 */
+  }
+  to {
+    stroke-dashoffset: var(--target-offset);
+  }
+}
+
+/* 2. Urgent state pulse */
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-gentle-pulse {
+  animation: gentlePulse 1.6s ease-in-out infinite;
+}
+
+/* 3. Card hover translation and transitions */
+.glass-card, .glass-card-accent {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px -8px rgba(35, 41, 31, 0.08), 0 4px 6px -2px rgba(35, 41, 31, 0.04);
+  border-color: var(--border-hairline);
+}
+.glass-card-accent:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -8px rgba(31, 93, 61, 0.15), 0 4px 8px -2px rgba(31, 93, 61, 0.08);
+  border-color: var(--brand-green);
+}
+
+/* 4. Button press scale-down */
+button, a.btn, input[type="submit"] {
+  transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms ease, border-color 150ms ease;
+}
+button:active, a.btn:active, input[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+/* 5. Status transitions for badges */
+.status-badge {
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
