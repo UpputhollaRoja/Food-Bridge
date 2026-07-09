@@ -69,20 +69,20 @@
 }
 
 :root {
-  --bg-page: #F7F4EC;
-  --bg-card: #FFFFFF;
-  --text-primary: #23291F;
-  --text-secondary: #6B675C;
-  --brand-purple: #8B5CF6;
-  --brand-purple-light: #A78BFA;
-  --success-bg: #EAF3DE;
-  --success-text: #27500A;
-  --urgent-bg: #FBEAF0;
-  --urgent-text: #791313;
-  --pending-bg: #FAEEDA;
-  --pending-text: #633806;
-  --border-purple: rgba(139, 92, 246, 0.2);
-  --border-hairline: #E4DFCE;
+  --bg-page: #FFF0F2; /* Soft premium light red/pinkish background */
+  --bg-card: #FFFFFF; /* Clean white cards for contrast */
+  --text-primary: #371D22; /* Deep warm burgundy-charcoal for premium typography */
+  --text-secondary: #7A5C61; /* Muted rose/slate for subtitles */
+  --brand-purple: #E11D48; /* Vibrant rose/crimson primary brand color */
+  --brand-purple-light: #FB7185; /* Soft rose hover color */
+  --success-bg: #E1F8EB;
+  --success-text: #0F5132;
+  --urgent-bg: #FFEBEB;
+  --urgent-text: #842029;
+  --pending-bg: #FFF3CD;
+  --pending-text: #664D03;
+  --border-purple: rgba(225, 29, 72, 0.2);
+  --border-hairline: #FCE2E6; /* Soft pinkish-red hairline borders */
 
   --brand-green: var(--brand-purple);
   --brand-green-hover: var(--brand-purple-light);
@@ -98,7 +98,7 @@
   --primary-foreground: #FFFFFF;
   --secondary: var(--text-secondary);
   --secondary-foreground: #FFFFFF;
-  --muted: #EAF3DE;
+  --muted: #FFF0F2;
   --muted-foreground: var(--text-secondary);
   --accent: var(--brand-purple);
   --accent-foreground: #FFFFFF;
@@ -112,14 +112,14 @@
   
   --card-bg: var(--bg-card);
   --card-border: 1px solid var(--border-hairline);
-  --card-shadow: 0 4px 6px -1px rgba(35, 41, 31, 0.04), 0 2px 4px -1px rgba(35, 41, 31, 0.02);
+  --card-shadow: 0 4px 6px -1px rgba(55, 29, 34, 0.04), 0 2px 4px -1px rgba(55, 29, 34, 0.02);
   --card-accent-border: 1px solid var(--brand-purple);
-  --card-accent-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.15);
+  --card-accent-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.15);
   
   --input-bg: var(--bg-card);
   --input-border: 1px solid var(--border-hairline);
   --input-focus-border: var(--brand-purple);
-  --input-focus-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  --input-focus-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
 
   --bubble-opacity-1: 0;
   --bubble-opacity-2: 0;
