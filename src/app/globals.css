@@ -8,9 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-space-grotesk);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -76,24 +76,24 @@
 }
 
 :root {
-  --bg-page: #FAFAFC; /* clean off-white/lavender-white background */
-  --bg-card: #F5F4FA; /* soft lavender-gray */
-  --text-primary: #14121F; /* near-black, slightly cool */
-  --text-secondary: #6B6880; /* muted gray-violet */
-  --text-tertiary: #9C99AE; /* stat labels, captions */
-  --brand-purple: #6C5CE7; /* violet/purple primary */
-  --brand-purple-light: #5A4BD1; /* violet primary hover */
-  --success-bg: #EDE9FE; /* accent tint */
-  --success-text: #6C5CE7;
-  --urgent-bg: #FEE2E2;
-  --urgent-text: #991B1B;
-  --pending-bg: #FEF3C7;
-  --pending-text: #92400E;
-  --accent-amber: #10B981; /* success/accent-2 emerald stat highlight */
-  --border-purple: rgba(108, 92, 231, 0.2);
-  --border-hairline: #EDECF5; /* subtle border */
-  --border-strong: #DCDAEB; /* stronger border */
-  --emerald-glow: rgba(108, 92, 231, 0.18);
+  --bg-page: #faf8ff; /* clean lavender-white */
+  --bg-card: #f2f3ff; /* soft lavender-gray */
+  --text-primary: #131b2e; /* near-black */
+  --text-secondary: #3b494b; /* muted gray-teal */
+  --text-tertiary: #6a7a7b; /* caption labels */
+  --brand-purple: #006970; /* primary deep teal */
+  --brand-purple-light: #005f65; /* primary hover */
+  --success-bg: #d4d6ff; /* tertiary container */
+  --success-text: #273fff; /* tertiary electric indigo */
+  --urgent-bg: #ffdad6;
+  --urgent-text: #ba1a1a;
+  --pending-bg: #00f0ff; /* primary container (cyan) */
+  --pending-text: #006970;
+  --accent-amber: #00f0ff; /* cyan accent text */
+  --border-purple: rgba(0, 105, 112, 0.2);
+  --border-hairline: #eaedff; /* subtle border */
+  --border-strong: #dae2fd; /* stronger border */
+  --emerald-glow: rgba(0, 240, 255, 0.15);
 
   --brand-green: var(--brand-purple);
   --brand-green-hover: var(--brand-purple-light);
@@ -108,10 +108,10 @@
   --popover: #FFFFFF;
   --popover-foreground: var(--text-primary);
   --primary: var(--brand-purple);
-  --primary-foreground: #FFFFFF; /* white text on violet button */
+  --primary-foreground: #FFFFFF; /* white text on primary button */
   --secondary: var(--text-secondary);
   --secondary-foreground: #FFFFFF;
-  --muted: #F5F4FA;
+  --muted: #f2f3ff;
   --muted-foreground: var(--text-secondary);
   --accent: var(--brand-purple);
   --accent-foreground: #FFFFFF;
@@ -125,21 +125,21 @@
   
   --card-bg: #FFFFFF; /* white background for main cards */
   --card-border: 1px solid var(--border-hairline);
-  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 8px 24px rgba(0, 90, 194, 0.08);
   --card-accent-border: 1px solid var(--brand-purple);
-  --card-accent-shadow: 0 8px 24px rgba(108, 92, 231, 0.15);
+  --card-accent-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);
   
   --input-bg: #FFFFFF;
   --input-border: 1px solid var(--border-hairline);
   --input-focus-border: var(--brand-purple);
-  --input-focus-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+  --input-focus-shadow: 0 0 0 3px rgba(0, 240, 255, 0.15);
 
-  --btn-bg: #6C5CE7;
-  --btn-bg-hover: #5A4BD1;
+  --btn-bg: #006970;
+  --btn-bg-hover: #005f65;
   --btn-text: #FFFFFF;
-  --btn-radius: 8px;
-  --btn-shadow: 0 4px 12px rgba(108, 92, 231, 0.25);
-  --btn-shadow-hover: 0 6px 16px rgba(108, 92, 231, 0.35);
+  --btn-radius: 9999px; /* rounded-full buttons */
+  --btn-shadow: 0 4px 12px rgba(0, 105, 112, 0.15);
+  --btn-shadow-hover: 0 6px 16px rgba(0, 105, 112, 0.25);
 
   --bubble-opacity-1: 0;
   --bubble-opacity-2: 0;
@@ -319,6 +319,18 @@ a.btn[style*="var(--brand-green)"]:hover,
   background: var(--btn-bg-hover) !important;
   box-shadow: var(--btn-shadow-hover) !important;
   color: var(--btn-text) !important;
+}
+
+.cyan-gradient-text {
+  background: linear-gradient(90deg, #006970, #00dbe9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.dark .cyan-gradient-text {
+  background: linear-gradient(90deg, #10B981, #34D399);
 }
 
 .gradient-text-pink-purple,
