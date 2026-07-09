@@ -67,17 +67,91 @@
   --color-brand-purple-light: var(--brand-purple-light);
   --color-border-purple: var(--border-purple);
   
-  --color-border-subtle: rgba(255, 255, 255, 0.06);
-  --color-border-strong: rgba(255, 255, 255, 0.14);
-  --color-text-tertiary: #6B7280;
-  --color-emerald-glow: rgba(16, 185, 129, 0.3);
+  --color-border-subtle: var(--border-hairline);
+  --color-border-strong: var(--border-strong);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-emerald-glow: var(--emerald-glow);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-tint: var(--success-bg);
 }
 
 :root {
+  --bg-page: #FAFBF9; /* clean off-white with faint green warmth */
+  --bg-card: #F3F7F4; /* soft mint-gray */
+  --text-primary: #101614; /* near-black, slightly warm */
+  --text-secondary: #5B6560; /* muted gray-green */
+  --text-tertiary: #8B948E; /* stat labels, captions */
+  --brand-purple: #0F9D6C; /* emerald green primary */
+  --brand-purple-light: #0C8259; /* emerald green hover */
+  --success-bg: #E3F5EC; /* accent tint */
+  --success-text: #0F9D6C;
+  --urgent-bg: #FEE2E2;
+  --urgent-text: #991B1B;
+  --pending-bg: #FEF3C7;
+  --pending-text: #92400E;
+  --accent-amber: #E8A33D; /* rare warm highlight */
+  --border-purple: rgba(15, 157, 108, 0.2);
+  --border-hairline: #E7EDE9; /* subtle border */
+  --border-strong: #D3DED7; /* stronger border */
+  --emerald-glow: rgba(15, 157, 108, 0.18);
+
+  --brand-green: var(--brand-purple);
+  --brand-green-hover: var(--brand-purple-light);
+  --brand-pink: var(--brand-purple);
+  --brand-pink-light: var(--brand-purple-light);
+
+  /* Standard shadcn/Tailwind map */
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: #FFFFFF;
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-purple);
+  --primary-foreground: #FFFFFF; /* white text on emerald button */
+  --secondary: var(--text-secondary);
+  --secondary-foreground: #FFFFFF;
+  --muted: #F3F7F4;
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--brand-purple);
+  --accent-foreground: #FFFFFF;
+  --destructive: var(--urgent-text);
+  --border: var(--border-hairline);
+  --input: var(--border-hairline);
+  --ring: var(--brand-purple);
+
+  --body-bg: var(--bg-page);
+  --body-text: var(--text-primary);
+  
+  --card-bg: #FFFFFF; /* white background for main cards */
+  --card-border: 1px solid var(--border-hairline);
+  --card-shadow: 0 8px 24px rgba(16, 40, 28, 0.06);
+  --card-accent-border: 1px solid var(--brand-purple);
+  --card-accent-shadow: 0 8px 24px rgba(15, 157, 108, 0.15);
+  
+  --input-bg: #FFFFFF;
+  --input-border: 1px solid var(--border-hairline);
+  --input-focus-border: var(--brand-purple);
+  --input-focus-shadow: 0 0 0 3px rgba(15, 157, 108, 0.15);
+
+  --btn-bg: #0F9D6C;
+  --btn-bg-hover: #0C8259;
+  --btn-text: #FFFFFF;
+  --btn-radius: 8px;
+  --btn-shadow: 0 4px 14px rgba(15, 157, 108, 0.25);
+  --btn-shadow-hover: 0 6px 18px rgba(15, 157, 108, 0.35);
+
+  --bubble-opacity-1: 0;
+  --bubble-opacity-2: 0;
+  --bubble-opacity-3: 0;
+}
+
+.dark {
   --bg-page: #0A0F0D; /* near-black, slightly green-tinted background */
   --bg-card: #0F1512; /* section/card background */
   --text-primary: #F5F5F0; /* off-white primary text */
   --text-secondary: #9CA3AF; /* muted secondary text */
+  --text-tertiary: #6B7280;
   --brand-purple: #10B981; /* primary actions */
   --brand-purple-light: #34D399; /* primary action hover */
   --success-bg: rgba(16, 185, 129, 0.08);
@@ -86,8 +160,11 @@
   --urgent-text: #F87171;
   --pending-bg: rgba(245, 158, 11, 0.08);
   --pending-text: #FBBF24;
+  --accent-amber: #F5B841;
   --border-purple: rgba(16, 185, 129, 0.2);
   --border-hairline: rgba(255, 255, 255, 0.06); /* subtle border */
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --emerald-glow: rgba(16, 185, 129, 0.35);
 
   --brand-green: var(--brand-purple);
   --brand-green-hover: var(--brand-purple-light);
@@ -128,64 +205,12 @@
   --input-focus-border: var(--brand-purple);
   --input-focus-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 
-  --bubble-opacity-1: 0;
-  --bubble-opacity-2: 0;
-  --bubble-opacity-3: 0;
-}
-
-.dark {
-  --bg-page: #0A0F0D;
-  --bg-card: #0F1512;
-  --text-primary: #F5F5F0;
-  --text-secondary: #9CA3AF;
-  --brand-purple: #10B981;
-  --brand-purple-light: #34D399;
-  --success-bg: rgba(16, 185, 129, 0.08);
-  --success-text: #34D399;
-  --urgent-bg: rgba(239, 68, 68, 0.08);
-  --urgent-text: #F87171;
-  --pending-bg: rgba(245, 158, 11, 0.08);
-  --pending-text: #FBBF24;
-  --border-purple: rgba(16, 185, 129, 0.2);
-  --border-hairline: rgba(255, 255, 255, 0.06);
-
-  --brand-green: var(--brand-purple);
-  --brand-green-hover: var(--brand-purple-light);
-  --brand-pink: var(--brand-purple);
-  --brand-pink-light: var(--brand-purple-light);
-
-  --background: var(--bg-page);
-  --foreground: var(--text-primary);
-  --card: var(--bg-card);
-  --card-foreground: var(--text-primary);
-  --popover: var(--bg-card);
-  --popover-foreground: var(--text-primary);
-  --primary: var(--brand-purple);
-  --primary-foreground: #06110D;
-  --secondary: var(--text-secondary);
-  --secondary-foreground: #FFFFFF;
-  --muted: #0F1512;
-  --muted-foreground: var(--text-secondary);
-  --accent: var(--brand-purple);
-  --accent-foreground: #06110D;
-  --destructive: var(--urgent-text);
-  --border: var(--border-hairline);
-  --input: var(--border-hairline);
-  --ring: var(--brand-purple);
-
-  --body-bg: var(--bg-page);
-  --body-text: var(--text-primary);
-  
-  --card-bg: var(--bg-card);
-  --card-border: 1px solid var(--border-hairline);
-  --card-shadow: 0 0 24px rgba(16, 185, 129, 0.02);
-  --card-accent-border: 1px solid rgba(16, 185, 129, 0.35);
-  --card-accent-shadow: 0 0 30px rgba(16, 185, 129, 0.1);
-  
-  --input-bg: #0F1512;
-  --input-border: 1px solid rgba(255, 255, 255, 0.06);
-  --input-focus-border: var(--brand-purple);
-  --input-focus-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  --btn-bg: linear-gradient(135deg, #10B981, #059669);
+  --btn-bg-hover: linear-gradient(135deg, #34D399, #059669);
+  --btn-text: #06110D;
+  --btn-radius: 9px;
+  --btn-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
+  --btn-shadow-hover: 0 0 30px rgba(16, 185, 129, 0.35);
 }
 
 @layer base {
@@ -281,19 +306,19 @@ button:active, a.btn:active, input[type="submit"]:active {
 button:not([disabled])[style*="var(--brand-green)"], 
 a.btn[style*="var(--brand-green)"],
 .bg-primary {
-  background: linear-gradient(135deg, #10B981, #059669) !important;
-  color: #06110D !important;
-  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25) !important;
-  border-radius: 9px !important;
+  background: var(--btn-bg) !important;
+  color: var(--btn-text) !important;
+  box-shadow: var(--btn-shadow) !important;
+  border-radius: var(--btn-radius) !important;
   transition: all 0.3s ease !important;
 }
 
 button:not([disabled])[style*="var(--brand-green)"]:hover, 
 a.btn[style*="var(--brand-green)"]:hover,
 .bg-primary:hover {
-  background: linear-gradient(135deg, #34D399, #059669) !important;
-  box-shadow: 0 0 30px rgba(16, 185, 129, 0.35) !important;
-  color: #06110D !important;
+  background: var(--btn-bg-hover) !important;
+  box-shadow: var(--btn-shadow-hover) !important;
+  color: var(--btn-text) !important;
 }
 
 .gradient-text-pink-purple,
