@@ -28,8 +28,11 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
 
   const supabase = createClient()
 
+  const [mounted, setMounted] = React.useState(false)
+
   // Fetch initial notifications
   React.useEffect(() => {
+    setMounted(true)
     const fetchNotifications = async () => {
       const { data, error } = await supabase
         .from('notifications')
@@ -145,7 +148,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
                         {n.payload.message}
                       </p>
                       <span className="text-[10px] text-muted-foreground/80 block">
-                        {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {mounted ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'}
                       </span>
                     </div>
                   </div>

@@ -40,6 +40,8 @@ export default async function NgoDashboard() {
         quantity,
         quantity_unit,
         pickup_location,
+        pickup_latitude,
+        pickup_longitude,
         expiry_at
       ),
       deliveries (

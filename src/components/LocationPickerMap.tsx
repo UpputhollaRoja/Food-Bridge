@@ -28,11 +28,50 @@ export default function LocationPickerMap({ defaultAddress = '', onSelect }: Loc
   const [showDropdown, setShowDropdown] = useState(false)
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  async function reverseGeocode(lat: number, lng: number) {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+        { headers: { 'Accept-Language': 'en' } }
+      )
+      const data = await res.json()
+      const address = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+      setQuery(address)
+      setSelectedAddress(address)
+      setSelectedLat(lat)
+      setSelectedLng(lng)
+      onSelect(address, lat, lng)
+    } catch {
+      const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+      setQuery(fallback)
+      setSelectedAddress(fallback)
+      setSelectedLat(lat)
+      setSelectedLng(lng)
+      onSelect(fallback, lat, lng)
+    }
+  }
+
   // Lazy-load Leaflet only in browser
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current) return
+    if (!mapRef.current) return
+
+    // Prevent double-init from React StrictMode double-invoke
+    let destroyed = false
 
     import('leaflet').then((L) => {
+      // Abort if cleanup already ran before the async import resolved
+      if (destroyed || !mapRef.current) return
+
+      // Clear any stale Leaflet DOM stamp from a previous StrictMode run
+      const container = mapRef.current as any
+      if (container._leaflet_id) {
+        if (mapInstanceRef.current) {
+          try { mapInstanceRef.current.remove() } catch (_) {/* ignore */}
+          mapInstanceRef.current = null
+        }
+        delete container._leaflet_id
+      }
+
       // Fix default icon paths broken by webpack
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -73,36 +112,20 @@ export default function LocationPickerMap({ defaultAddress = '', onSelect }: Loc
     })
 
     return () => {
+      destroyed = true
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove()
+        try { mapInstanceRef.current.remove() } catch (_) {/* ignore */}
         mapInstanceRef.current = null
         markerRef.current = null
       }
+      // Clear Leaflet's DOM stamp so a re-mount can safely re-initialize
+      if (mapRef.current) {
+        delete (mapRef.current as any)._leaflet_id
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const reverseGeocode = async (lat: number, lng: number) => {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
-        { headers: { 'Accept-Language': 'en' } }
-      )
-      const data = await res.json()
-      const address = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`
-      setQuery(address)
-      setSelectedAddress(address)
-      setSelectedLat(lat)
-      setSelectedLng(lng)
-      onSelect(address, lat, lng)
-    } catch {
-      const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`
-      setQuery(fallback)
-      setSelectedAddress(fallback)
-      setSelectedLat(lat)
-      setSelectedLng(lng)
-      onSelect(fallback, lat, lng)
-    }
-  }
 
   const search = async (q: string) => {
     if (q.trim().length < 3) { setResults([]); return }
@@ -160,7 +183,7 @@ export default function LocationPickerMap({ defaultAddress = '', onSelect }: Loc
           onFocus={() => results.length > 0 && setShowDropdown(true)}
           onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           placeholder="Search for pickup address…"
-          className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 focus:ring-1 focus:ring-purple-500 transition-colors"
+          className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm transition-colors"
         />
         {showDropdown && results.length > 0 && (
           <ul className="absolute z-50 mt-1 w-full rounded-xl border border-slate-200 bg-white shadow-xl overflow-hidden max-h-52 overflow-y-auto">
@@ -168,9 +191,12 @@ export default function LocationPickerMap({ defaultAddress = '', onSelect }: Loc
               <li
                 key={i}
                 onMouseDown={() => handleSelect(r)}
-                className="flex items-start gap-2 px-3 py-2.5 text-xs text-slate-700 hover:bg-purple-50 cursor-pointer border-b border-slate-100 last:border-0"
+                className="flex items-start gap-2 px-3 py-2.5 text-xs cursor-pointer border-b border-slate-100 last:border-0 transition-colors"
+                style={{ color: 'var(--text-primary)' }}
+                onMouseOver={e => (e.currentTarget.style.background = 'var(--success-bg)')}
+                onMouseOut={e => (e.currentTarget.style.background = '')}
               >
-                <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0 text-purple-500" />
+                <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: 'var(--brand-green)' }} />
                 <span className="line-clamp-2">{r.display_name}</span>
               </li>
             ))}
@@ -187,7 +213,7 @@ export default function LocationPickerMap({ defaultAddress = '', onSelect }: Loc
 
       {selectedAddress && (
         <p className="text-[11px] text-slate-500 flex items-center gap-1">
-          <MapPin className="h-3 w-3 text-purple-500 shrink-0" />
+          <MapPin className="h-3 w-3 shrink-0" style={{ color: 'var(--brand-green)' }} />
           <span className="truncate">{selectedAddress}</span>
           {selectedLat && selectedLng && (
             <span className="text-slate-400 shrink-0">({selectedLat.toFixed(4)}, {selectedLng.toFixed(4)})</span>

@@ -145,8 +145,15 @@ export default function VolunteerDashboardClient({ profile, stats, activeDeliver
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h4 className="font-heading font-bold text-foreground text-md">{donation.title}</h4>
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 shadow-sm capitalize">
-                        {del.status.replace('_', ' ')}
+                      <span
+                        className="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize status-badge"
+                        style={
+                          del.status === 'delivered'
+                            ? { background: 'var(--success-bg)', color: 'var(--success-text)', border: '1px solid var(--success-text)' }
+                            : { background: 'var(--pending-bg)', color: 'var(--pending-text)', border: '1px solid var(--pending-text)' }
+                        }
+                      >
+                        {del.status.replace(/_/g, ' ')}
                       </span>
                     </div>
 

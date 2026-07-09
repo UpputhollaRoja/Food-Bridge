@@ -23,7 +23,7 @@ export default function Error({
       </div>
       <h1 className="font-heading text-4xl font-black text-foreground mb-4">Something went wrong!</h1>
       <p className="text-muted-foreground mb-8 max-w-md">
-        An unexpected error has occurred. We've been notified and are looking into it.
+        An unexpected error has occurred. We&apos;ve been notified and are looking into it.
       </p>
       <div className="flex gap-4">
         <button

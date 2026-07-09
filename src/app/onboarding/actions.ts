@@ -47,8 +47,8 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
 
   if (role === 'donor' || role === 'ngo') {
     updateData.organization_name = organizationName
-    // Automatically verify and accept the profile in development upon submitting details
-    updateData.verification_status = 'verified'
+    // Keep verification status as pending so admins must approve them
+    updateData.verification_status = 'pending'
     if (docUrl) {
       updateData.verification_documents = [docUrl]
     }

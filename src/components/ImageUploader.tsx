@@ -5,28 +5,39 @@ import { createClient } from '@/lib/supabase/client'
 import { Upload, X, Loader2 } from 'lucide-react'
 
 interface ImageUploaderProps {
-  bucket: 'donation-images' | 'delivery-proof'
+  bucket: 'donation-images' | 'delivery-proof' | 'verification-documents'
   value: string[]
   onChange: (urls: string[]) => void
   maxImages?: number
+  /** Called with `true` when an upload starts and `false` when it finishes/fails */
+  onUploadStateChange?: (uploading: boolean) => void
+  onUploadError?: (error: string | null) => void
 }
 
-export default function ImageUploader({ bucket, value, onChange, maxImages = 3 }: ImageUploaderProps) {
+export default function ImageUploader({ bucket, value, onChange, maxImages = 3, onUploadStateChange, onUploadError }: ImageUploaderProps) {
   const [uploading, setUploading] = React.useState(false)
   const [error, setError] = React.useState('')
   const supabase = createClient()
+
+  const setUploadingState = (state: boolean) => {
+    setUploading(state)
+    onUploadStateChange?.(state)
+  }
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files || files.length === 0) return
 
     if (value.length + files.length > maxImages) {
-      setError(`You can only upload up to ${maxImages} images`)
+      const msg = `You can only upload up to ${maxImages} images`
+      setError(msg)
+      onUploadError?.(msg)
       return
     }
 
-    setUploading(true)
+    setUploadingState(true)
     setError('')
+    onUploadError?.(null)
 
     const updatedPaths = [...value]
 
@@ -49,11 +60,14 @@ export default function ImageUploader({ bucket, value, onChange, maxImages = 3 }
 
       onChange(updatedPaths)
     } catch (err: unknown) {
-      console.error(err)
+      console.warn('Storage upload error:', err)
       const message = err instanceof Error ? err.message : 'Error uploading image'
       setError(message)
+      onUploadError?.(message)
     } finally {
-      setUploading(false)
+      setUploadingState(false)
+      // Reset the input so the same file can be re-selected after an error
+      e.target.value = ''
     }
   }
 
@@ -73,7 +87,7 @@ export default function ImageUploader({ bucket, value, onChange, maxImages = 3 }
       <div className="grid grid-cols-3 gap-3">
         {/* Existing Previews */}
         {value.map((path, idx) => (
-          <div key={idx} className="group relative aspect-square rounded-xl overflow-hidden border border-slate-200 bg-white/50 shadow-sm">
+          <div key={idx} className="group relative aspect-square rounded-xl overflow-hidden border shadow-sm" style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-card)' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={getPublicUrl(path)}
@@ -83,7 +97,7 @@ export default function ImageUploader({ bucket, value, onChange, maxImages = 3 }
             <button
               type="button"
               onClick={() => handleRemove(idx)}
-              className="absolute top-1.5 right-1.5 h-6 w-6 flex items-center justify-center rounded-full bg-black/60 text-slate-350 hover:text-white hover:bg-black/80 transition-colors"
+              className="absolute top-1.5 right-1.5 h-6 w-6 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -92,13 +106,16 @@ export default function ImageUploader({ bucket, value, onChange, maxImages = 3 }
 
         {/* Upload Button */}
         {value.length < maxImages && (
-          <div className="relative aspect-square rounded-xl border-2 border-dashed border-slate-200 bg-white/50 hover:border-purple-500/30 flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-colors group">
+          <div
+            className="relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-center p-2 cursor-pointer transition-colors group"
+            style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-card)' }}
+          >
             {uploading ? (
-              <Loader2 className="h-6 w-6 text-purple-600 animate-spin" />
+              <Loader2 className="h-6 w-6 animate-spin" style={{ color: 'var(--brand-green)' }} />
             ) : (
               <>
-                <Upload className="h-6 w-6 text-slate-500 group-hover:text-purple-600 transition-colors" />
-                <span className="text-[10px] font-semibold text-slate-500 mt-1">Upload Photo</span>
+                <Upload className="h-6 w-6 transition-colors" style={{ color: 'var(--text-secondary)' }} />
+                <span className="text-[10px] font-semibold mt-1" style={{ color: 'var(--text-secondary)' }}>Upload Photo</span>
               </>
             )}
             <input
@@ -113,7 +130,11 @@ export default function ImageUploader({ bucket, value, onChange, maxImages = 3 }
         )}
       </div>
 
-      {error && <p className="text-xs text-red-400 font-medium">{error}</p>}
+      {error && (
+        <p className="text-xs font-medium" style={{ color: 'var(--urgent-text)' }}>
+          {error}
+        </p>
+      )}
     </div>
   )
 }

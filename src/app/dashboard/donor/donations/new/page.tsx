@@ -17,7 +17,7 @@ export default async function NewDonationPage() {
 
   return (
     <div className="min-h-screen bg-transparent px-4 py-8">
-      <DonationForm defaultAddress={profile.address || ''} />
+      <DonationForm defaultAddress={profile.address || ''} verificationStatus={profile.verification_status} />
     </div>
   )
 }

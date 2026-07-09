@@ -25,6 +25,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import VolunteerLocationBroadcaster from '@/components/VolunteerLocationBroadcaster'
+import { formatHydrationTime } from '@/lib/utils'
+import ReportModal from '@/components/ReportModal'
+import DeliveryMap from '@/components/DeliveryMap'
 
 interface DeliveriesListClientProps {
   initialUnassigned: any[]
@@ -33,12 +36,19 @@ interface DeliveriesListClientProps {
 }
 
 export default function DeliveriesListClient({ initialUnassigned, initialAssigned, volunteerId }: DeliveriesListClientProps) {
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const [activeTab, setActiveTab] = React.useState<'active' | 'available'>('active')
   const [unassigned, setUnassigned] = React.useState(initialUnassigned)
   const [assigned, setAssigned] = React.useState(initialAssigned)
   const [submittingId, setSubmittingId] = React.useState<string | null>(null)
   const [proofPaths, setProofPaths] = React.useState<Record<string, string[]>>({})
   const [error, setError] = React.useState<string | null>(null)
+  const [reportModalOpen, setReportModalOpen] = React.useState(false)
+  const [reportedUser, setReportedUser] = React.useState<{ id: string, name: string } | null>(null)
 
   const handleAccept = async (deliveryId: string) => {
     setSubmittingId(deliveryId)
@@ -148,24 +158,22 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
         </div>
 
         {/* Tab Selector */}
-        <div className="flex rounded-xl bg-slate-200/50 p-1 border border-slate-350/30 backdrop-blur-md">
+        <div className="flex rounded-xl p-1 border backdrop-blur-md" style={{ background: 'var(--bg-page)', borderColor: 'var(--border-hairline)' }}>
           <button
             onClick={() => setActiveTab('active')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'active' 
-                ? 'bg-purple-600 text-white shadow-sm' 
-                : 'text-slate-600 hover:text-slate-800'
-            }`}
+            className="px-4 py-2 rounded-lg text-xs font-semibold transition-all"
+            style={activeTab === 'active'
+              ? { background: 'var(--brand-green)', color: '#fff', boxShadow: '0 1px 3px rgba(31,93,61,0.3)' }
+              : { color: 'var(--text-secondary)' }}
           >
             Active Deliveries ({assigned.length})
           </button>
           <button
             onClick={() => setActiveTab('available')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'available' 
-                ? 'bg-purple-650 text-white shadow-sm' 
-                : 'text-slate-600 hover:text-slate-800'
-            }`}
+            className="px-4 py-2 rounded-lg text-xs font-semibold transition-all"
+            style={activeTab === 'available'
+              ? { background: 'var(--brand-green)', color: '#fff', boxShadow: '0 1px 3px rgba(31,93,61,0.3)' }
+              : { color: 'var(--text-secondary)' }}
           >
             Available Jobs ({unassigned.length})
           </button>
@@ -202,36 +210,36 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
               return (
                 <div 
                   key={del.id}
-                  className="rounded-2xl glass-card p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:border-purple-500/40 transition-all duration-300 shadow-md"
+                  className="rounded-2xl glass-card p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-lg transition-all duration-300 shadow-md"
                 >
                   <div className="space-y-4 flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-slate-900 text-lg">{donation.title}</h3>
-                      <span className="px-2 py-0.5 rounded bg-purple-50 border border-purple-100 text-purple-700 text-[10px] font-bold uppercase">
-                        {donation.category.replace('_', ' ')}
+                      <h3 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>{donation.title}</h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase status-badge" style={{ background: 'var(--success-bg)', color: 'var(--success-text)', border: '1px solid var(--success-text)' }}>
+                        {donation.category.replace(/_/g, ' ')}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                       {/* Pickup Info */}
                       <div className="space-y-1.5 border-r border-slate-200/50 pr-4">
-                        <span className="font-bold text-purple-700 flex items-center gap-1">
+                        <span className="font-bold flex items-center gap-1" style={{ color: 'var(--brand-green)' }}>
                           <MapPin className="h-3.5 w-3.5" /> Pickup (Donor)
                         </span>
-                        <p className="text-slate-800 font-semibold">{donor?.full_name || 'Donor organization'}</p>
-                        <p className="text-slate-600">{donation.pickup_location}</p>
-                        <p className="text-slate-50 flex items-center gap-1 mt-1">
-                          <Clock className="h-3.5 w-3.5 text-purple-650" /> Window: {new Date(donation.pickup_window_start).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} - {new Date(donation.pickup_window_end).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                        </p>
+                        <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>{donor?.full_name || 'Donor organization'}</p>
+                        <p style={{ color: 'var(--text-secondary)' }}>{donation.pickup_location}</p>
+                        <p className="flex items-center gap-1 mt-1" style={{ color: 'var(--text-secondary)' }}>
+                           <Clock className="h-3.5 w-3.5" style={{ color: 'var(--brand-green)' }} /> Window: {mounted ? `${formatHydrationTime(donation.pickup_window_start)} - ${formatHydrationTime(donation.pickup_window_end)}` : '—'}
+                         </p>
                       </div>
 
                       {/* Drop-off Info */}
                       <div className="space-y-1.5 pl-2">
-                        <span className="font-bold text-purple-700 flex items-center gap-1">
+                        <span className="font-bold flex items-center gap-1" style={{ color: 'var(--brand-green)' }}>
                           <Navigation className="h-3.5 w-3.5" /> Drop-off (NGO)
                         </span>
-                        <p className="text-slate-800 font-semibold">{ngo.organization_name || ngo.full_name}</p>
-                        <p className="text-slate-600">{ngo.address}</p>
+                        <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>{ngo.organization_name || ngo.full_name}</p>
+                        <p style={{ color: 'var(--text-secondary)' }}>{ngo.address}</p>
                       </div>
                     </div>
                   </div>
@@ -240,7 +248,10 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                     <button
                       onClick={() => handleAccept(del.id)}
                       disabled={submittingId !== null}
-                      className="w-full lg:w-auto py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/10"
+                      className="w-full lg:w-auto py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white transition-colors shadow-lg"
+                      style={{ background: 'var(--brand-green)' }}
+                      onMouseOver={e => submittingId === null && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                      onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
                     >
                       {submittingId === del.id ? 'Accepting...' : 'Accept Job'}
                     </button>
@@ -284,8 +295,8 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                       <h3 className="font-bold text-slate-900 text-lg">{donation.title}</h3>
                       <p className="text-xs text-slate-555 mt-0.5">Quantity: {donation.quantity} {donation.quantity_unit}</p>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-purple-50 border border-purple-100 text-purple-700 text-[10px] font-bold uppercase">
-                      {donation.category.replace('_', ' ')}
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase status-badge" style={{ background: 'var(--success-bg)', color: 'var(--success-text)', border: '1px solid var(--success-text)' }}>
+                      {donation.category.replace(/_/g, ' ')}
                     </span>
                   </div>
 
@@ -298,14 +309,30 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                     />
                   </div>
 
+                  {/* Delivery Map */}
+                  {(del.status === 'assigned' || del.status === 'pickup_completed' || del.status === 'in_transit') && (
+                    <div className="mt-4">
+                      <DeliveryMap 
+                        deliveryId={del.id}
+                        pickupLat={donation.pickup_latitude ? Number(donation.pickup_latitude) : undefined}
+                        pickupLng={donation.pickup_longitude ? Number(donation.pickup_longitude) : undefined}
+                        pickupLabel={donation.pickup_location}
+                        destLat={ngo.latitude ? Number(ngo.latitude) : undefined}
+                        destLng={ngo.longitude ? Number(ngo.longitude) : undefined}
+                        destLabel={ngo.organization_name || ngo.full_name}
+                        volunteerName="You"
+                      />
+                    </div>
+                  )}
+
                   {/* Stepper Pipeline */}
                   <div className="relative flex items-center justify-between max-w-lg mx-auto py-2">
                     {/* Stepper Bar Background */}
                     <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200/80 -z-10" />
                     {/* Active Bar */}
-                    <div 
-                      className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-purple-650 -z-10 transition-all duration-500" 
-                      style={{ width: `${(Math.max(0, currentStep - 1) / 3) * 100}%` }}
+                    <div
+                      className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 -z-10 transition-all duration-500"
+                      style={{ width: `${(Math.max(0, currentStep - 1) / 3) * 100}%`, background: 'var(--brand-green)' }}
                     />
 
                     {/* Step Nodes */}
@@ -320,18 +347,17 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
 
                       return (
                         <div key={step.idx} className="flex flex-col items-center gap-1.5 relative">
-                          <div 
-                            className={`h-7 w-7 rounded-full flex items-center justify-center border text-xs font-bold transition-all duration-300 ${
-                              isCompleted 
-                                ? 'bg-purple-650 border-purple-650 text-white shadow-[0_0_10px_rgba(168,85,247,0.2)]' 
-                                : isActive
-                                  ? 'bg-white border-purple-600 text-purple-750 shadow-[0_0_10px_rgba(168,85,247,0.1)]'
-                                  : 'bg-slate-50 border-slate-200 text-slate-400'
-                            }`}
+                          <div
+                            className={`h-7 w-7 rounded-full flex items-center justify-center border text-xs font-bold transition-all duration-300`}
+                            style={isCompleted
+                              ? { background: 'var(--brand-green)', borderColor: 'var(--brand-green)', color: '#fff', boxShadow: '0 0 10px rgba(31,93,61,0.3)' }
+                              : isActive
+                                ? { background: 'var(--bg-card)', borderColor: 'var(--brand-green)', color: 'var(--brand-green)', boxShadow: '0 0 10px rgba(31,93,61,0.15)' }
+                                : { background: 'var(--bg-page)', borderColor: 'var(--border-hairline)', color: 'var(--text-secondary)' }}
                           >
                             {isCompleted ? <Check className="h-4 w-4 stroke-[2.5]" /> : step.idx}
                           </div>
-                          <span className={`text-[10px] font-semibold ${isActive ? 'text-purple-755 font-bold' : 'text-slate-555'}`}>
+                          <span className="text-[10px] font-semibold" style={{ color: isActive ? 'var(--brand-green)' : 'var(--text-secondary)', fontWeight: isActive ? 700 : undefined }}>
                             {step.label}
                           </span>
                         </div>
@@ -343,39 +369,48 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200/50">
                     {/* Pickup Address & Contact */}
                     <div className="space-y-3 rounded-xl border border-slate-200 bg-white/50 p-4 text-xs shadow-sm">
-                      <h4 className="font-bold text-purple-750 flex items-center gap-1.5">
+                      <h4 className="font-bold flex items-center gap-1.5" style={{ color: 'var(--brand-green)' }}>
                         <MapPin className="h-4 w-4" />
                         <span>Pickup (Donor Location)</span>
                       </h4>
                       <div className="space-y-1">
-                        <p className="text-slate-800 font-semibold">{donor?.full_name || 'Donor'}</p>
-                        <p className="text-slate-600">{donation.pickup_location}</p>
-                        <p className="text-slate-500">Expires: {new Date(donation.expiry_at).toLocaleString()}</p>
+                        <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>{donor?.full_name || 'Donor'}</p>
+                        <p style={{ color: 'var(--text-secondary)' }}>{donation.pickup_location}</p>
+                        <p style={{ color: 'var(--text-secondary)' }}>Expires: {mounted ? new Date(donation.expiry_at).toLocaleString() : '—'}</p>
                       </div>
                       {donor?.phone && (
-                        <div className="flex items-center gap-1.5 text-slate-600 mt-2 border-t border-slate-200/50 pt-2">
-                          <Phone className="h-3.5 w-3.5 text-purple-600" />
-                          <span>Phone: <a href={`tel:${donor.phone}`} className="text-purple-700 font-semibold hover:underline">{donor.phone}</a></span>
+                        <div className="flex items-center gap-1.5 mt-2 border-t pt-2" style={{ color: 'var(--text-secondary)', borderColor: 'var(--border-hairline)' }}>
+                          <Phone className="h-3.5 w-3.5" style={{ color: 'var(--brand-green)' }} />
+                          <span>Phone: <a href={`tel:${donor.phone}`} className="font-semibold hover:underline" style={{ color: 'var(--brand-green)' }}>{donor.phone}</a></span>
                         </div>
                       )}
                     </div>
 
                     {/* Delivery Address & Contact */}
                     <div className="space-y-3 rounded-xl border border-slate-200 bg-white/50 p-4 text-xs shadow-sm">
-                      <h4 className="font-bold text-purple-750 flex items-center gap-1.5">
+                      <h4 className="font-bold flex items-center gap-1.5" style={{ color: 'var(--brand-green)' }}>
                         <Navigation className="h-4 w-4" />
                         <span>Drop-off (NGO Destination)</span>
                       </h4>
                       <div className="space-y-1">
-                        <p className="text-slate-800 font-semibold">{ngo.organization_name || ngo.full_name}</p>
-                        <p className="text-slate-600">{ngo.address}</p>
+                        <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>{ngo.organization_name || ngo.full_name}</p>
+                        <p style={{ color: 'var(--text-secondary)' }}>{ngo.address}</p>
                       </div>
                       {ngo.phone && (
-                        <div className="flex items-center gap-1.5 text-slate-600 mt-2 border-t border-slate-200/50 pt-2">
-                          <Phone className="h-3.5 w-3.5 text-purple-600" />
-                          <span>Phone: <a href={`tel:${ngo.phone}`} className="text-purple-700 font-semibold hover:underline">{ngo.phone}</a></span>
+                        <div className="flex items-center gap-1.5 mt-2 border-t pt-2" style={{ color: 'var(--text-secondary)', borderColor: 'var(--border-hairline)' }}>
+                          <Phone className="h-3.5 w-3.5" style={{ color: 'var(--brand-green)' }} />
+                          <span>Phone: <a href={`tel:${ngo.phone}`} className="font-semibold hover:underline" style={{ color: 'var(--brand-green)' }}>{ngo.phone}</a></span>
                         </div>
                       )}
+                      <button
+                        onClick={() => {
+                          setReportedUser({ id: ngo.id, name: ngo.organization_name || ngo.full_name })
+                          setReportModalOpen(true)
+                        }}
+                        className="text-red-600 hover:text-red-800 font-semibold hover:underline mt-2.5 block text-[10px]"
+                      >
+                        Report this organization
+                      </button>
                     </div>
                   </div>
 
@@ -386,7 +421,10 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                       <button
                         onClick={() => handleConfirmPickup(del.id)}
                         disabled={submittingId !== null}
-                        className="py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 transition-colors shadow-sm"
+                        className="py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white transition-colors shadow-sm"
+                        style={{ background: 'var(--brand-green)' }}
+                        onMouseOver={e => submittingId === null && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                        onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
                       >
                         {submittingId === del.id ? 'Updating...' : 'Confirm Food Picked Up'}
                       </button>
@@ -397,7 +435,10 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                       <button
                         onClick={() => handleStartTransit(del.id)}
                         disabled={submittingId !== null}
-                        className="py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 transition-colors shadow-sm"
+                        className="py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white transition-colors shadow-sm"
+                        style={{ background: 'var(--brand-green)' }}
+                        onMouseOver={e => submittingId === null && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                        onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
                       >
                         {submittingId === del.id ? 'Updating...' : 'Start Transit (On My Way)'}
                       </button>
@@ -418,7 +459,10 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                         <button
                           onClick={() => handleCompleteDelivery(del.id)}
                           disabled={submittingId !== null || !(proofPaths[del.id]?.length > 0)}
-                          className="w-full py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                          className="w-full py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+                          style={{ background: 'var(--brand-green)' }}
+                          onMouseOver={e => !(submittingId !== null || !(proofPaths[del.id]?.length > 0)) && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                          onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
                         >
                           {submittingId === del.id ? 'Submitting...' : 'Complete Delivery'}
                         </button>
@@ -427,7 +471,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
 
                     {/* Delivered Awaiting Confirmation */}
                     {del.status === 'delivered' && (
-                      <div className="flex items-center gap-2 text-xs font-bold text-purple-750 bg-purple-55 border border-purple-200 px-4 py-2.5 rounded-xl shadow-sm">
+                      <div className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm" style={{ color: 'var(--success-text)', background: 'var(--success-bg)', border: '1px solid var(--success-text)' }}>
                         <CheckCircle className="h-4 w-4 stroke-[2.5]" />
                         <span>Food Delivered — Awaiting NGO Confirmation</span>
                       </div>
@@ -438,6 +482,18 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
             })
           )}
         </div>
+      )}
+
+      {reportedUser && (
+        <ReportModal
+          isOpen={reportModalOpen}
+          onClose={() => {
+            setReportModalOpen(false)
+            setReportedUser(null)
+          }}
+          reportedUserId={reportedUser.id}
+          reportedUserName={reportedUser.name}
+        />
       )}
     </div>
   )

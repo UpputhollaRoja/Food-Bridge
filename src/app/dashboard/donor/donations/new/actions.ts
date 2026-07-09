@@ -37,6 +37,20 @@ export async function createDonation(prevState: unknown, formData: FormData) {
   const quantity = parseFloat(quantityStr)
   const estimatedMeals = parseInt(estimatedMealsStr)
 
+  const expiryDate = new Date(expiryAt)
+  const windowStart = new Date(pickupWindowStart)
+  const windowEnd = new Date(pickupWindowEnd)
+
+  if (isNaN(expiryDate.getTime())) {
+    return { error: 'Invalid expiry date format' }
+  }
+  if (isNaN(windowStart.getTime())) {
+    return { error: 'Invalid pickup window start date format' }
+  }
+  if (isNaN(windowEnd.getTime())) {
+    return { error: 'Invalid pickup window end date format' }
+  }
+
   // Fetch coordinates and verification status from profiles
   const { data: profile } = await supabase
     .from('profiles')
@@ -48,10 +62,6 @@ export async function createDonation(prevState: unknown, formData: FormData) {
     return { error: 'Profile not found' }
   }
 
-  if (profile.verification_status !== 'verified') {
-    return { error: 'Your account is not verified yet. You can list food items once approved by an admin.' }
-  }
-
   const { data: donation, error } = await supabase
     .from('donations')
     .insert({
@@ -61,12 +71,12 @@ export async function createDonation(prevState: unknown, formData: FormData) {
       quantity,
       quantity_unit: quantityUnit,
       estimated_meals: estimatedMeals,
-      expiry_at: new Date(expiryAt).toISOString(),
+      expiry_at: expiryDate.toISOString(),
       pickup_location: pickupLocation,
       pickup_latitude: profile.latitude || 37.7749,
       pickup_longitude: profile.longitude || -122.4194,
-      pickup_window_start: new Date(pickupWindowStart).toISOString(),
-      pickup_window_end: new Date(pickupWindowEnd).toISOString(),
+      pickup_window_start: windowStart.toISOString(),
+      pickup_window_end: windowEnd.toISOString(),
       storage_instructions: storageInstructions || null,
       allergen_info: allergenInfo || null,
       images,

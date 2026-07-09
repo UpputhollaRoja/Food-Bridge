@@ -11,7 +11,8 @@ export default function VerifiedBadge({ status, className = '' }: VerifiedBadgeP
 
   return (
     <span 
-      className={`inline-flex items-center justify-center text-blue-500 bg-blue-50 dark:bg-blue-900/20 rounded-full ${className}`}
+      className={`inline-flex items-center justify-center p-0.5 rounded-full ${className}`}
+      style={{ background: 'var(--success-bg)', color: 'var(--success-text)' }}
       title="Verified Organization"
     >
       <BadgeCheck className="h-4 w-4" />

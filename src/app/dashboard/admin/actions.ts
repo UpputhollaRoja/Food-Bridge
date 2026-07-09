@@ -60,3 +60,52 @@ export async function rejectDonationAction(donationId: string) {
   revalidatePath('/dashboard/admin')
   return { success: true }
 }
+
+/**
+ * Generates a short-lived signed URL for a private storage object.
+ * Called client-side on "View Document" click — the URL is freshly minted
+ * at click time so it never arrives stale.
+ * @param bucket  Supabase storage bucket name
+ * @param path    Storage object path (relative to bucket root)
+ * @param expiresIn  Seconds until expiry (default 600 = 10 minutes)
+ */
+export async function generateSignedUrl(bucket: string, path: string, expiresIn = 600) {
+  const supabase = await createClient()
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .createSignedUrl(path, expiresIn)
+
+  if (error || !data?.signedUrl) {
+    return { error: error?.message ?? 'Could not generate signed URL' }
+  }
+
+  return { signedUrl: data.signedUrl }
+}
+
+export async function suspendUserAction(userId: string) {
+  const supabase = await createClient()
+
+  // 1. Update verification status to 'suspended'
+  const { error } = await supabase
+    .from('profiles')
+    .update({ verification_status: 'suspended', updated_at: new Date().toISOString() })
+    .eq('id', userId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  // 2. Notify the user
+  await supabase
+    .from('notifications')
+    .insert({
+      user_id: userId,
+      type: 'account_suspension',
+      payload: {
+        message: `Your account has been suspended by the administrator.`
+      }
+    })
+
+  revalidatePath('/dashboard/admin')
+  return { success: true }
+}

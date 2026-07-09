@@ -19,6 +19,7 @@ export default async function DeliveriesPage() {
   const supabase = await createClient()
 
   // Fetch unassigned deliveries
+  // Fetch unassigned deliveries
   const { data: unassigned, error: err1 } = await supabase
     .from('deliveries')
     .select(`
@@ -35,6 +36,8 @@ export default async function DeliveriesPage() {
           quantity,
           quantity_unit,
           pickup_location,
+          pickup_latitude,
+          pickup_longitude,
           expiry_at,
           pickup_window_start,
           pickup_window_end,
@@ -47,7 +50,9 @@ export default async function DeliveriesPage() {
           full_name,
           organization_name,
           phone,
-          address
+          address,
+          latitude,
+          longitude
         )
       )
     `)
@@ -75,6 +80,8 @@ export default async function DeliveriesPage() {
           quantity,
           quantity_unit,
           pickup_location,
+          pickup_latitude,
+          pickup_longitude,
           expiry_at,
           pickup_window_start,
           pickup_window_end,
@@ -87,7 +94,9 @@ export default async function DeliveriesPage() {
           full_name,
           organization_name,
           phone,
-          address
+          address,
+          latitude,
+          longitude
         )
       )
     `)

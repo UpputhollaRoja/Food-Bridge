@@ -45,7 +45,7 @@ export default async function LandingPage() {
       {/* Navbar */}
       <nav className="max-w-7xl w-full mx-auto px-6 py-5 flex items-center justify-between border-b border-border backdrop-blur-md sticky top-0 z-40 bg-background/80">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm animate-float">
             <Heart className="h-5 w-5 text-primary-foreground stroke-[2.5]" />
           </div>
           <span className="font-heading font-black text-foreground text-lg tracking-tight">Food Bridge</span>
@@ -75,7 +75,7 @@ export default async function LandingPage() {
             {content.badge}
           </span>
           <h1 className="font-heading text-4xl md:text-6xl font-black text-foreground tracking-tight leading-tight">
-            {content.headline} <span className="text-primary">{content.headline_accent}</span>
+            {content.headline} <span className="gradient-text-pink-purple">{content.headline_accent}</span>
           </h1>
           <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto leading-relaxed">
             {content.description}
@@ -83,7 +83,7 @@ export default async function LandingPage() {
           <div className="pt-4 flex justify-center gap-4">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-md hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-md hover:-translate-y-0.5 animate-glow-purple-pink"
             >
               <span>{content.cta_primary}</span>
               <ArrowRight className="h-4 w-4" />
@@ -123,7 +123,7 @@ export default async function LandingPage() {
             
             {/* Step 1 */}
             <div className="flex flex-col items-center text-center space-y-4">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary animate-float">
                 <Building2 className="h-10 w-10" />
               </div>
               <h3 className="font-heading font-bold text-xl text-foreground">1. Donor Posts</h3>
@@ -131,10 +131,10 @@ export default async function LandingPage() {
                 Supermarkets and restaurants instantly list surplus food items. AI prioritizes listings based on shelf-life.
               </p>
             </div>
-
+ 
             {/* Step 2 */}
             <div className="flex flex-col items-center text-center space-y-4">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-secondary">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-secondary animate-float" style={{ animationDelay: '0.4s' }}>
                 <Heart className="h-10 w-10" />
               </div>
               <h3 className="font-heading font-bold text-xl text-foreground">2. NGO Claims</h3>
@@ -142,10 +142,10 @@ export default async function LandingPage() {
                 NGOs browse local listings sorted by AI priority and claim items atomically.
               </p>
             </div>
-
+ 
             {/* Step 3 */}
             <div className="flex flex-col items-center text-center space-y-4">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary animate-float" style={{ animationDelay: '0.8s' }}>
                 <Navigation className="h-10 w-10" />
               </div>
               <h3 className="font-heading font-bold text-xl text-foreground">3. Volunteer Delivers</h3>
@@ -157,7 +157,7 @@ export default async function LandingPage() {
         </div>
 
         {/* Environmental impact highlight card */}
-        <div className="glass-card-accent rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 mt-16">
+        <div className="glass-card-accent rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 mt-16 animate-glow-purple-pink">
           <div className="space-y-3 max-w-lg">
             <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1">
               <Globe className="h-3.5 w-3.5 animate-spin" /> Environmental Balance Sheet

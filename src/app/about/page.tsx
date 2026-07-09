@@ -16,7 +16,7 @@ export default async function AboutPage() {
       {/* Nav */}
       <nav className="max-w-4xl w-full mx-auto px-6 py-5 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-fuchsia-500 dark:from-[#ff5a00] dark:to-[#ffaa00] shadow-md shadow-purple-500/15 dark:shadow-[#ff5a00]/15">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl shadow-md" style={{ background: 'var(--brand-green)', boxShadow: '0 4px 12px -2px rgba(31,93,61,0.35)' }}>
             <Heart className="h-5 w-5 text-white stroke-[2.5]" />
           </div>
           <span className="font-black text-slate-900 dark:text-white text-lg tracking-tight">Food Bridge</span>
@@ -51,7 +51,7 @@ export default async function AboutPage() {
             prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed
             prose-strong:text-slate-900 dark:prose-strong:text-white
             prose-li:text-slate-600 dark:prose-li:text-slate-300
-            prose-a:text-purple-600 dark:prose-a:text-[#ff7900] prose-a:no-underline hover:prose-a:underline
+            prose-a:no-underline hover:prose-a:underline
             prose-table:text-sm
             prose-th:text-slate-700 dark:prose-th:text-slate-200
             prose-td:text-slate-600 dark:prose-td:text-slate-300

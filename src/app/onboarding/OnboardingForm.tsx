@@ -5,6 +5,15 @@ import { saveOnboarding } from './actions'
 import { createClient } from '@/lib/supabase/client'
 import { MapPin, Phone, Building2, Upload, ShieldCheck, ShieldAlert, Sparkles, Heart } from 'lucide-react'
 
+function getErrorMessage(err: any): string {
+  if (!err) return ''
+  if (typeof err === 'string') return err
+  if (typeof err === 'object') {
+    return err.message || err.text || err.error_description || err.msg || JSON.stringify(err)
+  }
+  return String(err)
+}
+
 interface OnboardingFormProps {
   userEmail: string
   userRole: string
@@ -63,7 +72,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
 
       setDocPath(filePath)
     } catch (err: unknown) {
-      console.error(err)
+      console.warn('Storage upload error:', err)
       const message = err instanceof Error ? err.message : 'Error uploading document'
       setUploadError(message)
     } finally {
@@ -77,25 +86,25 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
     <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12">
       <div className="w-full max-w-xl space-y-8">
         <div className="flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 dark:bg-[#ff5a00]/10 px-3 py-1 text-xs font-semibold text-purple-700 dark:text-[#ff7900] border border-purple-200 dark:border-[#ff5a00]/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border" style={{ background: 'var(--success-bg)', color: 'var(--success-text)', borderColor: 'var(--brand-green)' }}>
             <Sparkles className="h-3 w-3" />
             Complete Onboarding
           </span>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl" style={{ color: 'var(--text-primary)' }}>
             Welcome, {userFullName}!
           </h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 max-w-sm">
+          <p className="mt-2 text-sm max-w-sm" style={{ color: 'var(--text-secondary)' }}>
             Let&apos;s finish setting up your profile to activate your account as a{' '}
-            <span className="text-purple-700 dark:text-[#ff7900] font-semibold capitalize">{selectedRole}</span>.
+            <span className="font-semibold capitalize" style={{ color: 'var(--brand-green)' }}>{selectedRole}</span>.
           </p>
         </div>
 
         <div className="relative rounded-2xl glass-card p-8 shadow-2xl">
           <form action={formAction} className="space-y-6">
-            {state?.error && (
+            {getErrorMessage(state?.error) && (
               <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500 dark:text-red-400">
                 <ShieldAlert className="h-4 w-4 shrink-0" />
-                <span>{state.error}</span>
+                <span>{getErrorMessage(state?.error)}</span>
               </div>
             )}
 
@@ -109,37 +118,34 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('donor')}
-                  className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all duration-300 ${
-                    selectedRole === 'donor'
-                      ? 'border-purple-500 dark:border-[#ff5a00] bg-purple-50/30 dark:bg-[#ff5a00]/10 text-slate-900 dark:text-white shadow-[0_0_15px_rgba(147,51,234,0.15)] dark:shadow-[0_0_15px_rgba(255,90,0,0.15)]'
-                      : 'border-slate-200 dark:border-slate-700/50 bg-white/40 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-white/60 dark:hover:bg-white/10'
-                  }`}
+                  className="flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200"
+                  style={selectedRole === 'donor'
+                    ? { border: '2px solid var(--brand-green)', background: 'var(--success-bg)', color: 'var(--text-primary)', boxShadow: '0 0 15px rgba(31,93,61,0.12)' }
+                    : { border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', color: 'var(--text-secondary)' }}
                 >
-                  <Building2 className={`h-5 w-5 mb-1.5 ${selectedRole === 'donor' ? 'text-purple-600 dark:text-[#ff5a00]' : ''}`} />
+                  <Building2 className="h-5 w-5 mb-1.5" style={{ color: selectedRole === 'donor' ? 'var(--brand-green)' : 'var(--text-secondary)' }} />
                   <span className="text-xs font-semibold">Donor</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedRole('ngo')}
-                  className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all duration-300 ${
-                    selectedRole === 'ngo'
-                      ? 'border-purple-500 dark:border-[#ff5a00] bg-purple-50/30 dark:bg-[#ff5a00]/10 text-slate-900 dark:text-white shadow-[0_0_15px_rgba(147,51,234,0.15)] dark:shadow-[0_0_15px_rgba(255,90,0,0.15)]'
-                      : 'border-slate-200 dark:border-slate-700/50 bg-white/40 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-white/60 dark:hover:bg-white/10'
-                  }`}
+                  className="flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200"
+                  style={selectedRole === 'ngo'
+                    ? { border: '2px solid var(--brand-green)', background: 'var(--success-bg)', color: 'var(--text-primary)', boxShadow: '0 0 15px rgba(31,93,61,0.12)' }
+                    : { border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', color: 'var(--text-secondary)' }}
                 >
-                  <Heart className={`h-5 w-5 mb-1.5 ${selectedRole === 'ngo' ? 'text-purple-600 dark:text-[#ff5a00]' : ''}`} />
+                  <Heart className="h-5 w-5 mb-1.5" style={{ color: selectedRole === 'ngo' ? 'var(--brand-green)' : 'var(--text-secondary)' }} />
                   <span className="text-xs font-semibold">NGO</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedRole('volunteer')}
-                  className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all duration-300 ${
-                    selectedRole === 'volunteer'
-                      ? 'border-purple-500 dark:border-[#ff5a00] bg-purple-50/30 dark:bg-[#ff5a00]/10 text-slate-900 dark:text-white shadow-[0_0_15px_rgba(147,51,234,0.15)] dark:shadow-[0_0_15px_rgba(255,90,0,0.15)]'
-                      : 'border-slate-200 dark:border-slate-700/50 bg-white/40 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-white/60 dark:hover:bg-white/10'
-                  }`}
+                  className="flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200"
+                  style={selectedRole === 'volunteer'
+                    ? { border: '2px solid var(--brand-green)', background: 'var(--success-bg)', color: 'var(--text-primary)', boxShadow: '0 0 15px rgba(31,93,61,0.12)' }
+                    : { border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', color: 'var(--text-secondary)' }}
                 >
-                  <Sparkles className={`h-5 w-5 mb-1.5 ${selectedRole === 'volunteer' ? 'text-purple-600 dark:text-[#ff5a00]' : ''}`} />
+                  <Sparkles className="h-5 w-5 mb-1.5" style={{ color: selectedRole === 'volunteer' ? 'var(--brand-green)' : 'var(--text-secondary)' }} />
                   <span className="text-xs font-semibold">Volunteer</span>
                 </button>
               </div>
@@ -164,7 +170,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                     type="text"
                     required
                     placeholder="e.g. Hope Food Kitchen"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm transition-colors"
                   />
                 </div>
               </div>
@@ -185,7 +191,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                   type="tel"
                   required
                   placeholder="+1 (555) 000-0000"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm transition-colors"
                 />
               </div>
             </div>
@@ -205,7 +211,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                   type="text"
                   required
                   placeholder="123 Sustainability Way, Green City"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm transition-colors"
                 />
               </div>
             </div>
@@ -220,9 +226,9 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                   Verification Document (PDF/Image)
                 </label>
-                <div className="relative rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700/50 bg-white/30 dark:bg-white/5 p-4 flex flex-col items-center justify-center text-center transition-colors hover:border-purple-500/40 dark:hover:border-[#ff5a00]/30">
+                <div className="relative rounded-xl border-2 border-dashed p-4 flex flex-col items-center justify-center text-center transition-colors" style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-page)' }}>
                   {docPath ? (
-                    <div className="flex items-center gap-2 text-purple-700 dark:text-[#ff7900]">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--success-text)' }}>
                       <ShieldCheck className="h-5 w-5" />
                       <span className="text-xs font-semibold">Document Uploaded Successfully!</span>
                     </div>
@@ -242,8 +248,8 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                     </>
                   )}
                 </div>
-                {uploadError && (
-                  <p className="text-xs text-red-400 mt-1 font-medium">{uploadError}</p>
+                {getErrorMessage(uploadError) && (
+                  <p className="text-xs text-red-400 mt-1 font-medium">{getErrorMessage(uploadError)}</p>
                 )}
               </div>
             )}
@@ -252,7 +258,10 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             <button
               type="submit"
               disabled={isPending || uploadingDoc}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 dark:bg-[#ff5a00] dark:hover:bg-[#ff7900] focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg shadow-purple-500/20 dark:shadow-[#ff5a00]/20"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg"
+              style={{ background: 'var(--brand-green)', boxShadow: '0 4px 14px -2px rgba(31,93,61,0.4)' }}
+              onMouseOver={e => !(isPending || uploadingDoc) && ((e.currentTarget as HTMLButtonElement).style.background = 'var(--brand-green-hover)')}
+              onMouseOut={e => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--brand-green)')}
             >
               {isPending ? 'Saving profile...' : 'Complete Registration'}
             </button>

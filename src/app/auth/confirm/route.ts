@@ -1,13 +1,15 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { type EmailOtpType } from '@supabase/supabase-js'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
+  const token_hash = searchParams.get('token_hash')
+  const type = searchParams.get('type') as EmailOtpType | null
   const next = searchParams.get('next') ?? '/'
 
-  if (code) {
+  if (token_hash && type) {
     const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,13 +25,19 @@ export async function GET(request: Request) {
         },
       }
     )
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { error } = await supabase.auth.verifyOtp({ type, token_hash })
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
 
+  let errorMessage = 'Could not verify link. Please request a new one.'
+  if (type === 'recovery') {
+    errorMessage = 'Could not verify reset link. Please request a new one.'
+  } else if (type === 'signup') {
+    errorMessage = 'Could not verify confirmation link. Please request a new signup link.'
+  }
   return NextResponse.redirect(
-    `${origin}/login?error=Could not verify reset link. Please request a new one.`
+    `${origin}/login?error=${encodeURIComponent(errorMessage)}`
   )
 }

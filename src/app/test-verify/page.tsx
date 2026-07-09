@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import Link from 'next/link'
 
 export default function TestVerifyPage() {
   const [status, setStatus] = useState('Verifying...')
@@ -35,7 +36,7 @@ export default function TestVerifyPage() {
     <div className="p-8 font-mono text-sm">
       <h1>Test Verification Hook</h1>
       <p>{status}</p>
-      <a href="/" className="text-blue-500 underline mt-4 block">Return Home</a>
+      <Link href="/" className="text-blue-500 underline mt-4 block">Return Home</Link>
     </div>
   )
 }

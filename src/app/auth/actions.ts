@@ -5,6 +5,13 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+function cleanErrorMessage(error: any, fallback = 'An unexpected error occurred. Please try again.'): string {
+  if (!error) return fallback
+  const message = error.message
+  if (message && message !== '{}') return message
+  return fallback
+}
+
 export async function login(prevState: any, formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -21,7 +28,11 @@ export async function login(prevState: any, formData: FormData) {
   })
 
   if (error) {
-    return { error: error.message }
+    let msg = cleanErrorMessage(error)
+    if (msg.toLowerCase().includes('email not confirmed') || msg.toLowerCase().includes('email not verified')) {
+      msg = 'Please verify your email before logging in.'
+    }
+    return { error: msg }
   }
 
   const { data: profile } = await supabase
@@ -50,75 +61,29 @@ export async function signup(prevState: any, formData: FormData) {
   }
 
   const supabase = await createClient()
-  const adminClient = createAdminClient()
 
-  if (adminClient) {
-    // Admin mode: Bypass standard signup SMTP rates by creating user directly as verified
-    const { data: newUser, error: adminError } = await adminClient.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: {
+  // Normal signup mode (falls back to email confirmation based on Supabase project settings)
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
         role,
         full_name: fullName,
-      }
-    })
+      },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
+    },
+  })
 
-    if (adminError) {
-      return { error: adminError.message }
-    }
+  if (error) {
+    return { error: cleanErrorMessage(error) }
+  }
 
-    // Explicitly set the correct role on the profile in case the DB trigger
-    // defaulted to 'donor' due to metadata key differences.
-    if (newUser?.user?.id) {
-      await adminClient.from('profiles').upsert({
-        id: newUser.user.id,
-        role,
-        full_name: fullName,
-        verification_status: (role === 'donor' || role === 'ngo') ? 'pending' : 'verified',
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'id' })
-    }
-
-    // Programmatically log the user in to establish browser session cookies
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (loginError) {
-      return { error: `User created, but sign-in failed: ${loginError.message}` }
-    }
-
+  if (data.session) {
     revalidatePath('/', 'layout')
     redirect('/onboarding')
   } else {
-    // Normal signup mode (falls back to email confirmation based on Supabase project settings)
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          role,
-          full_name: fullName,
-        },
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
-      },
-    })
-
-    if (error) {
-      return { error: error.message }
-    }
-
-    // TODO: Before going to production, you must:
-    // 1. Re-enable "Confirm email" in Supabase Dashboard (Project Settings > Auth > User Signups > Toggle "Confirm email")
-    // 2. Connect a custom SMTP provider (e.g. Resend, Postmark) in the Supabase Dashboard under Project Settings > Auth > SMTP Settings.
-    if (data.session) {
-      revalidatePath('/', 'layout')
-      redirect('/onboarding')
-    } else {
-      redirect('/verify-email')
-    }
+    redirect('/verify-email')
   }
 }
 
@@ -138,12 +103,25 @@ export async function requestPasswordReset(prevState: any, formData: FormData) {
   const supabase = await createClient()
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
+  // Fallback to standard email reset if no admin client
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${siteUrl}/auth/confirm?next=/reset-password`,
   })
 
   if (error) {
-    return { error: error.message, success: false }
+    console.error('[requestPasswordReset] FULL RAW ERROR DETAILS:', {
+      name: error.name,
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      stack: error.stack,
+      properties: Object.getOwnPropertyNames(error).reduce((acc, key) => {
+        acc[key] = (error as any)[key];
+        return acc;
+      }, {} as any)
+    })
+    const errorMsg = cleanErrorMessage(error, 'Supabase email service error. Please check if SMTP settings are configured correctly in the Supabase Dashboard.')
+    return { error: errorMsg, success: false }
   }
 
   return { error: '', success: true }
@@ -168,7 +146,7 @@ export async function updatePassword(prevState: any, formData: FormData) {
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: cleanErrorMessage(error) }
   }
 
   await supabase.auth.signOut()

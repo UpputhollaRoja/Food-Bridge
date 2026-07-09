@@ -15,12 +15,15 @@ import {
   LogOut, 
   Loader2,
   Building,
-  Box
+  Box,
+  Navigation,
+  MapPin
 } from 'lucide-react'
+import DeliveryMap from '@/components/DeliveryMap'
 import ExpiryBadge from '@/components/ExpiryBadge'
 import EmptyState from '@/components/EmptyState'
 import VerifiedBadge from '@/components/VerifiedBadge'
-import LiveTrackingMap from '@/components/LiveTrackingMap'
+import ReportModal from '@/components/ReportModal'
 
 interface DonorDashboardClientProps {
   profile: any
@@ -34,6 +37,9 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
   const [matchingDonationId, setMatchingDonationId] = React.useState<string | null>(null)
   const [matches, setMatches] = React.useState<any[]>([])
   const [loadingMatches, setLoadingMatches] = React.useState(false)
+  const [reportModalOpen, setReportModalOpen] = React.useState(false)
+  const [reportedUser, setReportedUser] = React.useState<{ id: string, name: string } | null>(null)
+  const [expandedDonationId, setExpandedDonationId] = React.useState<string | null>(null)
 
   // Fetch AI Impact Narrative
   React.useEffect(() => {
@@ -81,20 +87,22 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeStyle = (status: string): React.CSSProperties => {
     switch (status) {
       case 'available':
-        return 'bg-blue-50 text-blue-700 border-blue-200'
+        return { background: 'var(--success-bg)', color: 'var(--success-text)', border: '1px solid var(--success-text)' }
       case 'reserved':
-        return 'bg-amber-50 text-amber-700 border-amber-200'
       case 'pickup_scheduled':
-        return 'bg-purple-50 text-purple-700 border-purple-200'
+        return { background: 'var(--pending-bg)', color: 'var(--pending-text)', border: '1px solid var(--pending-text)' }
       case 'collected':
-        return 'bg-orange-50 text-orange-700 border-orange-200'
       case 'completed':
-        return 'bg-purple-50 text-purple-700 border-purple-200'
+        return { background: 'var(--success-bg)', color: 'var(--success-text)', border: '1px solid var(--success-text)' }
+      case 'cancelled':
+        return { background: 'var(--urgent-bg)', color: 'var(--urgent-text)', border: '1px solid var(--urgent-text)' }
+      case 'pending_approval':
+        return { background: 'var(--pending-bg)', color: 'var(--pending-text)', border: '1px solid var(--pending-text)' }
       default:
-        return 'bg-slate-50 text-slate-700 border-slate-200'
+        return { background: 'var(--bg-page)', color: 'var(--text-secondary)', border: '1px solid var(--border-hairline)' }
     }
   }
 
@@ -113,7 +121,22 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
           <NotificationBell userId={profile.id} />
           <button
             onClick={() => signout()}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white/50 text-slate-600 hover:text-red-600 hover:border-red-500/20 hover:bg-red-50 transition-all shadow-sm"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border transition-all shadow-sm"
+            style={{
+              borderColor: 'var(--border-hairline)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-secondary)',
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.color = 'var(--urgent-text)'
+              e.currentTarget.style.borderColor = 'var(--urgent-bg)'
+              e.currentTarget.style.background = 'var(--urgent-bg)'
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.color = 'var(--text-secondary)'
+              e.currentTarget.style.borderColor = 'var(--border-hairline)'
+              e.currentTarget.style.background = 'var(--bg-card)'
+            }}
           >
             <LogOut className="h-5 w-5" />
           </button>
@@ -122,11 +145,18 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
 
       {/* Verification Warning */}
       {profile.verification_status !== 'verified' && (
-        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-800 shadow-sm">
+        <div
+          className="flex items-start gap-3 rounded-2xl border p-5 text-sm shadow-sm"
+          style={{
+            borderColor: 'var(--pending-text)',
+            background: 'var(--pending-bg)',
+            color: 'var(--pending-text)',
+          }}
+        >
           <ShieldAlert className="h-5 w-5 shrink-0 stroke-[2.5] mt-0.5" />
           <div>
             <h4 className="font-bold">Awaiting Verification</h4>
-            <p className="text-xs text-amber-700 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'var(--pending-text)', opacity: 0.85 }}>
               Your account is currently undergoing admin verification. You can prepare listings but they will not be visible to NGOs until verified.
             </p>
           </div>
@@ -173,10 +203,8 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
                 <span>Your Food Donations</span>
               </h2>
               <Link
-                href={profile.verification_status === 'verified' ? '/dashboard/donor/donations/new' : '#'}
-                className={`flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-sm hover:-translate-y-0.5 ${
-                  profile.verification_status !== 'verified' ? 'opacity-40 cursor-not-allowed' : ''
-                }`}
+                href="/dashboard/donor/donations/new"
+                className="flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-sm hover:-translate-y-0.5"
               >
                 <Plus className="h-4 w-4 stroke-[2.5]" />
                 <span>List Food Donation</span>
@@ -204,8 +232,11 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
                             <h4 className="font-heading font-bold text-foreground text-md">{donation.title}</h4>
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border capitalize ${getStatusColor(donation.status)}`}>
-                              {donation.status.replace('_', ' ')}
+                            <span
+                              className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border capitalize status-badge"
+                              style={getStatusBadgeStyle(donation.status)}
+                            >
+                              {donation.status.replace(/_/g, ' ')}
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-4 text-xs text-muted-foreground items-center">
@@ -230,15 +261,33 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
                               {delivery?.volunteer && (
                                 <p className="text-muted-foreground">Courier: <span className="text-primary font-semibold">{delivery.volunteer.full_name}</span></p>
                               )}
+                              {delivery && (delivery.status === 'assigned' || delivery.status === 'pickup_completed' || delivery.status === 'in_transit') && (
+                                <button
+                                  onClick={() => setExpandedDonationId(expandedDonationId === donation.id ? null : donation.id)}
+                                  className="mt-2 w-full flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors shadow-sm cursor-pointer"
+                                >
+                                  <Navigation className="h-3 w-3 rotate-45" />
+                                  <span>{expandedDonationId === donation.id ? 'Hide Tracking Map' : 'Track Delivery Location'}</span>
+                                </button>
+                              )}
+                              <button
+                                onClick={() => {
+                                  setReportedUser({ id: claim.ngo.id, name: claim.ngo.organization_name || claim.ngo.full_name })
+                                  setReportModalOpen(true)
+                                }}
+                                className="text-red-600 hover:text-red-800 font-semibold hover:underline mt-1 block"
+                              >
+                                Report this organization
+                              </button>
                             </div>
                           ) : null}
                         </div>
                       </div>
 
                       {/* Live Tracking Map */}
-                      {delivery && (delivery.status === 'assigned' || delivery.status === 'pickup_completed' || delivery.status === 'in_transit') && (
+                      {expandedDonationId === donation.id && delivery && (delivery.status === 'assigned' || delivery.status === 'pickup_completed' || delivery.status === 'in_transit') && (
                         <div className="w-full mt-2">
-                          <LiveTrackingMap 
+                          <DeliveryMap 
                             deliveryId={delivery.id}
                             pickupLat={donation.pickup_latitude ? Number(donation.pickup_latitude) : undefined}
                             pickupLng={donation.pickup_longitude ? Number(donation.pickup_longitude) : undefined}
@@ -303,6 +352,18 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
           </div>
         </div>
       </div>
+
+      {reportedUser && (
+        <ReportModal
+          isOpen={reportModalOpen}
+          onClose={() => {
+            setReportModalOpen(false)
+            setReportedUser(null)
+          }}
+          reportedUserId={reportedUser.id}
+          reportedUserName={reportedUser.name}
+        />
+      )}
     </div>
   )
 }

@@ -27,7 +27,7 @@ export default async function AdminDashboard() {
   // Fetch pending registrations
   const { data: pendingUsers } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id, role, full_name, organization_name, phone, address, verification_status, verification_documents, created_at, updated_at')
     .eq('verification_status', 'pending')
     .in('role', ['donor', 'ngo'])
     .order('created_at', { ascending: true })
@@ -36,10 +36,72 @@ export default async function AdminDashboard() {
   const { data: donations } = await supabase
     .from('donations')
     .select(`
-      *,
+      id,
+      donor_id,
+      title,
+      category,
+      quantity,
+      quantity_unit,
+      estimated_meals,
+      expiry_at,
+      pickup_location,
+      pickup_latitude,
+      pickup_longitude,
+      pickup_window_start,
+      pickup_window_end,
+      storage_instructions,
+      allergen_info,
+      images,
+      status,
+      priority_score,
+      created_at,
+      updated_at,
       profiles (
         organization_name,
         full_name
+      )
+    `)
+    .order('created_at', { ascending: false })
+
+  // Fetch all users with nested claims for directory and NGO stats
+  const { data: allUsers } = await supabase
+    .from('profiles')
+    .select(`
+      id,
+      role,
+      full_name,
+      organization_name,
+      phone,
+      address,
+      verification_status,
+      created_at,
+      claims (
+        id,
+        status
+      )
+    `)
+    .in('role', ['donor', 'ngo'])
+    .order('created_at', { ascending: false })
+
+  // Fetch reports queue
+  const { data: reports } = await supabase
+    .from('reports')
+    .select(`
+      id,
+      reason,
+      created_at,
+      reporter:profiles!reports_reporter_id_fkey (
+        id,
+        full_name,
+        organization_name,
+        role
+      ),
+      reported:profiles!reports_reported_user_id_fkey (
+        id,
+        full_name,
+        organization_name,
+        role,
+        verification_status
       )
     `)
     .order('created_at', { ascending: false })
@@ -51,6 +113,8 @@ export default async function AdminDashboard() {
         stats={stats || { active_users: 0, recovery_rate: 0, completion_rate: 0 }} 
         pendingUsers={pendingUsers || []} 
         donations={donations || []} 
+        allUsers={allUsers || []}
+        reports={reports || []}
       />
     </div>
   )

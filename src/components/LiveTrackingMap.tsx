@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { MapPin, Navigation, Loader2, WifiOff } from 'lucide-react'
+import { MapPin, Navigation, Loader2, WifiOff, ExternalLink } from 'lucide-react'
 
 interface LiveTrackingMapProps {
   deliveryId: string
@@ -33,6 +33,34 @@ export default function LiveTrackingMap({
 
   const [status, setStatus] = useState<'loading' | 'live' | 'offline'>('loading')
   const [lastUpdate, setLastUpdate] = useState<string | null>(null)
+  const [volunteerPos, setVolunteerPos] = useState<{ lat: number; lng: number } | null>(null)
+
+  // Generate Google Maps Link based on volunteer current location
+  const getGoogleMapsUrl = () => {
+    const startLat = volunteerPos?.lat
+    const startLng = volunteerPos?.lng
+
+    if (startLat && startLng) {
+      if (pickupLat && pickupLng && destLat && destLng) {
+        return `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${destLat},${destLng}&waypoints=${pickupLat},${pickupLng}&travelmode=driving`
+      } else if (destLat && destLng) {
+        return `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${destLat},${destLng}&travelmode=driving`
+      } else if (pickupLat && pickupLng) {
+        return `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${pickupLat},${pickupLng}&travelmode=driving`
+      }
+    }
+
+    if (pickupLat && pickupLng && destLat && destLng) {
+      return `https://www.google.com/maps/dir/?api=1&origin=${pickupLat},${pickupLng}&destination=${destLat},${destLng}&travelmode=driving`
+    } else if (destLat && destLng) {
+      return `https://www.google.com/maps/search/?api=1&query=${destLat},${destLng}`
+    } else if (pickupLat && pickupLng) {
+      return `https://www.google.com/maps/search/?api=1&query=${pickupLat},${pickupLng}`
+    }
+    return null
+  }
+
+  const googleMapsUrl = getGoogleMapsUrl();
 
   // Smooth animation between two coordinate pairs
   const animateMarker = (fromLat: number, fromLng: number, toLat: number, toLng: number) => {
@@ -60,13 +88,26 @@ export default function LiveTrackingMap({
 
   useEffect(() => {
     let isMounted = true
+    let destroyed = false
 
     const initMap = async () => {
-      if (!mapRef.current || mapInstanceRef.current) return
+      if (!mapRef.current) return
 
       // Dynamically import Leaflet (SSR-safe)
       const L = (await import('leaflet')).default
       await import('leaflet/dist/leaflet.css')
+
+      if (destroyed || !mapRef.current) return
+
+      // Clear any stale Leaflet DOM stamp from a previous StrictMode run
+      const container = mapRef.current as any
+      if (container._leaflet_id) {
+        if (mapInstanceRef.current) {
+          try { mapInstanceRef.current.remove() } catch (_) {/* ignore */}
+          mapInstanceRef.current = null
+        }
+        delete container._leaflet_id
+      }
 
       // Default center: use pickup or fallback to India
       const centerLat = pickupLat ?? 20.5937
@@ -161,10 +202,11 @@ export default function LiveTrackingMap({
         .eq('delivery_id', deliveryId)
         .single()
 
-      if (initialLoc && isMounted) {
+      if (initialLoc && isMounted && !destroyed) {
         const { latitude: lat, longitude: lng, updated_at } = initialLoc
         volunteerMarkerRef.current?.setLatLng([lat, lng])
         currentCoordsRef.current = { lat, lng }
+        setVolunteerPos({ lat, lng })
         map.panTo([lat, lng])
         setLastUpdate(new Date(updated_at).toLocaleTimeString())
         setStatus('live')
@@ -184,11 +226,12 @@ export default function LiveTrackingMap({
             filter: `delivery_id=eq.${deliveryId}`,
           },
           (payload: any) => {
-            if (!isMounted) return
+            if (!isMounted || destroyed) return
             const { latitude: toLat, longitude: toLng, updated_at } = payload.new
             const from = currentCoordsRef.current ?? { lat: toLat, lng: toLng }
             animateMarker(from.lat, from.lng, toLat, toLng)
             currentCoordsRef.current = { lat: toLat, lng: toLng }
+            setVolunteerPos({ lat: toLat, lng: toLng })
             setLastUpdate(new Date(updated_at).toLocaleTimeString())
             setStatus('live')
           }
@@ -204,11 +247,15 @@ export default function LiveTrackingMap({
 
     return () => {
       isMounted = false
+      destroyed = true
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
       cleanup.then((fn) => fn?.())
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove()
+        try { mapInstanceRef.current.remove() } catch (_) {/* ignore */}
         mapInstanceRef.current = null
+      }
+      if (mapRef.current) {
+        delete (mapRef.current as any)._leaflet_id
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,6 +270,21 @@ export default function LiveTrackingMap({
           <span className="text-sm font-semibold text-foreground">Live Tracking</span>
         </div>
         <div className="flex items-center gap-2">
+          {googleMapsUrl && (
+            <a
+              href={googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open route in Google Maps"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all hover:scale-105 active:scale-95"
+              style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-card)', color: 'var(--text-secondary)' }}
+              onMouseOver={e => { e.currentTarget.style.background = '#E8F5E9'; e.currentTarget.style.color = '#1a73e8' }}
+              onMouseOut={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.color = 'var(--text-secondary)' }}
+            >
+              <ExternalLink className="h-3 w-3" />
+              Google Maps
+            </a>
+          )}
           {status === 'loading' && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" /> Connecting…

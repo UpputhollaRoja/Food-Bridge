@@ -215,7 +215,7 @@ BEGIN
   -- Check if NGO is verified
   SELECT verification_status INTO v_verification FROM public.profiles WHERE id = p_ngo_id;
   IF v_verification IS NULL OR v_verification != 'verified' THEN
-    RAISE EXCEPTION 'NGO must be verified to claim donations';
+    RAISE EXCEPTION 'Your organization must be verified by an admin before you can claim donations.';
   END IF;
 
   -- Select status for update (lock the row)

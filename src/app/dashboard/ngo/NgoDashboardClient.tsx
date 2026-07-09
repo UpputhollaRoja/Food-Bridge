@@ -12,17 +12,19 @@ import {
   CheckCircle, 
   User, 
   Phone, 
-  Globe, 
+  Globe,
   Sparkles, 
   LogOut, 
   ShieldAlert, 
   ChevronRight,
   TrendingUp,
-  Inbox
+  Inbox,
+  Navigation
 } from 'lucide-react'
 import EmptyState from '@/components/EmptyState'
 import VerifiedBadge from '@/components/VerifiedBadge'
 import ExpiryBadge from '@/components/ExpiryBadge'
+import DeliveryMap from '@/components/DeliveryMap'
 
 interface NgoDashboardClientProps {
   profile: any
@@ -34,6 +36,7 @@ export default function NgoDashboardClient({ profile, stats, initialClaims }: Ng
   const [claims, setClaims] = React.useState(initialClaims)
   const [report, setReport] = React.useState({ headline: 'Analyzing NGO Impact...', summary: 'Generating environmental summary...' })
   const [confirmingId, setConfirmingId] = React.useState<string | null>(null)
+  const [expandedClaimId, setExpandedClaimId] = React.useState<string | null>(null)
 
   // Fetch AI Impact Narrative
   React.useEffect(() => {
@@ -99,11 +102,18 @@ export default function NgoDashboardClient({ profile, stats, initialClaims }: Ng
 
       {/* Verification Warning */}
       {profile.verification_status !== 'verified' && (
-        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 p-5 text-sm text-amber-800 dark:text-amber-400 shadow-sm">
+        <div
+          className="flex items-start gap-3 rounded-2xl border p-5 text-sm shadow-sm"
+          style={{
+            borderColor: 'var(--pending-text)',
+            background: 'var(--pending-bg)',
+            color: 'var(--pending-text)',
+          }}
+        >
           <ShieldAlert className="h-5 w-5 shrink-0 stroke-[2.5] mt-0.5" />
           <div>
             <h4 className="font-bold">Account Verification Pending</h4>
-            <p className="text-xs text-amber-700 dark:text-amber-500 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'var(--pending-text)', opacity: 0.85 }}>
               Your NGO account is currently pending verification. You can browse listings but will not be able to claim them until an admin verifies your status.
             </p>
           </div>
@@ -208,9 +218,34 @@ export default function NgoDashboardClient({ profile, stats, initialClaims }: Ng
                           <Phone className="h-3.5 w-3.5 text-primary" />
                           <span className="text-muted-foreground">Phone: <a href={`tel:${volunteer.phone}`} className="text-primary font-semibold hover:underline">{volunteer.phone}</a></span>
                         </div>
+                        {delivery && (delivery.status === 'assigned' || delivery.status === 'pickup_completed' || delivery.status === 'in_transit') && (
+                          <button
+                            onClick={() => setExpandedClaimId(expandedClaimId === claim.id ? null : claim.id)}
+                            className="mt-2 w-full flex items-center justify-center gap-1 py-1.5 rounded-xl text-[10px] font-bold border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors shadow-sm cursor-pointer"
+                          >
+                            <Navigation className="h-3 w-3 rotate-45" />
+                            <span>{expandedClaimId === claim.id ? 'Hide Tracking Map' : 'Track Delivery Location'}</span>
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
+
+                  {/* Live Tracking Map */}
+                  {expandedClaimId === claim.id && delivery && (delivery.status === 'assigned' || delivery.status === 'pickup_completed' || delivery.status === 'in_transit') && (
+                    <div className="mt-3 w-full">
+                      <DeliveryMap 
+                        deliveryId={delivery.id}
+                        pickupLat={donation.pickup_latitude ? Number(donation.pickup_latitude) : undefined}
+                        pickupLng={donation.pickup_longitude ? Number(donation.pickup_longitude) : undefined}
+                        pickupLabel={donation.pickup_location}
+                        destLat={profile?.latitude ? Number(profile.latitude) : undefined}
+                        destLng={profile?.longitude ? Number(profile.longitude) : undefined}
+                        destLabel={profile?.address}
+                        volunteerName={volunteer?.full_name}
+                      />
+                    </div>
+                  )}
 
                   {/* Actions */}
                   {delivery && delivery.status === 'delivered' && (

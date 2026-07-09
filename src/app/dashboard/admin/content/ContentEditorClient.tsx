@@ -35,9 +35,9 @@ export default function ContentEditorClient({ pages }: ContentEditorClientProps)
       {/* Header */}
       <header className="flex items-center justify-between border-b border-slate-200/20 dark:border-slate-700/30 pb-6">
         <div>
-          <span className="text-[10px] font-bold tracking-widest text-purple-600 dark:text-[#ff5a00] uppercase">Admin</span>
+          <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: 'var(--brand-green)' }}>Admin</span>
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1 flex items-center gap-2">
-            <Globe className="h-7 w-7 text-purple-600 dark:text-[#ff5a00]" />
+            <Globe className="h-7 w-7" style={{ color: 'var(--brand-green)' }} />
             Content Editor
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -75,11 +75,10 @@ export default function ContentEditorClient({ pages }: ContentEditorClientProps)
             <button
               key={page}
               onClick={() => setActivePage(page)}
-              className={`w-full flex items-center gap-2 px-4 py-3 rounded-xl text-left text-xs font-semibold transition-all duration-200 ${
-                activePage === page
-                  ? 'bg-purple-600 dark:bg-[#ff5a00] text-white shadow-md shadow-purple-500/20 dark:shadow-[#ff5a00]/20'
-                  : 'glass-card text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-              }`}
+              className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-left text-xs font-semibold transition-all duration-200"
+              style={activePage === page
+                ? { background: 'var(--brand-green)', color: '#fff', boxShadow: '0 2px 8px rgba(31,93,61,0.25)' }
+                : {}}
             >
               <FileText className="h-3.5 w-3.5 shrink-0" />
               {PAGE_LABELS[page] ?? page}
@@ -97,7 +96,10 @@ export default function ContentEditorClient({ pages }: ContentEditorClientProps)
               <button
                 type="submit"
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 dark:bg-[#ff5a00] dark:hover:bg-[#ff7900] transition-all disabled:opacity-50 shadow-md shadow-purple-500/15 dark:shadow-[#ff5a00]/15"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all disabled:opacity-50 shadow-md"
+                style={{ background: 'var(--brand-green)' }}
+                onMouseOver={e => !isPending && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
               >
                 <Save className="h-3.5 w-3.5" />
                 {isPending ? 'Saving…' : 'Save Changes'}
@@ -120,7 +122,7 @@ export default function ContentEditorClient({ pages }: ContentEditorClientProps)
                     name={`${activePage}__${row.key}`}
                     defaultValue={row.value}
                     rows={4}
-                    className="block w-full rounded-xl glass-input px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-y focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl glass-input px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-y transition-colors"
                   />
                 ) : (
                   <input
@@ -128,7 +130,7 @@ export default function ContentEditorClient({ pages }: ContentEditorClientProps)
                     name={`${activePage}__${row.key}`}
                     type="text"
                     defaultValue={row.value}
-                    className="block w-full rounded-xl glass-input px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl glass-input px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-colors"
                   />
                 )}
               </div>
@@ -141,7 +143,10 @@ export default function ContentEditorClient({ pages }: ContentEditorClientProps)
               <button
                 type="submit"
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 dark:bg-[#ff5a00] dark:hover:bg-[#ff7900] transition-all disabled:opacity-50 shadow-lg shadow-purple-500/15 dark:shadow-[#ff5a00]/15"
+                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50 shadow-lg"
+                style={{ background: 'var(--brand-green)' }}
+                onMouseOver={e => !isPending && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
               >
                 <Save className="h-4 w-4" />
                 {isPending ? 'Saving…' : 'Save Changes'}

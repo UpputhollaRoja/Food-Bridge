@@ -1,12 +1,18 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 interface ExpiryBadgeProps {
   expiryAt: string
 }
 
 export default function ExpiryBadge({ expiryAt }: ExpiryBadgeProps) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const expiryDate = new Date(expiryAt)
-  const now = new Date()
+  const now = mounted ? new Date() : expiryDate
   const diffMs = expiryDate.getTime() - now.getTime()
   const diffHours = diffMs / (1000 * 60 * 60)
 
@@ -55,10 +61,11 @@ export default function ExpiryBadge({ expiryAt }: ExpiryBadgeProps) {
           strokeWidth="1.5"
           fill="transparent"
           strokeDasharray={circ}
-          style={{
+          strokeDashoffset={circ}
+          style={mounted ? {
             ['--target-offset' as any]: targetOffset,
             animation: `fillRing ${durationMs}ms ease-out forwards`,
-          }}
+          } : undefined}
         />
       </svg>
       <span>{label}</span>
