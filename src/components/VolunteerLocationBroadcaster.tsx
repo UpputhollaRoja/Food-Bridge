@@ -42,13 +42,41 @@ export default function VolunteerLocationBroadcaster({
 
     cleanupWatch()
 
+    // 1. Get initial position immediately to prevent waiting for watchPosition to trigger
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords
+        try {
+          const { error: insertError } = await supabase.from('delivery_locations').insert({
+            delivery_id: deliveryId,
+            latitude,
+            longitude,
+            recorded_at: new Date().toISOString(),
+          })
+          if (!insertError) {
+            lastInsertRef.current = Date.now()
+          }
+        } catch (err) {
+          console.error('Initial location insert error:', err)
+        }
+      },
+      (err) => {
+        console.warn('Initial getCurrentPosition failed/timed out, starting watch anyway:', err)
+      },
+      {
+        enableHighAccuracy: false, // fast lookup
+        timeout: 6000,
+      }
+    )
+
+    // 2. Start watching for updates with a faster, snappier 5-second throttle
     watchIdRef.current = navigator.geolocation.watchPosition(
       async (position) => {
         const { latitude, longitude } = position.coords
         const now = Date.now()
 
-        // Throttling: only insert every 12 seconds to prevent excessive database writes
-        if (now - lastInsertRef.current >= 12000) {
+        // Throttling: only insert every 5 seconds to prevent excessive database writes
+        if (now - lastInsertRef.current >= 5000) {
           try {
             const { error: insertError } = await supabase.from('delivery_locations').insert({
               delivery_id: deliveryId,
@@ -68,8 +96,6 @@ export default function VolunteerLocationBroadcaster({
         }
       },
       (err) => {
-        // GeolocationPositionError has non-enumerable props so logging `err` directly shows {}.
-        // Log a readable message instead.
         const codeMap: Record<number, string> = {
           1: 'PERMISSION_DENIED',
           2: 'POSITION_UNAVAILABLE',
