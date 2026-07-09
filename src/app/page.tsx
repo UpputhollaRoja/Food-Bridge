@@ -41,26 +41,26 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-between overflow-x-hidden">
+    <div className="min-h-screen flex flex-col justify-between overflow-x-hidden bg-[#0A0F0D] text-[#F5F5F0]">
       {/* Navbar */}
-      <nav className="max-w-7xl w-full mx-auto px-6 py-5 flex items-center justify-between border-b border-border backdrop-blur-md sticky top-0 z-40 bg-background/80">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm animate-float">
-            <Heart className="h-5 w-5 text-primary-foreground stroke-[2.5]" />
+      <nav className="max-w-7xl w-full mx-auto px-6 py-5 flex items-center justify-between border-b border-[rgba(255,255,255,0.06)] backdrop-blur-md sticky top-0 z-40 bg-[#0A0F0D]/80">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-[9px] bg-gradient-to-br from-[#10B981] to-[#059669] shadow-[0_0_15px_rgba(16,185,129,0.3)] animate-float">
+            <Heart className="h-5 w-5 text-[#06110D] stroke-[2.5]" />
           </div>
-          <span className="font-heading font-black text-foreground text-lg tracking-tight">Food Bridge</span>
+          <span className="font-heading font-black text-[#F5F5F0] text-lg tracking-tight">Food Bridge</span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <Link
             href="/login"
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            className="text-[14px] font-medium text-[#9CA3AF] hover:text-[#F5F5F0] transition-colors"
           >
             Log In
           </Link>
           <Link
             href="/signup"
-            className="inline-flex items-center justify-center py-2 px-4 rounded-xl text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-sm"
+            className="inline-flex items-center justify-center py-2.5 px-4 rounded-[9px] text-[14px] font-semibold bg-gradient-to-r from-[#10B981] to-[#059669] text-[#06110D] hover:from-[#34D399] hover:to-[#059669] hover:shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]"
           >
             Get Started
           </Link>
@@ -68,29 +68,35 @@ export default async function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-16 md:py-24 space-y-20">
-        <div className="text-center max-w-3xl mx-auto space-y-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary/10 px-3.5 py-1 text-xs font-bold text-secondary border border-secondary/20">
-            <Sparkles className="h-3 w-3" />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-20 md:py-32 space-y-24 relative">
+        {/* Radial Emerald Glow */}
+        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(16,185,129,0.18)_0%,transparent_70%)] pointer-events-none -z-10" />
+
+        <div className="text-center max-w-3xl mx-auto space-y-8 relative">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(16,185,129,0.08)] px-3.5 py-1.5 text-[13px] font-medium text-[#6EE7B7] border border-[rgba(16,185,129,0.35)]">
+            <Sparkles className="h-3.5 w-3.5 text-[#6EE7B7]" />
             {content.badge}
           </span>
-          <h1 className="font-heading text-4xl md:text-6xl font-black text-foreground tracking-tight leading-tight">
-            {content.headline} <span className="gradient-text-pink-purple">{content.headline_accent}</span>
+          
+          <h1 className="font-heading text-4xl md:text-[68px] font-black text-[#F5F5F0] tracking-[-2px] leading-[1.08] max-w-4xl mx-auto">
+            {content.headline} <span className="gradient-text-emerald-gold">{content.headline_accent}</span>
           </h1>
-          <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto leading-relaxed">
+
+          <p className="text-[#9CA3AF] text-[17px] max-w-[620px] mx-auto leading-[1.7] font-normal">
             {content.description}
           </p>
+
           <div className="pt-4 flex justify-center gap-4">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-md hover:-translate-y-0.5 animate-glow-purple-pink"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-[9px] text-[14px] font-bold bg-gradient-to-r from-[#10B981] to-[#059669] text-[#06110D] hover:from-[#34D399] hover:to-[#059669] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all shadow-[0_0_24px_rgba(16,185,129,0.25)]"
             >
               <span>{content.cta_primary}</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-input bg-card text-sm font-semibold text-foreground hover:bg-muted transition-all duration-300"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-[9px] border border-[rgba(255,255,255,0.14)] bg-transparent text-[14px] font-semibold text-[#F5F5F0] hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.25)] transition-all duration-300"
             >
               <span>{content.cta_secondary}</span>
             </Link>
@@ -98,58 +104,63 @@ export default async function LandingPage() {
         </div>
 
         {/* Stats Bar */}
-        <div className="glass-card rounded-2xl p-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-border">
-          <div className="text-center md:text-left md:px-6 flex flex-col justify-center items-center">
-            <span className="font-heading text-4xl font-black text-foreground">{stats.donations}</span>
-            <span className="text-xs font-bold text-muted-foreground uppercase mt-2">Donations Made</span>
+        <div className="border-t border-[rgba(255,255,255,0.06)] pt-16 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center flex flex-col justify-center items-center space-y-1">
+            <span className="font-heading text-[32px] font-extrabold bg-gradient-to-r from-[#10B981] to-[#059669] bg-clip-text text-transparent inline-block leading-none">
+              {stats.donations}
+            </span>
+            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Donations Made</span>
           </div>
-          <div className="text-center md:text-left md:px-6 pt-8 md:pt-0 flex flex-col justify-center items-center">
-            <span className="font-heading text-4xl font-black text-foreground">{stats.meals}</span>
-            <span className="text-xs font-bold text-muted-foreground uppercase mt-2">Meals Delivered</span>
+          <div className="text-center flex flex-col justify-center items-center space-y-1">
+            <span className="font-heading text-[32px] font-extrabold bg-gradient-to-r from-[#10B981] to-[#059669] bg-clip-text text-transparent inline-block leading-none">
+              {stats.meals}
+            </span>
+            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Meals Delivered</span>
           </div>
-          <div className="text-center md:text-left md:px-6 pt-8 md:pt-0 flex flex-col justify-center items-center">
-            <span className="font-heading text-4xl font-black text-foreground">{stats.kgSaved}</span>
-            <span className="text-xs font-bold text-muted-foreground uppercase mt-2">Kg Food Saved</span>
+          <div className="text-center flex flex-col justify-center items-center space-y-1">
+            <span className="font-heading text-[32px] font-extrabold bg-gradient-to-r from-[#10B981] to-[#059669] bg-clip-text text-transparent inline-block leading-none">
+              {stats.kgSaved}
+            </span>
+            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Kg Food Saved</span>
           </div>
         </div>
-        <p className="text-center text-[10px] text-muted-foreground -mt-16">* Placeholder data for demonstration</p>
+        
+        <p className="text-center text-[10px] text-[#6B7280] -mt-8">* Placeholder data for demonstration</p>
 
         {/* How It Works (3 Steps) */}
-        <div className="pt-12">
-          <h2 className="font-heading text-3xl font-black text-center text-foreground mb-12">How It Works</h2>
+        <div className="pt-16">
+          <h2 className="font-heading text-3xl font-black text-center text-[#F5F5F0] mb-12">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Step connecting line for desktop */}
-            <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-border -z-10" />
             
             {/* Step 1 */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary animate-float">
-                <Building2 className="h-10 w-10" />
+            <div className="bg-[#0F1512] border border-[rgba(255,255,255,0.06)] rounded-2xl p-8 flex flex-col items-center text-center space-y-4 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:border-[rgba(255,255,255,0.14)] transition-all duration-300">
+              <div className="h-16 w-16 rounded-[9px] bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] text-[#06110D] animate-float">
+                <Building2 className="h-8 w-8" />
               </div>
-              <h3 className="font-heading font-bold text-xl text-foreground">1. Donor Posts</h3>
-              <p className="text-sm text-muted-foreground max-w-xs">
+              <h3 className="font-heading font-bold text-xl text-[#F5F5F0]">1. Donor Posts</h3>
+              <p className="text-[14px] text-[#9CA3AF] leading-relaxed">
                 Supermarkets and restaurants instantly list surplus food items. AI prioritizes listings based on shelf-life.
               </p>
             </div>
  
             {/* Step 2 */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-secondary animate-float" style={{ animationDelay: '0.4s' }}>
-                <Heart className="h-10 w-10" />
+            <div className="bg-[#0F1512] border border-[rgba(255,255,255,0.06)] rounded-2xl p-8 flex flex-col items-center text-center space-y-4 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:border-[rgba(255,255,255,0.14)] transition-all duration-300">
+              <div className="h-16 w-16 rounded-[9px] bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] text-[#06110D] animate-float" style={{ animationDelay: '0.4s' }}>
+                <Heart className="h-8 w-8" />
               </div>
-              <h3 className="font-heading font-bold text-xl text-foreground">2. NGO Claims</h3>
-              <p className="text-sm text-muted-foreground max-w-xs">
+              <h3 className="font-heading font-bold text-xl text-[#F5F5F0]">2. NGO Claims</h3>
+              <p className="text-[14px] text-[#9CA3AF] leading-relaxed">
                 NGOs browse local listings sorted by AI priority and claim items atomically.
               </p>
             </div>
  
             {/* Step 3 */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary animate-float" style={{ animationDelay: '0.8s' }}>
-                <Navigation className="h-10 w-10" />
+            <div className="bg-[#0F1512] border border-[rgba(255,255,255,0.06)] rounded-2xl p-8 flex flex-col items-center text-center space-y-4 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:border-[rgba(255,255,255,0.14)] transition-all duration-300">
+              <div className="h-16 w-16 rounded-[9px] bg-gradient-to-br from-[#10B981] to-[#059669] flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] text-[#06110D] animate-float" style={{ animationDelay: '0.8s' }}>
+                <Navigation className="h-8 w-8" />
               </div>
-              <h3 className="font-heading font-bold text-xl text-foreground">3. Volunteer Delivers</h3>
-              <p className="text-sm text-muted-foreground max-w-xs">
+              <h3 className="font-heading font-bold text-xl text-[#F5F5F0]">3. Volunteer Delivers</h3>
+              <p className="text-[14px] text-[#9CA3AF] leading-relaxed">
                 Volunteers choose unassigned claims, accept delivery tasks, and coordinate handovers.
               </p>
             </div>
@@ -157,35 +168,35 @@ export default async function LandingPage() {
         </div>
 
         {/* Environmental impact highlight card */}
-        <div className="glass-card-accent rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 mt-16 animate-glow-purple-pink">
+        <div className="bg-[#0F1512] border border-[rgba(16,185,129,0.35)] rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 mt-16 hover:shadow-[0_0_36px_rgba(16,185,129,0.15)] hover:border-[rgba(16,185,129,0.5)] transition-all duration-300">
           <div className="space-y-3 max-w-lg">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1">
+            <span className="text-[10px] font-bold text-[#10B981] uppercase tracking-widest flex items-center gap-1">
               <Globe className="h-3.5 w-3.5 animate-spin" /> Environmental Balance Sheet
             </span>
-            <h3 className="font-heading text-2xl font-bold text-foreground">{content.impact_heading}</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <h3 className="font-heading text-2xl font-bold text-[#F5F5F0]">{content.impact_heading}</h3>
+            <p className="text-xs text-[#9CA3AF] leading-relaxed">
               {content.impact_body}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-6 md:w-80 shrink-0">
             <div className="text-center md:text-left">
-              <span className="font-heading text-2xl font-black text-foreground block">{content.impact_stat_1}</span>
-              <span className="text-[10px] text-muted-foreground block mt-1 uppercase font-bold">{content.impact_stat_1_label}</span>
+              <span className="font-heading text-2xl font-black text-[#F5F5F0] block">{content.impact_stat_1}</span>
+              <span className="text-[10px] text-[#6B7280] block mt-1 uppercase font-bold">{content.impact_stat_1_label}</span>
             </div>
             <div className="text-center md:text-left">
-              <span className="font-heading text-2xl font-black text-foreground block">{content.impact_stat_2}</span>
-              <span className="text-[10px] text-muted-foreground block mt-1 uppercase font-bold">{content.impact_stat_2_label}</span>
+              <span className="font-heading text-2xl font-black text-[#F5F5F0] block">{content.impact_stat_2}</span>
+              <span className="text-[10px] text-[#6B7280] block mt-1 uppercase font-bold">{content.impact_stat_2_label}</span>
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 text-center text-muted-foreground text-xs mt-12">
+      <footer className="border-t border-[rgba(255,255,255,0.06)] py-8 text-center text-[#6B7280] text-xs mt-12 bg-[#0A0F0D]">
         <div className="flex items-center justify-center gap-6 mb-3">
-          <Link href="/about" className="hover:text-primary transition-colors font-medium">About</Link>
-          <Link href="/faq" className="hover:text-primary transition-colors font-medium">FAQ</Link>
-          <Link href="/signup" className="hover:text-primary transition-colors font-medium">Get Started</Link>
+          <Link href="/about" className="hover:text-[#F5F5F0] transition-colors font-medium">About</Link>
+          <Link href="/faq" className="hover:text-[#F5F5F0] transition-colors font-medium">FAQ</Link>
+          <Link href="/signup" className="hover:text-[#F5F5F0] transition-colors font-medium">Get Started</Link>
         </div>
         <p>© {new Date().getFullYear()} Food Bridge. Dedicated to Zero Waste.</p>
       </footer>
