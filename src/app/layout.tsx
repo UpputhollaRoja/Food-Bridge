@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Geist, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -47,6 +48,7 @@ export default function RootLayout({
         />
         {children}
         <ThemeToggle />
+        <Analytics />
       </body>
     </html>
   );
