@@ -38,13 +38,16 @@ function LoginFormContent() {
     <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-fuchsia-500 shadow-lg shadow-purple-500/20">
-            <Heart className="h-6 w-6 text-neutral-950 stroke-[2.5]" />
+          <div
+            className="flex h-12 w-12 items-center justify-center rounded-xl shadow-lg animate-float"
+            style={{ background: 'var(--brand-green)', boxShadow: '0 8px 20px -4px rgba(31, 93, 61, 0.35)' }}
+          >
+            <Heart className="h-6 w-6 stroke-[2.5]" style={{ color: '#fff' }} />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             {isForgotMode ? 'Recover Password' : 'Welcome Back'}
           </h2>
-          <p className="mt-2 text-sm text-purple-700 dark:text-purple-400 font-medium">
+          <p className="mt-2 text-sm font-medium" style={{ color: 'var(--brand-green)' }}>
             {isForgotMode 
               ? 'Request a recovery link to choose a new password' 
               : 'Log in to continue redistributing surplus food'}
@@ -53,7 +56,7 @@ function LoginFormContent() {
 
         <div className="relative rounded-2xl glass-card p-8 shadow-2xl">
           {urlMessage && (
-            <div className="mb-6 flex items-center gap-2 rounded-lg border border-purple-500/20 bg-purple-500/10 p-3 text-sm text-purple-600">
+            <div className="mb-6 flex items-center gap-2 rounded-lg border p-3 text-sm" style={{ borderColor: 'var(--success-text)', background: 'var(--success-bg)', color: 'var(--success-text)' }}>
               <Sparkles className="h-4 w-4 shrink-0" />
               <span>{urlMessage}</span>
             </div>
@@ -90,7 +93,7 @@ function LoginFormContent() {
                     type="email"
                     required
                     placeholder="name@organization.com"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm transition-colors"
                   />
                 </div>
               </div>
@@ -104,7 +107,7 @@ function LoginFormContent() {
                   <button
                     type="button"
                     onClick={() => setIsForgotMode(true)}
-                    className="text-xs font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors focus:outline-none"
+                    className="text-xs font-semibold transition-colors focus:outline-none hover:opacity-80 text-primary"
                   >
                     Forgot Password?
                   </button>
@@ -119,7 +122,7 @@ function LoginFormContent() {
                     type="password"
                     required
                     placeholder="••••••••"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm transition-colors"
                   />
                 </div>
               </div>
@@ -128,7 +131,10 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isLoginPending}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 dark:bg-[#ff5a00] dark:hover:bg-[#ff7900] focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg shadow-purple-500/20 dark:shadow-[#ff5a00]/20"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg"
+                style={{ background: 'var(--brand-green)', boxShadow: '0 4px 14px -2px rgba(31,93,61,0.4)' }}
+                onMouseOver={e => !isLoginPending && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
               >
                 {isLoginPending ? 'Logging in...' : 'Log In'}
               </button>
@@ -138,7 +144,7 @@ function LoginFormContent() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-slate-200 dark:border-slate-800" />
                 </div>
-                <div className="relative bg-white/90 dark:bg-[#060b08]/90 px-3 text-[10px] uppercase font-bold tracking-widest text-slate-500 dark:text-slate-400 rounded-full">
+                <div className="relative px-3 text-[10px] uppercase font-bold tracking-widest rounded-full" style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)' }}>
                   Or continue with
                 </div>
               </div>
@@ -146,7 +152,10 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 focus:outline-none"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 focus:outline-none"
+                style={{ border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', color: 'var(--text-primary)' }}
+                onMouseOver={e => (e.currentTarget.style.background = 'var(--success-bg)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'var(--bg-card)')}
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -173,14 +182,14 @@ function LoginFormContent() {
             /* Forgot Password Form */
             <form action={forgotAction} className="space-y-6">
               {forgotState?.error && (
-                <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+                <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500 dark:text-red-400">
                   <ShieldAlert className="h-4 w-4 shrink-0" />
                   <span>{forgotState.error}</span>
                 </div>
               )}
 
               {forgotState?.success && (
-                <div className="flex items-center gap-2 rounded-lg border border-purple-500/20 bg-purple-500/10 p-3 text-sm text-purple-600">
+                <div className="flex items-center gap-2 rounded-lg border p-3 text-sm" style={{ borderColor: 'var(--success-text)', background: 'var(--success-bg)', color: 'var(--success-text)' }}>
                   <Sparkles className="h-4 w-4 shrink-0" />
                   <span>Recovery link sent! Check your inbox for instructions.</span>
                 </div>
@@ -201,7 +210,7 @@ function LoginFormContent() {
                     type="email"
                     required
                     placeholder="name@organization.com"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm transition-colors"
                   />
                 </div>
               </div>
@@ -210,7 +219,10 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isForgotPending}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 disabled:opacity-50 shadow-lg shadow-purple-500/20"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg"
+                style={{ background: 'var(--brand-green)', boxShadow: '0 4px 14px -2px rgba(31,93,61,0.4)' }}
+                onMouseOver={e => !isForgotPending && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
               >
                 {isForgotPending ? (
                   'Sending...'
@@ -226,7 +238,8 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={() => setIsForgotMode(false)}
-                className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 focus:outline-none"
+                className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-colors py-2 focus:outline-none"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 <span>Back to Log In</span>
@@ -235,10 +248,11 @@ function LoginFormContent() {
           )}
 
           <div className="mt-6 text-center text-xs border-t border-slate-200 dark:border-slate-800 pt-4">
-            <span className="text-slate-500 dark:text-slate-400">Don&apos;t have an account? </span>
+            <span style={{ color: 'var(--text-secondary)' }}>Don&apos;t have an account? </span>
             <Link
               href="/signup"
-              className="font-bold text-purple-600 hover:text-purple-500 transition-colors"
+              className="font-bold transition-colors"
+              style={{ color: 'var(--brand-green)' }}
             >
               Sign up
             </Link>
