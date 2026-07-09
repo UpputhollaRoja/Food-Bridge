@@ -69,20 +69,20 @@
 }
 
 :root {
-  --bg-page: #FFF0F2; /* Soft premium light red/pinkish background */
+  --bg-page: #F6F8F5; /* Soft light organic sage/cream background */
   --bg-card: #FFFFFF; /* Clean white cards for contrast */
-  --text-primary: #371D22; /* Deep warm burgundy-charcoal for premium typography */
-  --text-secondary: #7A5C61; /* Muted rose/slate for subtitles */
-  --brand-purple: #E11D48; /* Vibrant rose/crimson primary brand color */
-  --brand-purple-light: #FB7185; /* Soft rose hover color */
-  --success-bg: #E1F8EB;
-  --success-text: #0F5132;
-  --urgent-bg: #FFEBEB;
-  --urgent-text: #842029;
-  --pending-bg: #FFF3CD;
-  --pending-text: #664D03;
-  --border-purple: rgba(225, 29, 72, 0.2);
-  --border-hairline: #FCE2E6; /* Soft pinkish-red hairline borders */
+  --text-primary: #1A2E22; /* Deep dark forest green for premium readability */
+  --text-secondary: #4D5F54; /* Muted dark sage for subtitles */
+  --brand-purple: #10B981; /* Vibrant emerald green for primary actions */
+  --brand-purple-light: #34D399; /* Soft mint/emerald hover color */
+  --success-bg: #E6F7ED;
+  --success-text: #065F46;
+  --urgent-bg: #FEE2E2;
+  --urgent-text: #991B1B;
+  --pending-bg: #FEF3C7;
+  --pending-text: #92400E;
+  --border-purple: rgba(16, 185, 129, 0.2);
+  --border-hairline: #E2E8E4; /* Clean light sage borders */
 
   --brand-green: var(--brand-purple);
   --brand-green-hover: var(--brand-purple-light);
@@ -100,7 +100,7 @@
   --primary-foreground: #FFFFFF;
   --secondary: var(--text-secondary);
   --secondary-foreground: #FFFFFF;
-  --muted: #FFF0F2;
+  --muted: #F0F4F1;
   --muted-foreground: var(--text-secondary);
   --accent: var(--brand-purple);
   --accent-foreground: #FFFFFF;
@@ -133,8 +133,8 @@
   --bg-card: #1C2219;
   --text-primary: #F0F2EF;
   --text-secondary: #A3A89E;
-  --brand-purple: #8B5CF6;
-  --brand-purple-light: #A78BFA;
+  --brand-purple: #10B981;
+  --brand-purple-light: #34D399;
   --success-bg: #274E18;
   --success-text: #EAF3DE;
   --urgent-bg: #630C2C;
@@ -174,7 +174,7 @@
   --card-border: 1px solid var(--border-hairline);
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
   --card-accent-border: 1px solid var(--brand-purple);
-  --card-accent-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.25);
+  --card-accent-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.25);
   
   --input-bg: #11140F;
   --input-border: 1px solid var(--border-hairline);
@@ -249,12 +249,12 @@
 }
 .glass-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 20px -8px rgba(225, 29, 72, 0.15);
+  box-shadow: 0 12px 20px -8px rgba(16, 185, 129, 0.15);
   border-color: var(--brand-pink-light);
 }
 .glass-card-accent:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 24px -8px rgba(225, 29, 72, 0.3);
+  box-shadow: 0 12px 24px -8px rgba(16, 185, 129, 0.3);
   border-color: var(--brand-pink-light);
 }
 
@@ -276,14 +276,14 @@ button:not([disabled])[style*="var(--brand-green)"],
 a.btn[style*="var(--brand-green)"] {
   background: var(--brand-pink) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 4px 14px -2px rgba(225, 29, 72, 0.4) !important;
+  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.4) !important;
   transition: all 0.3s ease !important;
 }
 
 button:not([disabled])[style*="var(--brand-green)"]:hover, 
 a.btn[style*="var(--brand-green)"]:hover {
   background: var(--brand-pink-light) !important;
-  box-shadow: 0 0 12px 4px rgba(225, 29, 72, 0.4) !important;
+  box-shadow: 0 0 12px 4px rgba(16, 185, 129, 0.4) !important;
 }
 
 /* Button primary subtle glow on hover */
@@ -293,7 +293,7 @@ a.btn[style*="var(--brand-green)"]:hover {
 }
 .bg-primary:hover {
   background-color: var(--brand-pink-light) !important;
-  box-shadow: 0 0 12px 4px rgba(225, 29, 72, 0.4) !important;
+  box-shadow: 0 0 12px 4px rgba(16, 185, 129, 0.4) !important;
 }
 
 .gradient-text-pink-purple {
@@ -305,10 +305,10 @@ a.btn[style*="var(--brand-green)"]:hover {
 
 @keyframes glow-pink {
   0%, 100% {
-    box-shadow: 0 4px 14px -2px rgba(225, 29, 72, 0.4);
+    box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.4);
   }
   50% {
-    box-shadow: 0 4px 20px 4px rgba(225, 29, 72, 0.6);
+    box-shadow: 0 4px 20px 4px rgba(16, 185, 129, 0.6);
   }
 }
 
