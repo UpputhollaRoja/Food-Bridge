@@ -107,8 +107,10 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
       formData.set('public_key', keys.publicKey)
     }
     
-    // Proceed with the server action
-    formAction(formData)
+    // Proceed with the server action wrapped in a transition to allow Next.js redirects to work
+    React.startTransition(() => {
+      formAction(formData)
+    })
   }
 
   return (
