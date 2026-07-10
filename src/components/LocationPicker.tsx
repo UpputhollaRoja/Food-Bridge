@@ -304,7 +304,7 @@ export default function LocationPicker({
               ? 'Detecting your location…'
               : status === 'saving'
               ? 'Saving…'
-              : 'Use My Current Location'}
+              : 'Live Location'}
           </span>
         </button>
       )}
