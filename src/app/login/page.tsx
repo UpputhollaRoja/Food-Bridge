@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { login, requestPasswordReset } from '@/app/auth/actions'
 import { createClient } from '@/lib/supabase/client'
-import { Heart, ShieldAlert, Mail, Lock, ArrowLeft, Send, Sparkles } from 'lucide-react'
+import { Heart, ShieldAlert, Mail, Lock, ArrowLeft, Send, Sparkles, Eye, EyeOff } from 'lucide-react'
 
 const initialLoginState = {
   error: '',
@@ -18,6 +18,7 @@ const initialForgotState = {
 
 function LoginFormContent() {
   const [isForgotMode, setIsForgotMode] = React.useState(false)
+  const [showPassword, setShowPassword] = React.useState(false)
   const [loginState, loginAction, isLoginPending] = useActionState(login, initialLoginState)
   const [forgotState, forgotAction, isForgotPending] = useActionState(requestPasswordReset, initialForgotState)
   const searchParams = useSearchParams()
@@ -35,31 +36,31 @@ function LoginFormContent() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-fuchsia-500 shadow-lg shadow-purple-500/20">
-            <Heart className="h-6 w-6 text-neutral-950 stroke-[2.5]" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-on-primary shadow-lg shadow-primary/20">
+            <Heart className="h-6 w-6 stroke-[2.5]" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+          <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-on-background sm:text-4xl">
             {isForgotMode ? 'Recover Password' : 'Welcome Back'}
           </h2>
-          <p className="mt-2 text-sm text-purple-700 dark:text-purple-400 font-medium">
+          <p className="mt-2 text-sm text-primary font-medium">
             {isForgotMode 
               ? 'Request a recovery link to choose a new password' 
               : 'Log in to continue redistributing surplus food'}
           </p>
         </div>
 
-        <div className="relative rounded-2xl glass-card p-8 shadow-2xl">
+        <div className="relative rounded-3xl bg-surface-container-lowest p-8 shadow-2xl border-2 border-outline-variant/30">
           {urlMessage && (
-            <div className="mb-6 flex items-center gap-2 rounded-lg border border-purple-500/20 bg-purple-500/10 p-3 text-sm text-purple-600">
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 p-3 text-sm text-primary">
               <Sparkles className="h-4 w-4 shrink-0" />
               <span>{urlMessage}</span>
             </div>
           )}
           {urlError && (
-            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-error/20 bg-error/10 p-3 text-sm text-error">
               <ShieldAlert className="h-4 w-4 shrink-0" />
               <span>{urlError}</span>
             </div>
@@ -69,7 +70,7 @@ function LoginFormContent() {
             /* Login Form */
             <form action={loginAction} className="space-y-6">
               {loginState?.error && (
-                <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+                <div className="flex items-center gap-2 rounded-lg border border-error/20 bg-error/10 p-3 text-sm text-error">
                   <ShieldAlert className="h-4 w-4 shrink-0" />
                   <span>{loginState.error}</span>
                 </div>
@@ -77,11 +78,11 @@ function LoginFormContent() {
 
               {/* Email Address */}
               <div className="space-y-1.5">
-                <label htmlFor="email" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                <label htmlFor="email" className="text-sm font-semibold text-on-surface">
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 dark:text-slate-400">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
                     <Mail className="h-4 w-4" />
                   </div>
                   <input
@@ -90,7 +91,7 @@ function LoginFormContent() {
                     type="email"
                     required
                     placeholder="name@organization.com"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
@@ -98,29 +99,36 @@ function LoginFormContent() {
               {/* Password */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                  <label htmlFor="password" className="text-sm font-semibold text-on-surface">
                     Password
                   </label>
                   <button
                     type="button"
                     onClick={() => setIsForgotMode(true)}
-                    className="text-xs font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors focus:outline-none"
+                    className="text-xs font-semibold text-primary hover:text-surface-tint transition-colors focus:outline-none"
                   >
                     Forgot Password?
                   </button>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 dark:text-slate-400">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
                     <Lock className="h-4 w-4" />
                   </div>
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     placeholder="••••••••"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-10 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
               </div>
 
@@ -128,7 +136,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isLoginPending}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 dark:bg-[#ff5a00] dark:hover:bg-[#ff7900] focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg shadow-purple-500/20 dark:shadow-[#ff5a00]/20"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 disabled:opacity-50 shadow-lg shadow-primary/20"
               >
                 {isLoginPending ? 'Logging in...' : 'Log In'}
               </button>
@@ -136,9 +144,9 @@ function LoginFormContent() {
               {/* Google Login Option */}
               <div className="relative my-4 flex items-center justify-center">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                  <div className="w-full border-t border-outline-variant" />
                 </div>
-                <div className="relative bg-white/90 dark:bg-[#060b08]/90 px-3 text-[10px] uppercase font-bold tracking-widest text-slate-500 dark:text-slate-400 rounded-full">
+                <div className="relative bg-surface-container-lowest px-3 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant rounded-full">
                   Or continue with
                 </div>
               </div>
@@ -146,7 +154,7 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 bg-white/50 dark:bg-white/5 hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 focus:outline-none"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-outline-variant rounded-xl text-sm font-semibold text-on-surface bg-surface hover:bg-surface-container-low transition-all duration-300 focus:outline-none"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -173,14 +181,14 @@ function LoginFormContent() {
             /* Forgot Password Form */
             <form action={forgotAction} className="space-y-6">
               {forgotState?.error && (
-                <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+                <div className="flex items-center gap-2 rounded-lg border border-error/20 bg-error/10 p-3 text-sm text-error">
                   <ShieldAlert className="h-4 w-4 shrink-0" />
                   <span>{forgotState.error}</span>
                 </div>
               )}
 
               {forgotState?.success && (
-                <div className="flex items-center gap-2 rounded-lg border border-purple-500/20 bg-purple-500/10 p-3 text-sm text-purple-600">
+                <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 p-3 text-sm text-primary">
                   <Sparkles className="h-4 w-4 shrink-0" />
                   <span>Recovery link sent! Check your inbox for instructions.</span>
                 </div>
@@ -188,11 +196,11 @@ function LoginFormContent() {
 
               {/* Email Address */}
               <div className="space-y-1.5">
-                <label htmlFor="forgot-email" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                <label htmlFor="forgot-email" className="text-sm font-semibold text-on-surface">
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 dark:text-slate-400">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
                     <Mail className="h-4 w-4" />
                   </div>
                   <input
@@ -201,7 +209,7 @@ function LoginFormContent() {
                     type="email"
                     required
                     placeholder="name@organization.com"
-                    className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-sm focus:ring-1 focus:ring-purple-500 dark:focus:ring-[#ff5a00] transition-colors"
+                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
@@ -210,7 +218,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isForgotPending}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 disabled:opacity-50 shadow-lg shadow-purple-500/20"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 disabled:opacity-50 shadow-lg shadow-primary/20"
               >
                 {isForgotPending ? (
                   'Sending...'
@@ -226,7 +234,7 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={() => setIsForgotMode(false)}
-                className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 focus:outline-none"
+                className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors py-2 focus:outline-none"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 <span>Back to Log In</span>
@@ -234,11 +242,11 @@ function LoginFormContent() {
             </form>
           )}
 
-          <div className="mt-6 text-center text-xs border-t border-slate-200 dark:border-slate-800 pt-4">
-            <span className="text-slate-500 dark:text-slate-400">Don&apos;t have an account? </span>
+          <div className="mt-6 text-center text-xs border-t border-outline-variant pt-4">
+            <span className="text-on-surface-variant">Don&apos;t have an account? </span>
             <Link
               href="/signup"
-              className="font-bold text-purple-600 hover:text-purple-500 transition-colors"
+              className="font-bold text-primary hover:text-surface-tint transition-colors"
             >
               Sign up
             </Link>
@@ -251,7 +259,7 @@ function LoginFormContent() {
 
 export default function LoginPage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background text-on-background">Loading...</div>}>
       <LoginFormContent />
     </React.Suspense>
   )

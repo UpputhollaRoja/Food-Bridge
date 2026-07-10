@@ -4,7 +4,7 @@ import React, { useActionState } from 'react'
 import Link from 'next/link'
 import { signup } from '@/app/auth/actions'
 import { createClient } from '@/lib/supabase/client'
-import { Heart, Building2, ShieldAlert, Sparkles, User, Mail, Lock } from 'lucide-react'
+import { Heart, Building2, ShieldAlert, Sparkles, User, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 
 function getErrorMessage(err: any): string {
   if (!err) return ''
@@ -37,6 +37,7 @@ const initialState = {
 export default function SignupPage() {
   const [state, formAction, isPending] = useActionState(signup, initialState)
   const [selectedRole, setSelectedRole] = React.useState('donor')
+  const [showPassword, setShowPassword] = React.useState(false)
 
   const handleGoogleSignup = async () => {
     const supabase = createClient()
@@ -48,45 +49,32 @@ export default function SignupPage() {
     })
   }
 
-  const roleButtonStyle = (role: string) =>
-    selectedRole === role
-      ? {
-          border: '2px solid var(--brand-green)',
-          background: 'var(--success-bg)',
-          color: 'var(--text-primary)',
-          boxShadow: '0 0 15px rgba(31,93,61,0.12)',
-        }
-      : {
-          border: '1px solid var(--border-hairline)',
-          background: 'var(--bg-card)',
-          color: 'var(--text-secondary)',
-        }
+  const roleButtonStyle = (role: string) => {
+    if (selectedRole === role) {
+      return 'border-2 border-primary bg-primary/10 text-primary shadow-[0_0_15px_rgba(0,88,190,0.12)]'
+    }
+    return 'border border-outline-variant bg-surface text-on-surface-variant hover:bg-surface-container-low'
+  }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-lg space-y-8">
         <div className="flex flex-col items-center text-center">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-xl shadow-lg animate-float"
-            style={{ background: 'var(--brand-green)', boxShadow: '0 8px 20px -4px rgba(31, 93, 61, 0.35)' }}
-          >
-            <Heart className="h-6 w-6 stroke-[2.5]" style={{ color: '#fff' }} />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-on-primary shadow-lg shadow-primary/20">
+            <Heart className="h-6 w-6 stroke-[2.5]" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold tracking-tight sm:text-4xl gradient-text-pink-purple">
+          <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-on-background sm:text-4xl">
             Create an Account
           </h2>
-          <p className="mt-2 text-sm font-medium" style={{ color: 'var(--brand-green)' }}>
+          <p className="mt-2 text-sm font-medium text-primary">
             Join Food Bridge and help redistribute surplus food
           </p>
         </div>
 
-        <div className="relative rounded-2xl glass-card p-8 shadow-2xl">
+        <div className="relative rounded-3xl bg-surface-container-lowest p-8 shadow-2xl border-2 border-outline-variant/30">
           <form action={formAction} className="space-y-6">
             {getErrorMessage(state?.error) && (
-              <div
-                className="flex items-center gap-2 rounded-lg border p-3 text-sm"
-                style={{ borderColor: 'var(--urgent-bg)', background: 'var(--urgent-bg)', color: 'var(--urgent-text)' }}
-              >
+              <div className="flex items-center gap-2 rounded-lg border border-error/20 bg-error/10 p-3 text-sm text-error">
                 <ShieldAlert className="h-4 w-4 shrink-0" />
                 <span>{getErrorMessage(state?.error)}</span>
               </div>
@@ -97,33 +85,30 @@ export default function SignupPage() {
 
             {/* Role Cards Selectors */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Register As</label>
+              <label className="text-sm font-semibold text-on-surface">Register As</label>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <button
                   type="button"
                   onClick={() => setSelectedRole('donor')}
-                  className="flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200"
-                  style={roleButtonStyle('donor')}
+                  className={`flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200 ${roleButtonStyle('donor')}`}
                 >
-                  <Building2 className="h-5 w-5 mb-1.5" style={{ color: selectedRole === 'donor' ? 'var(--brand-green)' : 'var(--text-secondary)' }} />
+                  <Building2 className={`h-5 w-5 mb-1.5 ${selectedRole === 'donor' ? 'text-primary' : 'text-on-surface-variant'}`} />
                   <span className="text-xs font-semibold">Donor</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedRole('ngo')}
-                  className="flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200"
-                  style={roleButtonStyle('ngo')}
+                  className={`flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200 ${roleButtonStyle('ngo')}`}
                 >
-                  <Heart className="h-5 w-5 mb-1.5" style={{ color: selectedRole === 'ngo' ? 'var(--brand-green)' : 'var(--text-secondary)' }} />
+                  <Heart className={`h-5 w-5 mb-1.5 ${selectedRole === 'ngo' ? 'text-primary' : 'text-on-surface-variant'}`} />
                   <span className="text-xs font-semibold">NGO</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedRole('volunteer')}
-                  className="flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200"
-                  style={roleButtonStyle('volunteer')}
+                  className={`flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200 ${roleButtonStyle('volunteer')}`}
                 >
-                  <Sparkles className="h-5 w-5 mb-1.5" style={{ color: selectedRole === 'volunteer' ? 'var(--brand-green)' : 'var(--text-secondary)' }} />
+                  <Sparkles className={`h-5 w-5 mb-1.5 ${selectedRole === 'volunteer' ? 'text-primary' : 'text-on-surface-variant'}`} />
                   <span className="text-xs font-semibold">Volunteer</span>
                 </button>
               </div>
@@ -131,11 +116,11 @@ export default function SignupPage() {
 
             {/* Full Name */}
             <div className="space-y-1.5">
-              <label htmlFor="fullName" className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+              <label htmlFor="fullName" className="text-sm font-semibold text-on-surface">
                 Full Name
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none" style={{ color: 'var(--text-secondary)' }}>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
                   <User className="h-4 w-4" />
                 </div>
                 <input
@@ -144,18 +129,18 @@ export default function SignupPage() {
                   type="text"
                   required
                   placeholder="John Doe"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm shadow-sm transition-colors"
+                  className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 />
               </div>
             </div>
 
             {/* Email Address */}
             <div className="space-y-1.5">
-              <label htmlFor="email" className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+              <label htmlFor="email" className="text-sm font-semibold text-on-surface">
                 Email Address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none" style={{ color: 'var(--text-secondary)' }}>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
                   <Mail className="h-4 w-4" />
                 </div>
                 <input
@@ -164,39 +149,43 @@ export default function SignupPage() {
                   type="email"
                   required
                   placeholder="name@organization.com"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm shadow-sm transition-colors"
+                  className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label htmlFor="password" className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+              <label htmlFor="password" className="text-sm font-semibold text-on-surface">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none" style={{ color: 'var(--text-secondary)' }}>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
                   <Lock className="h-4 w-4" />
                 </div>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm shadow-sm transition-colors"
-                />
-              </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="••••••••"
+                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-10 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg"
-              style={{ background: 'var(--brand-green)', boxShadow: '0 4px 14px -2px rgba(31,93,61,0.4)' }}
-              onMouseOver={e => !isPending && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-              onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 disabled:opacity-50 shadow-lg shadow-primary/20"
             >
               {isPending ? 'Signing up...' : 'Create Account'}
             </button>
@@ -204,9 +193,9 @@ export default function SignupPage() {
             {/* Google Signup Option */}
             <div className="relative my-4 flex items-center justify-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t" style={{ borderColor: 'var(--border-hairline)' }} />
+                <div className="w-full border-t border-outline-variant" />
               </div>
-              <div className="relative px-3 text-[10px] uppercase font-bold tracking-widest rounded-full" style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)' }}>
+              <div className="relative bg-surface-container-lowest px-3 text-[10px] uppercase font-bold tracking-widest text-on-surface-variant rounded-full">
                 Or continue with
               </div>
             </div>
@@ -214,10 +203,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={handleGoogleSignup}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 focus:outline-none"
-              style={{ border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', color: 'var(--text-primary)' }}
-              onMouseOver={e => (e.currentTarget.style.background = 'var(--success-bg)')}
-              onMouseOut={e => (e.currentTarget.style.background = 'var(--bg-card)')}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-outline-variant rounded-xl text-sm font-semibold text-on-surface bg-surface hover:bg-surface-container-low transition-all duration-300 focus:outline-none"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -229,12 +215,11 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <div className="mt-6 text-center text-xs">
-            <span style={{ color: 'var(--text-secondary)' }}>Already have an account? </span>
+          <div className="mt-6 text-center text-xs border-t border-outline-variant pt-4">
+            <span className="text-on-surface-variant">Already have an account? </span>
             <Link
               href="/login"
-              className="font-bold transition-colors"
-              style={{ color: 'var(--brand-green)' }}
+              className="font-bold text-primary hover:text-surface-tint transition-colors"
             >
               Log in
             </Link>

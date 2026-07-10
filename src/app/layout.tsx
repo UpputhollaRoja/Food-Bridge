@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Nunito } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import ThemeToggle from "@/components/ThemeToggle";
 
-const inter = Inter({
+const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const nunito = Nunito({
-  variable: "--font-heading",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Food Bridge — AI-Powered Food Waste Redistribution",
+  title: "Food Bridge | Professional Logistics for Human Impact",
   description: "Recovering food surplus and delivering it to those who need it most, powered by AI matching and logistics.",
 };
 
@@ -29,8 +24,11 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${nunito.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} h-full antialiased`}
     >
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+      </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col relative overflow-x-hidden antialiased transition-colors duration-300">
         {/* Theme initialiser — runs before hydration to avoid flash of wrong theme */}
         <Script
