@@ -39,7 +39,7 @@ function LoginFormContent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg" style={{ backgroundColor: '#1C2E4A' }}>
+          <div className="flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg bg-blue-600">
             <Heart className="h-6 w-6 stroke-[2.5]" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-on-background sm:text-4xl">
@@ -136,8 +136,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isLoginPending}
-                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
-                style={{ backgroundColor: '#1C2E4A' }}
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)] focus:outline-none"
               >
                 {isLoginPending ? 'Logging in...' : 'Log In'}
               </button>
@@ -219,8 +218,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isForgotPending}
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
-                style={{ backgroundColor: '#1C2E4A' }}
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)] focus:outline-none"
               >
                 {isForgotPending ? (
                   'Sending...'

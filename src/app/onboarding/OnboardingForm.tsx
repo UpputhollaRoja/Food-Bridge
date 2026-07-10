@@ -112,7 +112,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-3xl"></div>
-        <div className="absolute top-[60%] -right-[10%] w-[30%] h-[50%] rounded-full bg-teal-100/30 blur-3xl"></div>
+        <div className="absolute top-[60%] -right-[10%] w-[30%] h-[50%] rounded-full bg-blue-100/30 blur-3xl"></div>
       </div>
       <div className="w-full max-w-lg space-y-8 z-10">
         <div className="flex flex-col items-center text-center">
@@ -144,7 +144,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('donor')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-[#1C2E4A] text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                   <Building2 className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">Donor</span>
@@ -152,7 +152,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('ngo')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-[#1C2E4A] text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                   <Heart className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">NGO</span>
@@ -160,7 +160,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('volunteer')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'volunteer' ? 'bg-[#1C2E4A] text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'volunteer' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                   <Sparkles className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">Volunteer</span>
@@ -263,7 +263,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 </label>
                 <div className="relative rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-100">
                   {docPath ? (
-                    <div className="flex items-center gap-2 text-teal-600">
+                    <div className="flex items-center gap-2 text-blue-600">
                       <ShieldCheck className="h-5 w-5" />
                       <span className="text-xs font-bold">Document Uploaded Successfully!</span>
                     </div>
@@ -294,7 +294,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
               <button
                 type="submit"
                 disabled={isPending || uploadingDoc || (isBusinessRole && !coords.address)}
-                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-[#1C2E4A] hover:bg-[#0f1c30] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(28,46,74,0.2)]"
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
               >
                 {isPending ? 'Saving profile...' : (isBusinessRole && !coords.address) ? 'Set Location to Continue' : 'Complete Registration'}
               </button>

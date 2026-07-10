@@ -55,7 +55,7 @@ export default async function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <Link href="/login" className="px-4 py-1 text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Log In</Link>
-            <Link href="/signup" className="px-md py-4 bg-primary text-on-primary text-sm font-bold rounded-full hover:bg-surface-tint active:scale-95 transition-all shadow-md">Get Started</Link>
+            <Link href="/signup" className="px-5 py-3 bg-blue-600 text-white text-sm font-bold rounded-full hover:bg-blue-700 active:scale-95 transition-all shadow-[0_8px_16px_rgba(37,99,235,0.2)]">Get Started</Link>
           </div>
         </div>
       </header>
@@ -71,7 +71,7 @@ export default async function LandingPage() {
             <h1 className="text-4xl md:text-6xl font-bold text-on-background leading-[1.1] tracking-tight">Bridging Surplus Food to <span className="text-primary">those in Need</span></h1>
             <p className="text-lg text-on-surface-variant max-w-xl leading-relaxed">Redistribute edible food waste, optimize delivery routes in real-time, and combat greenhouse emissions using our community-driven coordination network.</p>
             <div className="flex flex-col sm:flex-row gap-4 pt-base">
-              <Link href="/signup" className="px-10 py-4 bg-primary text-on-primary font-bold text-center rounded-full shadow-lg hover:shadow-primary/30 active:scale-95 transition-all">Join the Mission</Link>
+              <Link href="/signup" className="px-10 py-4 bg-blue-600 text-white font-bold text-center rounded-full shadow-[0_8px_16px_rgba(37,99,235,0.2)] hover:bg-blue-700 active:scale-95 transition-all">Join the Mission</Link>
               <Link href="/dashboard" className="px-10 py-4 border-2 border-primary text-primary font-bold text-center rounded-full hover:bg-primary/5 active:scale-95 transition-all">Partner Dashboard</Link>
             </div>
             <div className="flex items-center gap-2 pt-md border-t border-outline-variant/30">
@@ -142,7 +142,7 @@ export default async function LandingPage() {
               </div>
             </div>
             {/* Floating Card */}
-            <div className="absolute -bottom-4 -right-4 bg-primary text-on-primary p-3 px-6 rounded-full shadow-xl hidden md:flex items-center gap-3 animate-bounce">
+            <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white p-3 px-6 rounded-full shadow-xl hidden md:flex items-center gap-3 animate-bounce">
               <span className="material-symbols-outlined fill text-white">verified</span>
               <span className="text-xs font-bold tracking-tight">Optimizing Live Route</span>
             </div>

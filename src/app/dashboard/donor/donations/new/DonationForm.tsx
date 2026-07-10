@@ -388,7 +388,7 @@ export default function DonationForm({ defaultAddress, verificationStatus }: Don
             <button
               type="submit"
               disabled={isSubmitDisabled}
-              className="w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
+              className="w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
             >
               <Plus className="h-4 w-4 stroke-[2.5]" />
               <span>
