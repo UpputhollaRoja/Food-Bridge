@@ -177,6 +177,27 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             {/* Hidden role input to bind to FormData */}
             <input type="hidden" name="role" value={selectedRole} />
 
+            {/* Full Name Field */}
+            <div className="space-y-1.5">
+              <label htmlFor="fullName" className="text-sm font-bold text-slate-700">
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                  <Heart className="h-4 w-4" />
+                </div>
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  required
+                  defaultValue={userFullName !== 'New User' ? userFullName : ''}
+                  placeholder="Your Name"
+                  className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-600 outline-none"
+                />
+              </div>
+            </div>
+
             {/* Business Role Fields (Donor/NGO) */}
             {isBusinessRole && (
               <div className="space-y-1.5">

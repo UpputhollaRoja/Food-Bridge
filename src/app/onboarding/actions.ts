@@ -26,6 +26,7 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
   }
 
   const role = (formData.get('role') as string) || profile.role
+  const fullName = formData.get('fullName') as string
   const organizationName = formData.get('organizationName') as string
   const latStr = formData.get('latitude') as string
   const lngStr = formData.get('longitude') as string
@@ -34,7 +35,7 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
   const encryptedData = formData.get('encrypted_data') as string
   const publicKey = formData.get('public_key') as string
 
-  // Fallback plaintext (for volunteers or if encryption fails/bypassed)
+  // Plaintext fields for admin dashboard visibility
   const phone = formData.get('phone') as string
   const address = formData.get('address') as string
   const docUrl = formData.get('docUrl') as string
@@ -43,7 +44,11 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
   const longitude = lngStr ? parseFloat(lngStr) : -122.4194
 
   const updateData: Record<string, string | number | string[] | any | null> = {
+    id: user.id,
     role,
+    full_name: fullName || profile.full_name,
+    phone,
+    address,
     latitude,
     longitude,
     updated_at: new Date().toISOString(),
@@ -52,10 +57,6 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
   if (encryptedData && publicKey) {
     updateData.encrypted_data = JSON.parse(encryptedData)
     updateData.public_key = publicKey
-  } else {
-    // Only set plaintext if encryption wasn't used
-    updateData.phone = phone
-    updateData.address = address
   }
 
   if (role === 'donor' || role === 'ngo') {
@@ -72,8 +73,7 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
 
   const { error } = await supabase
     .from('profiles')
-    .update(updateData)
-    .eq('id', user.id)
+    .upsert(updateData)
 
   if (error) {
     return { error: error.message }

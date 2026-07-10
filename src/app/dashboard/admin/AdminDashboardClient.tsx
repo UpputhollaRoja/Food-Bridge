@@ -718,6 +718,25 @@ export default function AdminDashboardClient({
                           <td className="p-4 text-right">
                             {user.verification_status === 'suspended' ? (
                               <span className="text-[11px] font-semibold text-red-600 block">Account Suspended</span>
+                            ) : user.verification_status === 'pending' ? (
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  onClick={() => handleVerify(user.id, 'verified')}
+                                  disabled={loadingId === user.id}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-green-200 text-green-700 hover:bg-green-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
+                                >
+                                  <Check className="h-3.5 w-3.5" />
+                                  <span>Approve</span>
+                                </button>
+                                <button
+                                  onClick={() => handleVerify(user.id, 'rejected')}
+                                  disabled={loadingId === user.id}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                  <span>Reject</span>
+                                </button>
+                              </div>
                             ) : (
                               <button
                                 onClick={() => handleSuspend(user.id)}
