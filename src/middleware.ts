@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { supabase, supabaseResponse, user } = await updateSession(request)
 
   const path = request.nextUrl.pathname
@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
   if (path.startsWith('/dashboard') || path === '/onboarding') {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role, verification_status, phone, address')
+      .select('role, verification_status, phone, address, encrypted_data')
       .eq('id', user.id)
       .single()
 
@@ -43,8 +43,8 @@ export async function proxy(request: NextRequest) {
       return supabaseResponse
     }
 
-    // Check if user has completed basic onboarding (has phone & address)
-    const isProfileIncomplete = !profile.phone || !profile.address
+    // Check if user has completed basic onboarding (has phone & address, OR has encrypted_data)
+    const isProfileIncomplete = (!profile.phone || !profile.address) && !profile.encrypted_data
     
     if (isProfileIncomplete) {
       if (path !== '/onboarding') {

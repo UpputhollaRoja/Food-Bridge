@@ -12,7 +12,7 @@ export default async function OnboardingPage() {
   const { user, profile } = result
 
   // If onboarding is already complete, redirect to role dashboard
-  const isProfileComplete = profile && profile.phone && profile.address
+  const isProfileComplete = (profile && profile.phone && profile.address) || (profile && profile.encrypted_data)
   if (isProfileComplete) {
     redirect(`/dashboard/${profile.role}`)
   }
