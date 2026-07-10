@@ -2,6 +2,7 @@
 
 import React, { useActionState } from 'react'
 import { saveOnboarding } from './actions'
+import LocationPicker from '@/components/LocationPicker'
 import { createClient } from '@/lib/supabase/client'
 import { MapPin, Phone, Building2, Upload, ShieldCheck, ShieldAlert, Sparkles, Heart } from 'lucide-react'
 
@@ -22,7 +23,7 @@ interface OnboardingFormProps {
 
 export default function OnboardingForm({ userEmail, userRole, userFullName }: OnboardingFormProps) {
   const [state, formAction, isPending] = useActionState(saveOnboarding, null)
-  const [coords, setCoords] = React.useState({ latitude: '37.7749', longitude: '-122.4194' })
+  const [coords, setCoords] = React.useState({ latitude: '37.7749', longitude: '-122.4194', address: '' })
   const [uploadingDoc, setUploadingDoc] = React.useState(false)
   const [docPath, setDocPath] = React.useState('')
   const [uploadError, setUploadError] = React.useState('')
@@ -36,21 +37,25 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
 
   const supabase = createClient()
 
+  // Geolocation is now handled by LocationPicker for business roles.
+  // For volunteers, we can just leave default SF coords or let them use LocationPicker if we want,
+  // but for now we follow the user requirement: "from ngo live location and make it fixed"
   React.useEffect(() => {
-    if (navigator.geolocation) {
+    if (!isBusinessRole && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setCoords({
+          setCoords((prev) => ({
+            ...prev,
             latitude: position.coords.latitude.toString(),
             longitude: position.coords.longitude.toString(),
-          })
+          }))
         },
         (error) => {
           console.warn('Geolocation access denied or failed, using default fallback:', error)
         }
       )
     }
-  }, [])
+  }, [isBusinessRole])
 
   const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -191,21 +196,39 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             {/* Address */}
             <div className="space-y-1.5">
               <label htmlFor="address" className="text-sm font-bold text-slate-700">
-                Operating Address
+                Operating Address / Location
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
-                  <MapPin className="h-4 w-4" />
+              
+              {isBusinessRole ? (
+                <div className="mt-2">
+                  <LocationPicker 
+                    label="Organization Location" 
+                    onChange={(loc) => {
+                      setCoords({
+                        latitude: loc.lat.toString(),
+                        longitude: loc.lng.toString(),
+                        address: loc.address
+                      })
+                    }} 
+                  />
+                  {/* Hidden input to pass address for business roles since they don't type it */}
+                  <input type="hidden" name="address" value={coords.address} />
                 </div>
-                <input
-                  id="address"
-                  name="address"
-                  type="text"
-                  required
-                  placeholder="123 Sustainability Way, Green City"
-                  className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
-                />
-              </div>
+              ) : (
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                    <MapPin className="h-4 w-4" />
+                  </div>
+                  <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    required
+                    placeholder="123 Sustainability Way, Green City"
+                    className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Hidden Coordinates */}
