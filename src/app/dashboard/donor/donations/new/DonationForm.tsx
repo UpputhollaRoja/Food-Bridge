@@ -205,9 +205,14 @@ export default function DonationForm({ defaultAddress, verificationStatus }: Don
 
             {/* Pickup Location — GPS + Map Picker */}
             <div className="col-span-1 md:col-span-2 space-y-2 rounded-2xl border p-4" style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-subtle)' }}>
-              <label className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
-                Pickup Address
-              </label>
+              <div>
+                <label className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
+                  Pickup Address
+                </label>
+                <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  A volunteer will be dispatched to this exact location to collect the donation.
+                </p>
+              </div>
 
               {/* Hidden fields submitted with the form */}
               <input type="hidden" name="pickupLocation" value={pickedAddress} />

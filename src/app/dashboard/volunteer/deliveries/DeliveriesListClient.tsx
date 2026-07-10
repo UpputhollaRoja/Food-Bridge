@@ -5,7 +5,9 @@ import {
   acceptDeliveryAction, 
   confirmPickupAction, 
   startTransitAction, 
-  completeDeliveryAction 
+  completeDeliveryAction,
+  reportDeliveryIssueAction,
+  fetchNearbyDeliveriesAction
 } from './actions'
 import ImageUploader from '@/components/ImageUploader'
 import { 
@@ -37,8 +39,36 @@ interface DeliveriesListClientProps {
 
 export default function DeliveriesListClient({ initialUnassigned, initialAssigned, volunteerId }: DeliveriesListClientProps) {
   const [mounted, setMounted] = React.useState(false)
+
+  // Failure reporting state
+  const [reportingIssueFor, setReportingIssueFor] = React.useState<string | null>(null)
+  const [failureReason, setFailureReason] = React.useState('')
+
   React.useEffect(() => {
     setMounted(true)
+    let intervalId: NodeJS.Timeout
+
+    const fetchNearby = async (lat: number, lng: number) => {
+      const res = await fetchNearbyDeliveriesAction(lat, lng, 15)
+      if (res.data) setUnassigned(res.data)
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          fetchNearby(pos.coords.latitude, pos.coords.longitude)
+          intervalId = setInterval(() => {
+            fetchNearby(pos.coords.latitude, pos.coords.longitude)
+          }, 60000)
+        },
+        (err) => console.error("Geolocation error:", err),
+        { enableHighAccuracy: true }
+      )
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [])
 
   const [activeTab, setActiveTab] = React.useState<'active' | 'available'>('active')
@@ -108,22 +138,47 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
 
   const handleCompleteDelivery = async (deliveryId: string) => {
     const paths = proofPaths[deliveryId] || []
-    if (paths.length === 0) {
-      setError('A proof of delivery photo is required to complete delivery')
+    if (paths.length < 2) {
+      setError('Both food proof and delivery proof photos are required')
       return
     }
 
     setSubmittingId(deliveryId)
     setError(null)
     try {
-      const res = await completeDeliveryAction(deliveryId, paths[0])
+      const res = await completeDeliveryAction(deliveryId, paths)
       if (res?.error) {
         setError(res.error)
       } else {
-        setAssigned(assigned.map(d => d.id === deliveryId ? { ...d, status: 'delivered', proof_image_url: paths[0] } : d))
+        setAssigned(assigned.map(d => d.id === deliveryId ? { ...d, status: 'delivered', proof_image_url: paths[0], proof_image_2_url: paths[1] } : d))
       }
     } catch (err) {
       setError('Failed to submit delivery completion')
+    } finally {
+      setSubmittingId(null)
+    }
+  }
+
+  const handleReportIssue = async (deliveryId: string) => {
+    if (!failureReason) {
+      setError('Please select a failure reason')
+      return
+    }
+    setSubmittingId(deliveryId)
+    setError(null)
+    try {
+      const isHungry = failureReason === 'Delivery boy himself is hungry'
+      const res = await reportDeliveryIssueAction(deliveryId, failureReason, isHungry)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        // Move to completed/failed state by removing from active
+        setAssigned(assigned.filter(d => d.id !== deliveryId))
+        setReportingIssueFor(null)
+        setFailureReason('')
+      }
+    } catch (err) {
+      setError('Failed to report issue')
     } finally {
       setSubmittingId(null)
     }
@@ -218,6 +273,11 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase status-badge" style={{ background: 'var(--success-bg)', color: 'var(--success-text)', border: '1px solid var(--success-text)' }}>
                         {donation.category.replace(/_/g, ' ')}
                       </span>
+                      {del.distance_km != null && (
+                        <span className="text-xs font-bold" style={{ color: 'var(--brand-green)' }}>
+                          ({del.distance_km.toFixed(1)} km away)
+                        </span>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -438,23 +498,63 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
 
                     {/* Complete Delivery (Requires Image Proof) */}
                     {del.status === 'in_transit' && (
-                      <div className="w-full md:w-auto md:min-w-[320px] space-y-4">
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-semibold text-slate-700">Upload Delivery Photo Proof</label>
-                          <ImageUploader 
-                            bucket="delivery-proof" 
-                            value={proofPaths[del.id] || []} 
-                            onChange={(urls) => setProofPaths({ ...proofPaths, [del.id]: urls })} 
-                            maxImages={1} 
-                          />
-                        </div>
-                        <button
-                          onClick={() => handleCompleteDelivery(del.id)}
-                          disabled={submittingId !== null || !(proofPaths[del.id]?.length > 0)}
-                          className="btn-primary w-full py-3.5 px-6"
-                        >
-                          {submittingId === del.id ? 'Submitting...' : 'Complete Delivery'}
-                        </button>
+                      <div className="w-full space-y-4">
+                        {reportingIssueFor === del.id ? (
+                          <div className="bg-red-50 p-4 rounded-xl border border-red-200 space-y-3">
+                            <label className="text-xs font-bold text-red-900">Why are you unable to deliver?</label>
+                            <select 
+                              className="w-full p-2 rounded border border-red-200 text-sm"
+                              value={failureReason}
+                              onChange={(e) => setFailureReason(e.target.value)}
+                            >
+                              <option value="">Select a reason...</option>
+                              <option value="NGO was closed">NGO was closed</option>
+                              <option value="Wrong address">Wrong address</option>
+                              <option value="Food was spoiled">Food was spoiled</option>
+                              <option value="Delivery boy himself is hungry">Delivery boy himself is hungry</option>
+                              <option value="Other">Other</option>
+                            </select>
+                            <div className="flex justify-end gap-2">
+                              <button onClick={() => { setReportingIssueFor(null); setFailureReason(''); }} className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-700">Cancel</button>
+                              <button 
+                                onClick={() => handleReportIssue(del.id)}
+                                disabled={submittingId !== null || !failureReason}
+                                className="px-4 py-2 text-xs font-bold bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                              >
+                                {submittingId === del.id ? 'Submitting...' : 'Submit Issue'}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="space-y-1.5 md:min-w-[400px]">
+                              <label className="text-xs font-semibold text-slate-700">
+                                Upload 2 Delivery Photos: (1) Food + NGO Board (2) NGO Staff receiving food
+                              </label>
+                              <ImageUploader 
+                                bucket="delivery-proof" 
+                                value={proofPaths[del.id] || []} 
+                                onChange={(urls) => setProofPaths({ ...proofPaths, [del.id]: urls })} 
+                                maxImages={2} 
+                              />
+                            </div>
+                            <div className="flex gap-3 justify-end mt-4">
+                              <button
+                                onClick={() => setReportingIssueFor(del.id)}
+                                className="px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              >
+                                Report Issue
+                              </button>
+                              <button
+                                onClick={() => handleCompleteDelivery(del.id)}
+                                disabled={submittingId !== null || (proofPaths[del.id] || []).length < 2}
+                                className="btn-primary py-2.5 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {submittingId === del.id ? 'Submitting...' : 'Mark as Delivered'}
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
 
