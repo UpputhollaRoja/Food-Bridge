@@ -28,7 +28,6 @@ function LoginFormContent() {
 
   // Handle form submission with visual feedback
   const handleLoginSubmit = async (formData: FormData) => {
-    setIsRedirecting(true)
     await loginAction(formData)
   }
 
@@ -92,10 +91,16 @@ function LoginFormContent() {
           {!isForgotMode ? (
             /* Login Form */
             <form action={handleLoginSubmit} className="space-y-6">
-              {(loginState?.error || isLoginPending) && (
+              {loginState?.error && !isLoginPending && (
                 <div className="flex items-center gap-2 rounded-lg border border-error/20 bg-error/10 p-3 text-sm text-error">
                   <ShieldAlert className="h-4 w-4 shrink-0" />
-                  <span>{loginState?.error || 'Logging in...'}</span>
+                  <span>{loginState.error}</span>
+                </div>
+              )}
+              {isLoginPending && (
+                <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 p-3 text-sm text-primary">
+                  <Loader className="h-4 w-4 shrink-0 animate-spin" />
+                  <span>Logging in...</span>
                 </div>
               )}
 
@@ -163,7 +168,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isRedirecting || isLoginPending}
-                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:cursor-not-allowed"
               >
                 {isRedirecting ? (
                   <>
@@ -171,7 +176,10 @@ function LoginFormContent() {
                     Logging in...
                   </>
                 ) : isLoginPending ? (
-                  'Logging in...'
+                  <>
+                    <Loader className="h-4 w-4 animate-spin mr-2" />
+                    Logging in...
+                  </>
                 ) : (
                   'Log In'
                 )}
