@@ -147,7 +147,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('donor')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-blue-600 text-white shadow-md' : 't[...']}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                   <Building2 className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">Donor</span>
@@ -155,7 +155,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('ngo')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-blue-600 text-white shadow-md' : 'tex[...']}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
                   <Heart className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">NGO</span>
