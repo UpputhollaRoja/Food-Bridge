@@ -1,5 +1,8 @@
 import { get, set } from 'idb-keyval';
-import { generateKeyPair, KeyPair } from './crypto';
+import { generateKeyPair } from './crypto';
+import type { KeyPair as CryptoKeyPair } from './crypto';
+
+export type KeyPair = CryptoKeyPair;
 
 const KEY_PREFIX = 'foodbridge_keys_';
 

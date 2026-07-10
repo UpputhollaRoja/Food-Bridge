@@ -5,7 +5,7 @@ import { saveOnboarding } from './actions'
 import LocationPicker from '@/components/LocationPicker'
 import { createClient } from '@/lib/supabase/client'
 import { MapPin, Phone, Building2, Upload, ShieldCheck, ShieldAlert, Sparkles, Heart } from 'lucide-react'
-import { generateAndSaveUserKeys, KeyPair } from '@/lib/keys'
+import { generateAndSaveUserKeys, type KeyPair } from '@/lib/keys'
 import { encryptForSelf } from '@/lib/crypto'
 
 function getErrorMessage(err: any): string {
@@ -39,6 +39,8 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
   }, [userEmail])
 
   const supabase = createClient()
+
+  const isBusinessRole = selectedRole === 'donor' || selectedRole === 'ngo'
 
   // Geolocation is now handled by LocationPicker for business roles.
   // For volunteers, we can just leave default SF coords or let them use LocationPicker if we want,
@@ -88,7 +90,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
     }
   }
 
-  const isBusinessRole = selectedRole === 'donor' || selectedRole === 'ngo'
+
 
   const handleFormSubmit = (formData: FormData) => {
     if (keys) {

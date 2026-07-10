@@ -54,7 +54,7 @@ interface LocationPickerProps {
 }
 
 // ─── Status union ────────────────────────────────────────────────
-type Status = 'idle' | 'locating' | 'saved' | 'error'
+type Status = 'idle' | 'locating' | 'saved' | 'error' | 'saving'
 
 // ─── Helper: reverse geocode via Nominatim (free, no key) ────────
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
