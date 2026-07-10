@@ -43,8 +43,10 @@ export async function middleware(request: NextRequest) {
       return supabaseResponse
     }
 
-    // Check if user has completed basic onboarding (has phone & address, OR has encrypted_data)
-    const isProfileIncomplete = (!profile.phone || !profile.address) && !profile.encrypted_data
+    // Check if user has completed basic onboarding (has phone & address, OR has populated encrypted_data)
+    const hasPlaintext = Boolean(profile.phone && profile.address)
+    const hasEncrypted = Boolean(profile.encrypted_data && Object.keys(profile.encrypted_data).length > 0)
+    const isProfileIncomplete = !hasPlaintext && !hasEncrypted
     
     if (isProfileIncomplete) {
       if (path !== '/onboarding') {
@@ -63,10 +65,18 @@ export async function middleware(request: NextRequest) {
     }
 
     // Check role route authorization
-    if (path.startsWith('/dashboard/donor') && profile.role !== 'donor' && profile.role !== 'admin') {
-      const url = request.nextUrl.clone()
-      url.pathname = `/dashboard/${profile.role}`
-      return NextResponse.redirect(url)
+    if (path.startsWith('/dashboard/donor')) {
+      if (profile.role !== 'donor' && profile.role !== 'admin') {
+        const url = request.nextUrl.clone()
+        url.pathname = `/dashboard/${profile.role}`
+        return NextResponse.redirect(url)
+      }
+      if (profile.role === 'donor' && profile.verification_status !== 'verified') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        url.searchParams.set('error', 'Your donor account is pending approval. Please wait for an admin to verify your account.')
+        return NextResponse.redirect(url)
+      }
     }
 
     if (path.startsWith('/dashboard/ngo') && profile.role !== 'ngo' && profile.role !== 'admin') {

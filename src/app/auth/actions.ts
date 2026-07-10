@@ -40,12 +40,24 @@ export async function login(prevState: any, formData: FormData) {
   // Fetch user profile with role
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, verification_status, phone, address, encrypted_data')
     .eq('id', signInData.user.id)
     .single()
 
   if (profileError || !profile) {
     return { error: 'Could not fetch user profile. Please try again.' }
+  }
+
+  const hasPlaintext = Boolean(profile.phone && profile.address)
+  const hasEncrypted = Boolean(profile.encrypted_data && Object.keys(profile.encrypted_data).length > 0)
+  const isComplete = hasPlaintext || hasEncrypted
+
+  if (!isComplete) {
+    redirect('/onboarding')
+  }
+
+  if (profile.role === 'donor' && profile.verification_status !== 'verified') {
+    return { error: 'Your donor account is pending approval. Please wait for an admin to verify your account.' }
   }
 
   revalidatePath('/', 'layout')
