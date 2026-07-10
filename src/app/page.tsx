@@ -231,7 +231,7 @@ export default async function LandingPage() {
                 <span className="material-symbols-outlined text-[18px]">star</span>
                 <span>Joyful Impact Report</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight">Saving the Planet, <br/><span className="text-primary">One Delicious Meal</span> at a Time</h2>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">Saving the Planet, <br/>One Delicious Meal at a Time</h2>
               <p className="text-lg opacity-90 leading-relaxed font-medium">
                 Food waste generates nearly 10% of global emissions. For every 1 kg redirected through Food Bridge, we avoid 2.5 kg of CO2e. That's a huge win for Earth!
               </p>
