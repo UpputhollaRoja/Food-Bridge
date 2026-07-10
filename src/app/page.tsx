@@ -1,22 +1,22 @@
 import React from 'react'
 import Link from 'next/link'
-import { Heart, Sparkles, ArrowRight, ShieldCheck, Bolt, Warehouse, Truck, Home, Globe, Leaf } from 'lucide-react'
+import { Heart, Building2, Sparkles, Navigation, Globe, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
-// Default fallbacks for the new Daylight Design System copy
+// Default fallbacks in case DB is empty or fails
 const defaults = {
-  badge: 'Global Logistics Redefined',
-  headline: 'A Logistics Revolution for',
-  headline_accent: 'Human Impact.',
-  description: 'Food Bridge leverages industrial technical precision to eliminate food waste and optimize distribution channels, ensuring nutrients reach the networks that need them most.',
-  cta_primary: 'Activate Impact',
-  cta_secondary: 'View Roadmap',
-  impact_stat_1: '2.5 kg CO2e',
-  impact_stat_1_label: 'Saved per kg Food',
+  badge: 'AI-Powered Optimization',
+  headline: 'Bridging Surplus Food to those',
+  headline_accent: 'in Need',
+  description: 'Redistribute edible food waste, optimize delivery routes in real-time, and combat greenhouse emissions using our community-driven coordination network.',
+  cta_primary: 'Join the Mission',
+  cta_secondary: 'Partner Dashboard',
+  impact_stat_1: '2.5 kg',
+  impact_stat_1_label: 'CO2e Saved / kg Food',
   impact_stat_2: '100%',
-  impact_stat_2_label: 'Transparent Data',
-  impact_heading: 'Saving the Planet, One Delicious Meal at a Time',
-  impact_body: 'Food waste generates nearly 10% of global emissions. For every 1 kg redirected through Food Bridge, we avoid 2.5 kg of CO2e. That\'s a huge win for Earth!'
+  impact_stat_2_label: 'Transparent Logistics',
+  impact_heading: 'Saving the Planet, One Meal at a Time',
+  impact_body: 'Food waste generates nearly 10% of global greenhouse gas emissions. For every 1 kg of food surplus redirected through Food Bridge, we avoid an estimated 2.5 kg of CO2e carbon emissions.'
 }
 
 export default async function LandingPage() {
@@ -33,302 +33,161 @@ export default async function LandingPage() {
     }
   }
 
+  // Placeholder stats for the new Stats Bar
+  const stats = {
+    donations: '15,240*',
+    meals: '45,720*',
+    kgSaved: '38,100*'
+  }
+
   return (
-    <div className="min-h-screen flex flex-col justify-between overflow-x-hidden bg-background text-foreground transition-colors duration-300">
-      {/* TopAppBar */}
-      <nav className="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-border shadow-sm">
-        <div className="flex justify-between items-center px-6 md:px-12 max-w-7xl mx-auto h-20">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-accent-tint dark:bg-gradient-to-br dark:from-[#10B981] dark:to-[#059669] shadow-sm dark:shadow-[0_0_15px_rgba(16,185,129,0.3)] animate-float">
-              <Leaf className="h-5 w-5 text-primary dark:text-[#06110D] stroke-[2.5]" />
-            </div>
-            <span className="font-heading text-2xl font-bold text-primary tracking-tight">Food Bridge</span>
+    <div className="min-h-screen flex flex-col justify-between overflow-x-hidden">
+      {/* Navbar */}
+      <nav className="max-w-7xl w-full mx-auto px-6 py-5 flex items-center justify-between border-b border-border backdrop-blur-md sticky top-0 z-40 bg-background/80">
+        <div className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm">
+            <Heart className="h-5 w-5 text-primary-foreground stroke-[2.5]" />
           </div>
+          <span className="font-heading font-black text-foreground text-lg tracking-tight">Food Bridge</span>
+        </div>
 
-          <div className="hidden md:flex items-center gap-8 lg:gap-12">
-            <Link className="text-primary font-bold border-b-2 border-primary pb-1 text-sm transition-colors" href="/dashboard/donor">Dashboard</Link>
-            <a className="text-text-secondary font-medium hover:text-primary transition-colors duration-200 text-sm" href="#infrastructure">Infrastructure</a>
-            <a className="text-text-secondary font-medium hover:text-primary transition-colors duration-200 text-sm" href="#systemic">Impact</a>
-            <a className="text-text-secondary font-medium hover:text-primary transition-colors duration-200 text-sm" href="#activate">Join Grid</a>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Sign In</Link>
-            <Link href="/signup" className="bg-primary text-primary-foreground px-8 py-3 rounded-full text-sm font-bold active:scale-95 transition-transform shadow-md hover:brightness-115">
-              Get Started
-            </Link>
-          </div>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/login"
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Log In
+          </Link>
+          <Link
+            href="/signup"
+            className="inline-flex items-center justify-center py-2 px-4 rounded-xl text-xs font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-sm"
+          >
+            Get Started
+          </Link>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="pt-20">
-        {/* Hero Section */}
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <img 
-              alt="Food Bridge Logistics Hero" 
-              className="w-full h-full object-cover brightness-[0.95]" 
-              src="https://lh3.googleusercontent.com/aida/AP1WRLudl7k6ti2tlVBMiYelYANVwjYwqLjTTwXqf-5Yqzm8VVBy3mL6CrTe3LbvpEcmqSQ4UTkStAcOIwDR9Uht0Gx316RZjdSD_9YOXykQoJFfdkMpLwIFEB8lPTvl8u2EtFVOKg-A6VEw66d3bxU0otBoVqsBwBWzpsi3zJCIhoc1PDIgA8OENO0LkEJdWAuofdlK9JJrxEV0njfBve0iA_k5TH9b05D6aWHLDAaMZxtwO-osRg-MxJmZC7Bc"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent"></div>
+      {/* Hero Section */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-16 md:py-24 space-y-20">
+        <div className="text-center max-w-3xl mx-auto space-y-6">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary/10 px-3.5 py-1 text-xs font-bold text-secondary border border-secondary/20">
+            <Sparkles className="h-3 w-3" />
+            {content.badge}
+          </span>
+          <h1 className="font-heading text-4xl md:text-6xl font-black text-foreground tracking-tight leading-tight">
+            {content.headline} <span className="text-primary">{content.headline_accent}</span>
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto leading-relaxed">
+            {content.description}
+          </p>
+          <div className="pt-4 flex justify-center gap-4">
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-primary-foreground bg-primary hover:bg-primary/90 transition-all shadow-md hover:-translate-y-0.5"
+            >
+              <span>{content.cta_primary}</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-input bg-card text-sm font-semibold text-foreground hover:bg-muted transition-all duration-300"
+            >
+              <span>{content.cta_secondary}</span>
+            </Link>
           </div>
+        </div>
 
-          <div className="relative z-10 px-6 md:px-12 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="max-w-2xl space-y-8 py-16">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-xs uppercase font-bold tracking-widest">{content.badge}</span>
-              </div>
-              
-              <h1 className="font-heading text-4xl md:text-6xl text-text-primary leading-tight font-extrabold tracking-tight">
-                {content.headline}{' '}
-                <span className="cyan-gradient-text">{content.headline_accent}</span>
-              </h1>
-
-              <p className="text-lg text-text-secondary leading-relaxed">
-                {content.description}
-              </p>
-
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/signup" className="bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold active:scale-95 transition-all flex items-center gap-3 shadow-lg hover:shadow-primary/20">
-                  {content.cta_primary}
-                  <Bolt className="h-5 w-5 fill-current" />
-                </Link>
-                <Link href="/login" className="border-2 border-primary text-primary bg-background/50 backdrop-blur px-10 py-4 rounded-full font-bold hover:bg-primary/5 active:scale-95 transition-all">
-                  {content.cta_secondary}
-                </Link>
-              </div>
-
-              <div className="flex items-center gap-8 pt-8 border-t border-border">
-                <div>
-                  <p className="font-heading text-3xl text-primary font-bold">12.4M</p>
-                  <p className="text-xs text-text-secondary uppercase font-bold tracking-wider mt-1">Meals Delivered</p>
-                </div>
-                <div className="w-px h-12 bg-border"></div>
-                <div>
-                  <p className="font-heading text-3xl text-primary font-bold">450+</p>
-                  <p className="text-xs text-text-secondary uppercase font-bold tracking-wider mt-1">NGO Partners</p>
-                </div>
-                <div className="w-px h-12 bg-border"></div>
-                <div>
-                  <p className="font-heading text-3xl text-primary font-bold">98.2%</p>
-                  <p className="text-xs text-text-secondary uppercase font-bold tracking-wider mt-1">Fleet Efficiency</p>
-                </div>
-              </div>
-            </div>
+        {/* Stats Bar */}
+        <div className="glass-card rounded-2xl p-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-border">
+          <div className="text-center md:text-left md:px-6 flex flex-col justify-center items-center">
+            <span className="font-heading text-4xl font-black text-foreground">{stats.donations}</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase mt-2">Donations Made</span>
           </div>
-        </section>
+          <div className="text-center md:text-left md:px-6 pt-8 md:pt-0 flex flex-col justify-center items-center">
+            <span className="font-heading text-4xl font-black text-foreground">{stats.meals}</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase mt-2">Meals Delivered</span>
+          </div>
+          <div className="text-center md:text-left md:px-6 pt-8 md:pt-0 flex flex-col justify-center items-center">
+            <span className="font-heading text-4xl font-black text-foreground">{stats.kgSaved}</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase mt-2">Kg Food Saved</span>
+          </div>
+        </div>
+        <p className="text-center text-[10px] text-muted-foreground -mt-16">* Placeholder data for demonstration</p>
 
-        {/* Infrastructure for Good Section */}
-        <section id="infrastructure" className="py-24 px-6 md:px-12 bg-card relative overflow-hidden border-y border-border">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-20 space-y-4">
-              <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-text-primary">Infrastructure for Good</h2>
-              <p className="text-lg text-text-secondary max-w-3xl leading-relaxed">
-                Our proprietary routing algorithms and high-frequency data mesh transform standard delivery routes into corridors of hope.
+        {/* How It Works (3 Steps) */}
+        <div className="pt-12">
+          <h2 className="font-heading text-3xl font-black text-center text-foreground mb-12">How It Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Step connecting line for desktop */}
+            <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-border -z-10" />
+            
+            {/* Step 1 */}
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary">
+                <Building2 className="h-10 w-10" />
+              </div>
+              <h3 className="font-heading font-bold text-xl text-foreground">1. Donor Posts</h3>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                Supermarkets and restaurants instantly list surplus food items. AI prioritizes listings based on shelf-life.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Bento Card 1 */}
-              <div className="md:col-span-2 group relative overflow-hidden rounded-2xl border border-border bg-background p-10 flex flex-col justify-between transition-all hover:shadow-lg duration-300">
-                <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Globe className="h-[120px] w-[120px] text-primary" />
-                </div>
-                <div className="max-w-md">
-                  <Warehouse className="text-primary h-10 w-10 mb-6" />
-                  <h3 className="font-heading text-2xl font-bold text-text-primary mb-4">Real-time Surplus Mesh</h3>
-                  <p className="text-text-secondary mb-8 leading-relaxed">
-                    Our platform connects supermarket inventory systems directly to local redistribution hubs, identifying surplus within seconds of shelf clearing.
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold tracking-wider">Active Grid</span>
-                  <span className="bg-accent-tint text-text-primary px-3 py-1 rounded-full text-xs font-bold tracking-wider">V2.4 Protocol</span>
-                </div>
+            {/* Step 2 */}
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-secondary">
+                <Heart className="h-10 w-10" />
               </div>
+              <h3 className="font-heading font-bold text-xl text-foreground">2. NGO Claims</h3>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                NGOs browse local listings sorted by AI priority and claim items atomically.
+              </p>
+            </div>
 
-              {/* Bento Card 2 */}
-              <div className="group relative overflow-hidden rounded-2xl border border-border bg-background p-10 flex flex-col justify-between transition-all hover:shadow-lg duration-300">
-                <div>
-                  <Truck className="text-primary h-10 w-10 mb-6" />
-                  <h3 className="font-heading text-2xl font-bold text-text-primary mb-4">Adaptive Fleet</h3>
-                  <p className="text-text-secondary leading-relaxed">
-                    Leveraging electric transit to minimize carbon while maximizing neighborhood reach.
-                  </p>
-                </div>
-                <div className="mt-8 rounded-lg overflow-hidden border border-border/30 h-40">
-                  <img 
-                    className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" 
-                    alt="Cyan electric delivery vans parked in a row" 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8-BqpmruDY_7pnMnIxYI5e-97rVMiJE0WqY2zgbvjGnWVolAQ0eZ5geRNGhfOr0rGGhPAlQjLsgXRgR-STI0Oo_MnTdq8grWuUYhVcGypnqskFXfBVgHMeOPfK_s-o-hSuKLld6P5WyMh0olPYpfHTXGTERJdNN6aMdGov4EH6VeRHkB9ztggmCIIVMnYnww26cnDqvj8auyrgVjWTCcRVCCLCSJJQ-xBb_gnr6h2mr467IQmHhLlng"
-                  />
-                </div>
+            {/* Step 3 */}
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md text-primary">
+                <Navigation className="h-10 w-10" />
               </div>
-
-              {/* Bento Card 3 */}
-              <div className="group relative overflow-hidden rounded-2xl border border-border bg-background p-10 flex flex-col justify-between transition-all hover:shadow-lg duration-300">
-                <div>
-                  <Bolt className="text-primary h-10 w-10 mb-6" />
-                  <h3 className="font-heading text-2xl font-bold text-text-primary mb-4">Precision Analytics</h3>
-                  <p className="text-text-secondary leading-relaxed">
-                    Data-driven proof of impact at every terminal point. Transparent and auditable.
-                  </p>
-                </div>
-                <div className="mt-8 space-y-4">
-                  <div className="h-2.5 w-full bg-border rounded-full overflow-hidden">
-                    <div className="h-full bg-primary w-[85%]"></div>
-                  </div>
-                  <div className="h-2.5 w-full bg-border rounded-full overflow-hidden">
-                    <div className="h-full bg-accent-amber w-[62%]"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bento Card 4 */}
-              <div className="md:col-span-2 group relative overflow-hidden rounded-2xl border border-border bg-background p-10 transition-all hover:shadow-lg duration-300 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div className="order-2 md:order-1">
-                  <h3 className="font-heading text-2xl font-bold text-text-primary mb-4">Cold Chain Integrity</h3>
-                  <p className="text-text-secondary mb-6 leading-relaxed">
-                    IoT sensors monitor thermal stability throughout the journey, ensuring nutrient density is preserved from farm to table.
-                  </p>
-                  <a className="text-primary font-bold text-sm flex items-center gap-2 hover:translate-x-1 transition-transform" href="#">
-                    Explore Technology <ArrowRight className="h-4 w-4" />
-                  </a>
-                </div>
-                <div className="order-1 md:order-2 rounded-xl overflow-hidden border border-border h-56">
-                  <img 
-                    className="w-full h-full object-cover" 
-                    alt="Smart cold-storage containers with digital screens" 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcAafDIvSix7y9P-A-m6BPFrdkcE8JwptT-Ia1k3kDhDSGxBuiTOWSqBuanXU42azy47J_6xMDcGUDpeyZh-SMJCZvRp1BHF8J1u_w5rAmwKEiEaCthhDHLcEmYQ0I3dqkcJhdX3Q-lDiTe1VgzAZWbBgAhyg_Y3QG_JETdfRCBUxOmiz4I0mg5A8DqFFKtwRvy8f3IZ18hin761-p_TWYg_rBdoyBilMy8PHOFb7MmrGFU3tJ7xuPhg"
-                  />
-                </div>
-              </div>
+              <h3 className="font-heading font-bold text-xl text-foreground">3. Volunteer Delivers</h3>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                Volunteers choose unassigned claims, accept delivery tasks, and coordinate handovers.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Systemic Transformation Section */}
-        <section id="systemic" className="py-24 px-6 md:px-12 bg-background">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="relative">
-              <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#00f0ff]/10 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#273fff]/10 rounded-full blur-3xl"></div>
-              
-              <div className="relative bg-background border border-border rounded-2xl p-8 shadow-xl space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-accent-tint flex items-center justify-center">
-                    <Heart className="h-6 w-6 text-primary" />
-                  </div>
-                  <h4 className="font-heading text-2xl font-bold text-text-primary">Impact Network</h4>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-4 bg-card rounded-lg border border-border">
-                    <span className="text-sm font-semibold">Active Delivery Nodes</span>
-                    <span className="font-heading text-2xl text-primary font-bold">2,840</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-card rounded-lg border border-border">
-                    <span className="text-sm font-semibold">Monthly GHG Reduction</span>
-                    <span className="font-heading text-2xl text-accent-amber font-bold">142t</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 bg-card rounded-lg border border-border">
-                    <span className="text-sm font-semibold">Resource Optimization</span>
-                    <span className="font-heading text-2xl text-primary font-bold">+38%</span>
-                  </div>
-                </div>
-
-                <div className="pt-4 rounded-lg overflow-hidden border border-border">
-                  <img 
-                    className="w-full h-48 object-cover" 
-                    alt="Sophisticated data visualization node map" 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5IKHLojyjMhE_Nl4f0J1qC51EUIyNBLw7HZrXTEApuyYMSwZFCA0sgQfZBU_Xd3ck3hJsu7LybuWPvEB_CDDHJDF6oj4pn1O-FPScdHhBNz1e0ShVRYnnrLqCuyb5-h06lpLm0sGErb__9gahUIg6CB7v-lJm_Q2I92LMUBC9yhnDMIV2DMwZdEsKElLDd9osha1v0NBsph1b84Cx7rXz4RrI5NaGG81cqGIih6dFbEigieznvE4zow"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-primary tracking-widest uppercase">Systemic Transformation</span>
-                <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-text-primary leading-tight">
-                  The Impact is <span className="cyan-gradient-text">Systemic.</span>
-                </h2>
-                <p className="text-lg text-text-secondary leading-relaxed">
-                  We don't just move food; we re-engineer the logistics of care. By creating a high-performance network for surplus redistribution, we're building the infrastructure for a zero-waste future.
-                </p>
-              </div>
-
-              <ul className="space-y-6">
-                <li className="flex gap-4">
-                  <ShieldCheck className="h-6 w-6 text-primary shrink-0 mt-1" />
-                  <div>
-                    <h5 className="text-lg font-bold text-text-primary">Zero-Loss Distribution</h5>
-                    <p className="text-sm text-text-secondary leading-relaxed mt-1">Our predictive routing ensures that 99% of surplus reaches a final destination before expiration.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <ShieldCheck className="h-6 w-6 text-primary shrink-0 mt-1" />
-                  <div>
-                    <h5 className="text-lg font-bold text-text-primary">Sustainable Ecosystems</h5>
-                    <p className="text-sm text-text-secondary leading-relaxed mt-1">Every mile traveled is carbon-tracked and offset through localized biodiversity initiatives.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <ShieldCheck className="h-6 w-6 text-primary shrink-0 mt-1" />
-                  <div>
-                    <h5 className="text-lg font-bold text-text-primary">Empowering Communities</h5>
-                    <p className="text-sm text-text-secondary leading-relaxed mt-1">Direct platform access for local shelters allows them to request specific nutritional needs in real-time.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Ready to Activate CTA Section */}
-        <section id="activate" className="py-24 px-6 md:px-12 relative overflow-hidden bg-primary text-primary-foreground mx-4 md:mx-6 rounded-[2.5rem] mb-12">
-          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, var(--color-success-bg) 0%, transparent 70%)', backgroundSize: '150% 150%' }}></div>
-          
-          <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8">
-            <h2 className="font-heading text-4xl md:text-5xl font-extrabold">Ready to Activate?</h2>
-            <p className="text-lg opacity-90 max-w-2xl mx-auto leading-relaxed">
-              Join the network of logistics partners, NGOs, and volunteers building the next generation of human-impact infrastructure.
+        {/* Environmental impact highlight card */}
+        <div className="glass-card-accent rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 mt-16">
+          <div className="space-y-3 max-w-lg">
+            <span className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1">
+              <Globe className="h-3.5 w-3.5 animate-spin" /> Environmental Balance Sheet
+            </span>
+            <h3 className="font-heading text-2xl font-bold text-foreground">{content.impact_heading}</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {content.impact_body}
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-              <Link href="/signup" className="bg-background text-primary px-12 py-5 rounded-full font-bold hover:brightness-110 active:scale-95 transition-all shadow-xl">
-                Partner with Us
-              </Link>
-              <Link href="/signup" className="bg-transparent border-2 border-white/30 text-primary-foreground px-12 py-5 rounded-full font-bold hover:bg-white/10 active:scale-95 transition-all">
-                Volunteer Grid
-              </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-6 md:w-80 shrink-0">
+            <div className="text-center md:text-left">
+              <span className="font-heading text-2xl font-black text-foreground block">{content.impact_stat_1}</span>
+              <span className="text-[10px] text-muted-foreground block mt-1 uppercase font-bold">{content.impact_stat_1_label}</span>
+            </div>
+            <div className="text-center md:text-left">
+              <span className="font-heading text-2xl font-black text-foreground block">{content.impact_stat_2}</span>
+              <span className="text-[10px] text-muted-foreground block mt-1 uppercase font-bold">{content.impact_stat_2_label}</span>
             </div>
           </div>
-        </section>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-16 px-6 bg-card border-t border-border rounded-t-[2.5rem]">
-        <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto gap-8">
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <div className="flex items-center gap-2.5">
-              <Leaf className="h-6 w-6 text-primary stroke-[2.5]" />
-              <span className="font-heading text-2xl font-bold text-primary tracking-tight">Food Bridge</span>
-            </div>
-            <p className="text-xs text-text-tertiary">© {new Date().getFullYear()} Food Bridge Logistics. All rights reserved.</p>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-sm font-semibold text-text-secondary">
-            <Link className="hover:text-primary transition-colors" href="/privacy">Privacy Policy</Link>
-            <Link className="hover:text-primary transition-colors" href="/terms">Terms of Service</Link>
-            <Link className="hover:text-primary transition-colors" href="/contact">Contact</Link>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#10B981] animate-pulse"></span>
-              Network Status
-            </span>
-          </div>
+      <footer className="border-t border-border py-8 text-center text-muted-foreground text-xs mt-12">
+        <div className="flex items-center justify-center gap-6 mb-3">
+          <Link href="/about" className="hover:text-primary transition-colors font-medium">About</Link>
+          <Link href="/faq" className="hover:text-primary transition-colors font-medium">FAQ</Link>
+          <Link href="/signup" className="hover:text-primary transition-colors font-medium">Get Started</Link>
         </div>
+        <p>© {new Date().getFullYear()} Food Bridge. Dedicated to Zero Waste.</p>
       </footer>
     </div>
   )
