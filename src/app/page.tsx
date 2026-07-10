@@ -22,7 +22,7 @@ export default async function LandingPage() {
     if (delivered) {
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      
+
       delivered.forEach(d => {
         mealsDelivered += Number(d.estimated_meals) || 0;
         kgSaved += Number(d.quantity) || 0;
@@ -148,7 +148,7 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
-        
+
         {/* Social Proof */}
         <section className="bg-surface-container-low transition-all duration-1000 opacity-100 translate-y-0 py-10">
           <div className="max-w-[1280px] mx-auto px-4 md:px-8">
@@ -231,7 +231,7 @@ export default async function LandingPage() {
                 <span className="material-symbols-outlined text-[18px]">star</span>
                 <span>Joyful Impact Report</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight">Saving the Planet, <br/>One Delicious Meal at a Time</h2>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">Saving the Planet, <br />One Delicious Meal at a Time</h2>
               <p className="text-lg opacity-90 leading-relaxed font-medium">
                 Food waste generates nearly 10% of global emissions. For every 1 kg redirected through Food Bridge, we avoid 2.5 kg of CO2e. That's a huge win for Earth!
               </p>
