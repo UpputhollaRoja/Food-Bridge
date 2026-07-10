@@ -15,16 +15,13 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-transparent px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
-          <div
-            className="flex h-12 w-12 items-center justify-center rounded-xl shadow-lg animate-float"
-            style={{ background: 'var(--brand-green)', boxShadow: '0 8px 20px -4px rgba(31, 93, 61, 0.35)' }}
-          >
-            <Heart className="h-6 w-6 stroke-[2.5]" style={{ color: '#fff' }} />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 to-fuchsia-500 shadow-lg shadow-purple-500/20">
+            <Heart className="h-6 w-6 text-neutral-950 stroke-[2.5]" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             Choose New Password
           </h2>
-          <p className="mt-2 text-sm font-medium" style={{ color: 'var(--brand-green)' }}>
+          <p className="mt-2 text-sm text-purple-700 dark:text-purple-400 font-medium">
             Please enter your new password below to secure your account
           </p>
         </div>
@@ -53,7 +50,7 @@ export default function ResetPasswordPage() {
                   type="password"
                   required
                   placeholder="••••••••"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-550 shadow-sm transition-colors"
+                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-550 shadow-sm focus:ring-1 focus:ring-purple-550 transition-colors"
                 />
               </div>
             </div>
@@ -73,7 +70,7 @@ export default function ResetPasswordPage() {
                   type="password"
                   required
                   placeholder="••••••••"
-                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-550 shadow-sm transition-colors"
+                  className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm placeholder-slate-400 dark:placeholder-slate-550 shadow-sm focus:ring-1 focus:ring-purple-550 transition-colors"
                 />
               </div>
             </div>
@@ -82,10 +79,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white focus:outline-none transition-all duration-300 disabled:opacity-50 shadow-lg"
-              style={{ background: 'var(--brand-green)', boxShadow: '0 4px 14px -2px rgba(31,93,61,0.4)' }}
-              onMouseOver={e => !isPending && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-              onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 disabled:opacity-50 shadow-lg shadow-purple-500/20"
             >
               {isPending ? (
                 'Saving password...'
