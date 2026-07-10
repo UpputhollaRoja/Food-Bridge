@@ -423,10 +423,7 @@ export default function AdminDashboardClient({
                         <button
                           onClick={() => handleVerify(user.id, 'verified')}
                           disabled={loadingId === user.id}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-transparent text-xs font-bold text-primary-foreground transition-colors shadow-md"
-                          style={{ background: 'var(--brand-green)' }}
-                          onMouseOver={e => (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-                          onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+                          className="btn-primary flex items-center gap-1.5 px-4 py-2"
                         >
                           <Check className="h-3.5 w-3.5 stroke-[2.5]" />
                           <span>Verify</span>

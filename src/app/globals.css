@@ -133,6 +133,8 @@
   --input: #c2c6d6;
   --ring: #0058be;
   --radius: 1rem;
+  --brand-green: #0d9488;
+  --brand-green-hover: #0f766e;
 }
 
 .dark {
@@ -155,6 +157,8 @@
   --border: #424754;
   --input: #424754;
   --ring: #adc6ff;
+  --brand-green: #14b8a6;
+  --brand-green-hover: #0d9488;
 }
 
 @layer base {
@@ -180,4 +184,17 @@
 .hover-lift:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0px 16px 40px rgba(0, 90, 194, 0.15);
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-full font-bold shadow-[0_8px_16px_rgba(37,99,235,0.2)] transition-all duration-300 border-none !important;
+}
+.btn-primary:hover:not(:disabled) {
+  @apply from-teal-600 to-blue-700 shadow-[0_8px_20px_rgba(37,99,235,0.3)] !important;
+}
+.btn-primary:active:not(:disabled) {
+  @apply scale-[0.98] !important;
+}
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed !important;
 }

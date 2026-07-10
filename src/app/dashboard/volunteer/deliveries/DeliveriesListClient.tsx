@@ -248,10 +248,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                     <button
                       onClick={() => handleAccept(del.id)}
                       disabled={submittingId !== null}
-                      className="w-full lg:w-auto py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white transition-colors shadow-lg"
-                      style={{ background: 'var(--brand-green)' }}
-                      onMouseOver={e => submittingId === null && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-                      onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+                      className="btn-primary w-full lg:w-auto py-3.5 px-6"
                     >
                       {submittingId === del.id ? 'Accepting...' : 'Accept Job'}
                     </button>
@@ -422,10 +419,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                       <button
                         onClick={() => handleConfirmPickup(del.id)}
                         disabled={submittingId !== null}
-                        className="py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white transition-colors shadow-sm"
-                        style={{ background: 'var(--brand-green)' }}
-                        onMouseOver={e => submittingId === null && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-                        onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+                        className="btn-primary py-3.5 px-6"
                       >
                         {submittingId === del.id ? 'Updating...' : 'Confirm Food Picked Up'}
                       </button>
@@ -436,10 +430,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                       <button
                         onClick={() => handleStartTransit(del.id)}
                         disabled={submittingId !== null}
-                        className="py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white transition-colors shadow-sm"
-                        style={{ background: 'var(--brand-green)' }}
-                        onMouseOver={e => submittingId === null && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-                        onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+                        className="btn-primary py-3.5 px-6"
                       >
                         {submittingId === del.id ? 'Updating...' : 'Start Transit (On My Way)'}
                       </button>
@@ -460,10 +451,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                         <button
                           onClick={() => handleCompleteDelivery(del.id)}
                           disabled={submittingId !== null || !(proofPaths[del.id]?.length > 0)}
-                          className="w-full py-2.5 px-6 border border-transparent rounded-xl text-xs font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
-                          style={{ background: 'var(--brand-green)' }}
-                          onMouseOver={e => !(submittingId !== null || !(proofPaths[del.id]?.length > 0)) && (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-                          onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+                          className="btn-primary w-full py-3.5 px-6"
                         >
                           {submittingId === del.id ? 'Submitting...' : 'Complete Delivery'}
                         </button>

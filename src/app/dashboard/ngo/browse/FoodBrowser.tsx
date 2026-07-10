@@ -428,16 +428,7 @@ export default function FoodBrowser({ initialDonations, verificationStatus }: Fo
                       <button
                         onClick={() => handleClaim(donation.id)}
                         disabled={claimingId !== null}
-                        className="w-full py-2.5 px-4 border border-transparent rounded-xl text-xs font-bold text-white focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                        style={{
-                          background: 'var(--brand-green)',
-                          boxShadow: '0 4px 14px -2px rgba(31,93,61,0.3)',
-                        }}
-                        onMouseOver={(e) =>
-                          claimingId === null &&
-                          (e.currentTarget.style.background = 'var(--brand-green-hover)')
-                        }
-                        onMouseOut={(e) => (e.currentTarget.style.background = 'var(--brand-green)')}
+                        className="btn-primary w-full py-3.5 px-4"
                       >
                         {claimingId === donation.id ? 'Claiming Item...' : 'Claim Surplus Food'}
                       </button>

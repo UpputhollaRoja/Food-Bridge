@@ -151,10 +151,7 @@ export default function ClaimsListClient({ initialClaims, ngoLat, ngoLng, ngoAdd
           <div className="mt-6">
             <Link
               href="/dashboard/ngo/browse"
-              className="inline-flex items-center justify-center py-2.5 px-5 rounded-xl text-xs font-bold text-white transition-colors shadow-lg"
-              style={{ background: 'var(--brand-green)' }}
-              onMouseOver={e => (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-              onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+              className="btn-primary inline-flex items-center justify-center py-3.5 px-6"
             >
               Browse Food
             </Link>
@@ -272,12 +269,9 @@ export default function ClaimsListClient({ initialClaims, ngoLat, ngoLng, ngoAdd
                     <button
                       onClick={() => handleConfirmReceipt(claim.id, donation.id, delivery.id)}
                       disabled={loadingId !== null}
-                      className="flex items-center gap-1 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all duration-300 shadow-sm"
-                      style={{ background: 'var(--brand-green)' }}
-                      onMouseOver={e => (e.currentTarget.style.background = 'var(--brand-green-hover)')}
-                      onMouseOut={e => (e.currentTarget.style.background = 'var(--brand-green)')}
+                      className="btn-primary flex items-center justify-center gap-2 px-6 py-3"
                     >
-                      {loadingId === claim.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+                      {loadingId === claim.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
                       <span>Confirm Receipt</span>
                     </button>
                   )}
