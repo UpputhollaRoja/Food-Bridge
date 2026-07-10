@@ -55,3 +55,37 @@ Before deploying the application to production:
    - Toggle **Enable Custom SMTP** on.
    - Fill in your SMTP provider host, port, username, password, and sender email details (using a service like **Resend**, **Postmark**, **SendGrid**, or **Amazon SES**).
    - This ensures secure, unlimited, and brand-consistent transactional emails to your users.
+
+---
+
+## 🛡️ Pre-Deployment Audit Results
+
+An end-to-end audit covering both the backend and frontend systems of the Food Bridge application was completed successfully.
+
+### 1. Backend Security & Data Integrity
+
+- **Fixed:** The `profiles` table Row Level Security (RLS) policies were missing `WITH CHECK` constraints for `UPDATE` operations. This allowed any authenticated user to manually escalate their privileges by setting `role = 'admin'` or `verification_status = 'verified'` via the client API.
+- **Correction:** 
+  - Created a PostgreSQL trigger that blocks non-admin users from modifying their `role` or `verification_status`.
+  - Updated `src/app/onboarding/actions.ts` to use `createAdminClient` so that legitimate onboarding changes can bypass the trigger safely.
+
+### 2. API Security & Efficiency
+
+- **Fixed:** The AI endpoints (`/api/ai/impact-report`, `/api/ai/match`, `/api/ai/prioritize`) were completely unauthenticated. An attacker could flood these endpoints, resulting in excessive OpenAI API costs or quota exhaustion.
+- **Correction:** 
+  - Modified all three AI API routes to initialize the Supabase client using the request cookies and verify the session using `supabase.auth.getUser()`.
+  - Unauthenticated requests are now rejected early with `401 Unauthorized` before any expensive LLM operations are triggered.
+
+### 3. Frontend Performance & Accessibility
+
+- **Fixed:** Images stored in Supabase storage were not configured for optimization by the Next.js `<Image>` component.
+- **Correction:** Added `dyegriefrxgoqwgtkqdm.supabase.co` to the `remotePatterns` array in `next.config.ts`, enabling automatic Next.js image optimization and CDN edge caching.
+- **Fixed:** React hooks in `NotificationBell.tsx` and `ReportModal.tsx` were incorrectly calling `setState` inside `useEffect` bodies, triggering cascading re-renders. Refactored to align with React 18 Strict Mode best practices.
+
+### 4. Runtime UI & Responsive Design
+
+An automated browser test navigated through the core user flows on both **Desktop (1280x800)** and **Mobile (375x812)** viewports.
+- **Homepage:** Scales beautifully. Hero section typography and cards flow vertically on mobile without overflow or Cumulative Layout Shift (CLS).
+- **Login / Signup:** Input fields are properly accessible, responsive, and maintain contrast.
+- **Route Protection:** Direct navigation to `/onboarding` correctly redirected the unauthenticated session to `/login`.
+- **Console Errors:** 0 client-side JS exceptions or network failures during navigation.

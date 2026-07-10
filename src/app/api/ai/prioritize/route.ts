@@ -27,6 +27,11 @@ export async function POST(req: Request) {
     }
 
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
     // Fetch donation details
     const { data: donation, error: fetchError } = await supabase
@@ -100,7 +105,7 @@ Determine an urgency priority score from 0 (very low priority) to 100 (critical,
   }
 }
 
-function calculateDeterministicPriority(donation: any) {
+export function calculateDeterministicPriority(donation: any) {
   const expiry = new Date(donation.expiry_at).getTime()
   const now = Date.now()
   const hoursLeft = (expiry - now) / (1000 * 60 * 60)

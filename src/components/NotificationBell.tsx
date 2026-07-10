@@ -33,6 +33,9 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
   // Fetch initial notifications
   React.useEffect(() => {
     setMounted(true)
+  }, [])
+
+  React.useEffect(() => {
     const fetchNotifications = async () => {
       const { data, error } = await supabase
         .from('notifications')

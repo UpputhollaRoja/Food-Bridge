@@ -23,9 +23,6 @@ export default function ReportModal({ isOpen, onClose, reportedUserId, reportedU
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
-      setReason('')
-      setError(null)
-      setSuccess(false)
     }
     return () => {
       document.body.style.overflow = ''
