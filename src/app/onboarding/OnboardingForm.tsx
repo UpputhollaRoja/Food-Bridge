@@ -5,6 +5,8 @@ import { saveOnboarding } from './actions'
 import LocationPicker from '@/components/LocationPicker'
 import { createClient } from '@/lib/supabase/client'
 import { MapPin, Phone, Building2, Upload, ShieldCheck, ShieldAlert, Sparkles, Heart } from 'lucide-react'
+import { generateAndSaveUserKeys, KeyPair } from '@/lib/keys'
+import { encryptForSelf } from '@/lib/crypto'
 
 function getErrorMessage(err: any): string {
   if (!err) return ''
@@ -28,10 +30,11 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
   const [docPath, setDocPath] = React.useState('')
   const [uploadError, setUploadError] = React.useState('')
   const [selectedRole, setSelectedRole] = React.useState(userRole)
+  const [keys, setKeys] = React.useState<KeyPair | null>(null)
 
   React.useEffect(() => {
     if (userEmail) {
-      // no-op to satisfy unused variable check
+      generateAndSaveUserKeys(userEmail).then((k) => setKeys(k))
     }
   }, [userEmail])
 
@@ -87,6 +90,23 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
 
   const isBusinessRole = selectedRole === 'donor' || selectedRole === 'ngo'
 
+  const handleFormSubmit = (formData: FormData) => {
+    if (keys) {
+      const phone = formData.get('phone') as string || ''
+      const address = formData.get('address') as string || ''
+      const docUrl = formData.get('docUrl') as string || ''
+
+      const payload = JSON.stringify({ phone, address, docUrl })
+      const encrypted = encryptForSelf(payload, keys.secretKey, keys.publicKey)
+      
+      formData.set('encrypted_data', JSON.stringify(encrypted))
+      formData.set('public_key', keys.publicKey)
+    }
+    
+    // Proceed with the server action
+    formAction(formData)
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 relative overflow-hidden">
       {/* Decorative Background Elements */}
@@ -106,7 +126,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
         </div>
 
         <div className="relative rounded-[2rem] bg-white p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-          <form action={formAction} className="space-y-6">
+          <form action={handleFormSubmit} className="space-y-6">
             {getErrorMessage(state?.error) && (
               <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500 dark:text-red-400">
                 <ShieldAlert className="h-4 w-4 shrink-0" />
@@ -273,10 +293,10 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={isPending || uploadingDoc}
+                disabled={isPending || uploadingDoc || (isBusinessRole && !coords.address)}
                 className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
               >
-                {isPending ? 'Saving profile...' : 'Complete Registration'}
+                {isPending ? 'Saving profile...' : (isBusinessRole && !coords.address) ? 'Set Location to Continue' : 'Complete Registration'}
               </button>
             </div>
           </form>

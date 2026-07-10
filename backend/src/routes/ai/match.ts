@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { createUserClient } from '../../lib/supabase'
 import { getOpenAIClient } from '../../lib/openai'
 import { requireAuth } from '../../middleware/auth'
+import { checkRateLimit, recordUsage } from '../../lib/rate-limiter'
 
 const router = Router()
 
@@ -104,8 +105,10 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
       ),
     }))
 
-    // Try OpenAI first
-    const openai = getOpenAIClient()
+    // Try OpenAI first if within rate limit
+    const isWithinLimits = await checkRateLimit('match')
+    const openai = isWithinLimits ? getOpenAIClient() : null
+
     if (openai) {
       try {
         const prompt = `You are coordinating food waste logistics. Rank these NGOs as recipients for a food donation.
@@ -138,6 +141,10 @@ Return ONLY a JSON object: { "matches": [ { "ngo_id": string, "rank": number, "f
             organization_name: ngoMap.get(m.ngo_id)?.name ?? 'Unknown',
             distance_km: ngoMap.get(m.ngo_id)?.distanceKm ?? 0,
           }))
+          // Record usage based on returned usage stats
+          const tokens = completion.usage?.total_tokens || 0
+          await recordUsage('match', tokens)
+
           res.json({ matches: enriched, source: 'openai' })
           return
         }

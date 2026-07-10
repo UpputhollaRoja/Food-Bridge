@@ -39,7 +39,7 @@ function LoginFormContent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-on-primary shadow-lg shadow-primary/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg" style={{ backgroundColor: '#1C2E4A' }}>
             <Heart className="h-6 w-6 stroke-[2.5]" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-on-background sm:text-4xl">
@@ -91,7 +91,7 @@ function LoginFormContent() {
                     type="email"
                     required
                     placeholder="name@organization.com"
-                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
@@ -120,7 +120,7 @@ function LoginFormContent() {
                     type={showPassword ? "text" : "password"}
                     required
                     placeholder="••••••••"
-                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-10 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-10 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
                   <button
                     type="button"
@@ -136,7 +136,8 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isLoginPending}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 disabled:opacity-50 shadow-lg shadow-primary/20"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
+                style={{ backgroundColor: '#1C2E4A' }}
               >
                 {isLoginPending ? 'Logging in...' : 'Log In'}
               </button>
@@ -154,7 +155,7 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-outline-variant rounded-xl text-sm font-semibold text-on-surface bg-surface hover:bg-surface-container-low transition-all duration-300 focus:outline-none"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-outline-variant rounded-full text-sm font-semibold text-on-surface bg-surface hover:bg-surface-container-low transition-all duration-300 focus:outline-none"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -209,7 +210,7 @@ function LoginFormContent() {
                     type="email"
                     required
                     placeholder="name@organization.com"
-                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
@@ -218,7 +219,8 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isForgotPending}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 disabled:opacity-50 shadow-lg shadow-primary/20"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
+                style={{ backgroundColor: '#1C2E4A' }}
               >
                 {isForgotPending ? (
                   'Sending...'

@@ -26,30 +26,43 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
   }
 
   const role = (formData.get('role') as string) || profile.role
-  const phone = formData.get('phone') as string
-  const address = formData.get('address') as string
   const organizationName = formData.get('organizationName') as string
-  const docUrl = formData.get('docUrl') as string
   const latStr = formData.get('latitude') as string
   const lngStr = formData.get('longitude') as string
+
+  // E2E encryption fields
+  const encryptedData = formData.get('encrypted_data') as string
+  const publicKey = formData.get('public_key') as string
+
+  // Fallback plaintext (for volunteers or if encryption fails/bypassed)
+  const phone = formData.get('phone') as string
+  const address = formData.get('address') as string
+  const docUrl = formData.get('docUrl') as string
 
   const latitude = latStr ? parseFloat(latStr) : 37.7749 // default fallback coordinates (SF)
   const longitude = lngStr ? parseFloat(lngStr) : -122.4194
 
-  const updateData: Record<string, string | number | string[] | null> = {
+  const updateData: Record<string, string | number | string[] | any | null> = {
     role,
-    phone,
-    address,
     latitude,
     longitude,
     updated_at: new Date().toISOString(),
+  }
+
+  if (encryptedData && publicKey) {
+    updateData.encrypted_data = JSON.parse(encryptedData)
+    updateData.public_key = publicKey
+  } else {
+    // Only set plaintext if encryption wasn't used
+    updateData.phone = phone
+    updateData.address = address
   }
 
   if (role === 'donor' || role === 'ngo') {
     updateData.organization_name = organizationName
     // Keep verification status as pending so admins must approve them
     updateData.verification_status = 'pending'
-    if (docUrl) {
+    if (docUrl && !encryptedData) {
       updateData.verification_documents = [docUrl]
     }
   } else {

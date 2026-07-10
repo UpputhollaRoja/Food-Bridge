@@ -20,6 +20,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      console.warn('⚠️ WARNING: SMTP credentials are not configured in production. Emails may fail to send.');
+    }
+  }
+
   return (
     <html
       lang="en"
