@@ -293,7 +293,7 @@ export default function AdminDashboardClient({
           )}
           {/* Stats row */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-2xl glass-card p-5 flex items-center justify-between shadow-sm">
+            <div className="stat-card-button p-5 flex items-center justify-between">
               <div>
                 <span className="text-xs font-semibold text-muted-foreground block font-medium">Active Platform Users</span>
                 <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{stats.active_users || 0}</span>
@@ -302,7 +302,7 @@ export default function AdminDashboardClient({
                 <Users className="h-5 w-5" />
               </div>
             </div>
-            <div className="rounded-2xl glass-card p-5 flex items-center justify-between shadow-sm">
+            <div className="stat-card-button p-5 flex items-center justify-between">
               <div>
                 <span className="text-xs font-semibold text-muted-foreground block font-medium">Food Recovery Rate</span>
                 <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{Math.round(stats.recovery_rate || 0)}%</span>
@@ -311,7 +311,7 @@ export default function AdminDashboardClient({
                 <Percent className="h-5 w-5" />
               </div>
             </div>
-            <div className="rounded-2xl glass-card p-5 flex items-center justify-between shadow-sm">
+            <div className="stat-card-button p-5 flex items-center justify-between">
               <div>
                 <span className="text-xs font-semibold text-muted-foreground block font-medium">Delivery Completion</span>
                 <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{Math.round(stats.completion_rate || 0)}%</span>

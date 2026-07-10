@@ -79,11 +79,11 @@ export default function VolunteerDashboardClient({ profile, stats, activeDeliver
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="rounded-2xl glass-card p-5">
+        <div className="stat-card-button p-5">
           <span className="text-xs font-semibold text-muted-foreground block font-medium">Deliveries Completed</span>
           <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{stats.deliveries_completed || 0} runs</span>
         </div>
-        <div className="rounded-2xl glass-card p-5">
+        <div className="stat-card-button p-5">
           <span className="text-xs font-semibold text-muted-foreground block font-medium">Average Transit Time</span>
           <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">
             {stats.avg_delivery_time_hours ? `${stats.avg_delivery_time_hours.toFixed(1)} hrs` : '0.0 hrs'}

@@ -168,15 +168,15 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
         <div className="lg:col-span-8 space-y-8">
           {/* Stat Cards */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-2xl glass-card p-5">
+            <div className="stat-card-button p-5">
               <span className="text-xs font-semibold text-muted-foreground block">Total Listings</span>
               <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{stats.total_donations || 0}</span>
             </div>
-            <div className="rounded-2xl glass-card p-5">
+            <div className="stat-card-button p-5">
               <span className="text-xs font-semibold text-muted-foreground block">Meals Provided</span>
               <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">~{stats.meals_donated || 0}</span>
             </div>
-            <div className="rounded-2xl glass-card p-5">
+            <div className="stat-card-button p-5">
               <span className="text-xs font-semibold text-muted-foreground block">Waste Saved</span>
               <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{stats.waste_prevented_kg || 0} kg</span>
             </div>

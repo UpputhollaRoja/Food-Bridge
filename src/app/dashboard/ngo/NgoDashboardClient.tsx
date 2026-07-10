@@ -122,15 +122,15 @@ export default function NgoDashboardClient({ profile, stats, initialClaims }: Ng
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="rounded-2xl glass-card p-5">
+        <div className="stat-card-button p-5">
           <span className="text-xs font-semibold text-muted-foreground block">Claims Received</span>
           <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{stats.completed_claims || 0}</span>
         </div>
-        <div className="rounded-2xl glass-card p-5">
+        <div className="stat-card-button p-5">
           <span className="text-xs font-semibold text-muted-foreground block">Beneficiaries Fed</span>
           <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">~{stats.beneficiaries_served_est || 0}</span>
         </div>
-        <div className="rounded-2xl glass-card p-5">
+        <div className="stat-card-button p-5">
           <span className="text-xs font-semibold text-muted-foreground block">Rescued Shipments</span>
           <span className="font-heading text-2xl font-black text-foreground mt-1.5 block">{stats.donations_received || 0}</span>
         </div>
