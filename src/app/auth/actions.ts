@@ -30,23 +30,28 @@ export async function login(prevState: any, formData: FormData) {
   if (error) {
     let msg = cleanErrorMessage(error)
     if (msg.toLowerCase().includes('email not confirmed') || msg.toLowerCase().includes('email not verified')) {
-      msg = 'pls verify before login'
+      msg = 'Please verify your email before logging in'
     } else if (msg === 'Invalid login credentials') {
-      // Supabase masks unverified email errors as invalid credentials by default to prevent enumeration
-      msg = 'Invalid login credentials (or pls verify before login)'
+      msg = 'Invalid login credentials (or please verify before login)'
     }
     return { error: msg }
   }
 
-  const { data: profile } = await supabase
+  // Fetch user profile with role
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('role')
     .eq('id', signInData.user.id)
     .single()
 
+  if (profileError || !profile) {
+    return { error: 'Could not fetch user profile. Please try again.' }
+  }
+
   revalidatePath('/', 'layout')
   
-  if (profile?.role) {
+  // Redirect based on role
+  if (profile.role && ['donor', 'ngo', 'volunteer'].includes(profile.role)) {
     redirect(`/dashboard/${profile.role}`)
   } else {
     redirect('/onboarding')

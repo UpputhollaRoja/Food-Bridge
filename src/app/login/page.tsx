@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useActionState } from 'react'
+import React, { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { login, requestPasswordReset } from '@/app/auth/actions'
 import { createClient } from '@/lib/supabase/client'
-import { Heart, ShieldAlert, Mail, Lock, ArrowLeft, Send, Sparkles, Eye, EyeOff } from 'lucide-react'
+import { Heart, ShieldAlert, Mail, Lock, ArrowLeft, Send, Sparkles, Eye, EyeOff, Loader } from 'lucide-react'
 
 const initialLoginState = {
   error: '',
@@ -19,20 +19,33 @@ const initialForgotState = {
 function LoginFormContent() {
   const [isForgotMode, setIsForgotMode] = React.useState(false)
   const [showPassword, setShowPassword] = React.useState(false)
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const [loginState, loginAction, isLoginPending] = useActionState(login, initialLoginState)
   const [forgotState, forgotAction, isForgotPending] = useActionState(requestPasswordReset, initialForgotState)
   const searchParams = useSearchParams()
   const urlMessage = searchParams.get('message')
   const urlError = searchParams.get('error')
 
+  // Handle form submission with visual feedback
+  const handleLoginSubmit = async (formData: FormData) => {
+    setIsRedirecting(true)
+    await loginAction(formData)
+  }
+
   const handleGoogleLogin = async () => {
-    const supabase = createClient()
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    try {
+      setIsRedirecting(true)
+      const supabase = createClient()
+      await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+    } catch (error) {
+      console.error('Google login error:', error)
+      setIsRedirecting(false)
+    }
   }
 
   return (
@@ -53,6 +66,16 @@ function LoginFormContent() {
         </div>
 
         <div className="relative rounded-3xl bg-surface-container-lowest p-8 shadow-2xl border-2 border-outline-variant/30">
+          {/* Redirecting overlay */}
+          {isRedirecting && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-3xl z-50">
+              <div className="flex flex-col items-center gap-2">
+                <Loader className="h-8 w-8 animate-spin text-blue-600" />
+                <p className="text-sm font-semibold text-on-background">Redirecting...</p>
+              </div>
+            </div>
+          )}
+
           {urlMessage && (
             <div className="mb-6 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 p-3 text-sm text-primary">
               <Sparkles className="h-4 w-4 shrink-0" />
@@ -68,11 +91,11 @@ function LoginFormContent() {
 
           {!isForgotMode ? (
             /* Login Form */
-            <form action={loginAction} className="space-y-6">
-              {loginState?.error && (
+            <form action={handleLoginSubmit} className="space-y-6">
+              {(loginState?.error || isLoginPending) && (
                 <div className="flex items-center gap-2 rounded-lg border border-error/20 bg-error/10 p-3 text-sm text-error">
                   <ShieldAlert className="h-4 w-4 shrink-0" />
-                  <span>{loginState.error}</span>
+                  <span>{loginState?.error || 'Logging in...'}</span>
                 </div>
               )}
 
@@ -90,8 +113,9 @@ function LoginFormContent() {
                     name="email"
                     type="email"
                     required
+                    disabled={isRedirecting || isLoginPending}
                     placeholder="name@organization.com"
-                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -105,7 +129,8 @@ function LoginFormContent() {
                   <button
                     type="button"
                     onClick={() => setIsForgotMode(true)}
-                    className="text-xs font-semibold text-primary hover:text-surface-tint transition-colors focus:outline-none"
+                    disabled={isRedirecting || isLoginPending}
+                    className="text-xs font-semibold text-primary hover:text-surface-tint transition-colors focus:outline-none disabled:opacity-50"
                   >
                     Forgot Password?
                   </button>
@@ -119,13 +144,15 @@ function LoginFormContent() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     required
+                    disabled={isRedirecting || isLoginPending}
                     placeholder="••••••••"
-                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-10 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-10 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none"
+                    disabled={isRedirecting || isLoginPending}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none disabled:opacity-50"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -135,10 +162,19 @@ function LoginFormContent() {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isLoginPending}
-                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)] focus:outline-none"
+                disabled={isRedirecting || isLoginPending}
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoginPending ? 'Logging in...' : 'Log In'}
+                {isRedirecting ? (
+                  <>
+                    <Loader className="h-4 w-4 animate-spin mr-2" />
+                    Logging in...
+                  </>
+                ) : isLoginPending ? (
+                  'Logging in...'
+                ) : (
+                  'Log In'
+                )}
               </button>
 
               {/* Google Login Option */}
@@ -154,7 +190,8 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-outline-variant rounded-full text-sm font-semibold text-on-surface bg-surface hover:bg-surface-container-low transition-all duration-300 focus:outline-none"
+                disabled={isRedirecting || isLoginPending}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-outline-variant rounded-full text-sm font-semibold text-on-surface bg-surface hover:bg-surface-container-low disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -208,8 +245,9 @@ function LoginFormContent() {
                     name="email"
                     type="email"
                     required
+                    disabled={isForgotPending}
                     placeholder="name@organization.com"
-                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-full bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -218,7 +256,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isForgotPending}
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)] focus:outline-none"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isForgotPending ? (
                   'Sending...'
@@ -234,7 +272,8 @@ function LoginFormContent() {
               <button
                 type="button"
                 onClick={() => setIsForgotMode(false)}
-                className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors py-2 focus:outline-none"
+                disabled={isForgotPending}
+                className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors py-2 focus:outline-none disabled:opacity-50"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 <span>Back to Log In</span>
