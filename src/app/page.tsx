@@ -211,7 +211,7 @@ export default async function LandingPage() {
             </div>
             {/* Step 3 */}
             <div className="relative z-10 flex flex-col items-center text-center group">
-              <div className="w-20 h-20 rounded-full bg-tertiary-container text-white flex items-center justify-center shadow-xl mb-8 group-hover:scale-110 transition-transform">
+              <div className="w-20 h-20 rounded-full bg-secondary text-white flex items-center justify-center shadow-xl mb-8 group-hover:scale-110 transition-transform">
                 <span className="text-2xl font-bold">3</span>
               </div>
               <div>
