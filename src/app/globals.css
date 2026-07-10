@@ -6,56 +6,66 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Material Design 3 Theme Colors */
-  --color-tertiary: #006947;
-  --color-primary-container: #2170e4;
-  --color-on-tertiary-fixed: #002113;
-  --color-tertiary-container: #00855b;
-  --color-background: #f8f9ff;
-  --color-on-secondary-fixed: #3d0026;
-  --color-surface: #f8f9ff;
-  --color-on-secondary-container: #76014e;
-  --color-on-surface-variant: #424754;
-  --color-on-tertiary-container: #f5fff6;
-  --color-surface-container-highest: #d3e4fe;
-  --color-tertiary-fixed: #6ffbbe;
-  --color-inverse-primary: #adc6ff;
-  --color-on-surface: #0b1c30;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container: #e5eeff;
-  --color-secondary-fixed-dim: #ffafd3;
-  --color-surface-bright: #f8f9ff;
-  --color-surface-container-low: #eff4ff;
-  --color-on-background: #0b1c30;
-  --color-inverse-on-surface: #eaf1ff;
-  --color-inverse-surface: #213145;
-  --color-surface-dim: #cbdbf5;
-  --color-surface-container-high: #dce9ff;
-  --color-outline: #727785;
-  --color-surface-tint: #005ac2;
-  --color-error: #ba1a1a;
-  --color-secondary-fixed: #ffd8e7;
-  --color-on-tertiary: #ffffff;
-  --color-on-secondary: #ffffff;
-  --color-outline-variant: #c2c6d6;
-  --color-primary-fixed: #d8e2ff;
-  --color-secondary-container: #fc79bd;
-  --color-on-primary-container: #fefcff;
-  --color-primary: #0058be;
-  --color-on-error: #ffffff;
-  --color-on-primary-fixed: #001a42;
-  --color-on-tertiary-fixed-variant: #005236;
-  --color-surface-variant: #d3e4fe;
-  --color-tertiary-fixed-dim: #4edea3;
-  --color-primary-fixed-dim: #adc6ff;
-  --color-secondary: #a43073;
-  --color-on-primary-fixed-variant: #004395;
-  --color-on-secondary-fixed-variant: #85145a;
+  /* ── Food Bridge Primary: Navy Blue ───────────────────────── */
+  --color-primary: #1e3a5f;
   --color-on-primary: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --color-primary-container: #d6e8ff;
+  --color-on-primary-container: #001d36;
+  --color-primary-fixed: #d6e8ff;
+  --color-primary-fixed-dim: #a8ccf0;
+  --color-on-primary-fixed: #001d36;
+  --color-on-primary-fixed-variant: #1a4d7a;
+  --color-inverse-primary: #a8ccf0;
+  --color-surface-tint: #1e3a5f;
 
-  /* Fonts */
+  /* ── Secondary: Teal ──────────────────────────────────────── */
+  --color-secondary: #0d9488;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ccfbf1;
+  --color-on-secondary-container: #003d38;
+  --color-secondary-fixed: #b2f5ea;
+  --color-secondary-fixed-dim: #5eead4;
+  --color-on-secondary-fixed: #003d38;
+  --color-on-secondary-fixed-variant: #0f766e;
+
+  /* ── Tertiary: Warm Amber ─────────────────────────────────── */
+  --color-tertiary: #b45309;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #fef3c7;
+  --color-on-tertiary-container: #451a03;
+  --color-tertiary-fixed: #fde68a;
+  --color-tertiary-fixed-dim: #fbbf24;
+  --color-on-tertiary-fixed: #451a03;
+  --color-on-tertiary-fixed-variant: #92400e;
+
+  /* ── Error ────────────────────────────────────────────────── */
+  --color-error: #dc2626;
+  --color-on-error: #ffffff;
+  --color-error-container: #fee2e2;
+  --color-on-error-container: #7f1d1d;
+
+  /* ── Surfaces & Backgrounds ───────────────────────────────── */
+  --color-background: #f8fafc;
+  --color-on-background: #0f172a;
+  --color-surface: #f8fafc;
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #475569;
+  --color-surface-variant: #e2e8f0;
+  --color-surface-bright: #ffffff;
+  --color-surface-dim: #cbd5e1;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f5f9;
+  --color-surface-container: #e9f0f8;
+  --color-surface-container-high: #dde7f4;
+  --color-surface-container-highest: #cfdaed;
+  --color-inverse-surface: #1e293b;
+  --color-inverse-on-surface: #f1f5f9;
+
+  /* ── Outlines ─────────────────────────────────────────────── */
+  --color-outline: #64748b;
+  --color-outline-variant: #cbd5e1;
+
+  /* ── Fonts ────────────────────────────────────────────────── */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
@@ -63,29 +73,21 @@
   --font-body: var(--font-sans);
   --font-label: var(--font-sans);
 
-  /* Spacing */
-  
-  
-  
+  /* ── Spacing ──────────────────────────────────────────────── */
   --spacing-margin-desktop: 32px;
-  
-  
   --spacing-margin-mobile: 16px;
-  
   --spacing-gutter: 24px;
-  
-  
 
-  /* Radius */
-  --radius-DEFAULT: 1rem;
-  --radius-lg: 2rem;
-  --radius-xl: 3rem;
+  /* ── Radius ───────────────────────────────────────────────── */
+  --radius-DEFAULT: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
   --radius-full: 9999px;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-2xl: 4rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
 
-  /* Mappings for existing Shadcn components so they inherit MD3 theme */
+  /* ── Shadcn / UI Mappings ─────────────────────────────────── */
   --color-sidebar-ring: var(--color-outline);
   --color-sidebar-border: var(--color-outline-variant);
   --color-sidebar-accent-foreground: var(--color-on-surface);
@@ -93,108 +95,319 @@
   --color-sidebar-primary-foreground: var(--color-on-primary);
   --color-sidebar-primary: var(--color-primary);
   --color-sidebar-foreground: var(--color-on-surface);
-  --color-sidebar: var(--color-surface);
-  --color-ring: var(--color-primary);
+  --color-sidebar: var(--color-surface-container-low);
+  --color-ring: var(--color-secondary);
   --color-input: var(--color-outline-variant);
   --color-border: var(--color-outline-variant);
   --color-destructive: var(--color-error);
-  --color-accent-foreground: var(--color-on-primary-container);
-  --color-accent: var(--color-primary-container);
+  --color-accent-foreground: var(--color-on-secondary-container);
+  --color-accent: var(--color-secondary-container);
   --color-muted-foreground: var(--color-on-surface-variant);
   --color-muted: var(--color-surface-container);
   --color-secondary-foreground: var(--color-on-secondary);
   --color-primary-foreground: var(--color-on-primary);
   --color-popover-foreground: var(--color-on-surface);
-  --color-popover: var(--color-surface);
+  --color-popover: var(--color-surface-bright);
   --color-card-foreground: var(--color-on-surface);
   --color-card: var(--color-surface-container-lowest);
   --color-foreground: var(--color-on-background);
 }
 
+/* ────────────────────────────────────────────────────────────
+   LIGHT MODE
+   ──────────────────────────────────────────────────────────── */
 :root {
-  /* Shadcn mapped root variables for components that use literal CSS var() references */
-  --background: #f8f9ff;
-  --foreground: #0b1c30;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #0b1c30;
-  --popover: #f8f9ff;
-  --popover-foreground: #0b1c30;
-  --primary: #0058be;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #1e3a5f;
   --primary-foreground: #ffffff;
-  --secondary: #a43073;
+  --secondary: #0d9488;
   --secondary-foreground: #ffffff;
-  --muted: #e5eeff;
-  --muted-foreground: #424754;
-  --accent: #2170e4;
-  --accent-foreground: #fefcff;
-  --destructive: #ba1a1a;
-  --destructive-foreground: #ffffff;
-  --border: #c2c6d6;
-  --input: #c2c6d6;
-  --ring: #0058be;
-  --radius: 1rem;
-  --brand-green: #0d9488;
-  --brand-green-hover: #0f766e;
-}
-
-.dark {
-  --background: #0b1c30;
-  --foreground: #f8f9ff;
-  --card: #213145;
-  --card-foreground: #eaf1ff;
-  --popover: #213145;
-  --popover-foreground: #eaf1ff;
-  --primary: #adc6ff;
-  --primary-foreground: #001a42;
-  --secondary: #fc79bd;
-  --secondary-foreground: #3d0026;
-  --muted: #424754;
-  --muted-foreground: #c2c6d6;
-  --accent: #005ac2;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #0d9488;
   --accent-foreground: #ffffff;
-  --destructive: #ffdad6;
-  --destructive-foreground: #93000a;
-  --border: #424754;
-  --input: #424754;
-  --ring: #adc6ff;
-  --brand-green: #14b8a6;
-  --brand-green-hover: #0d9488;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0d9488;
+  --radius: 0.75rem;
+
+  /* Brand */
+  --brand-navy:        #1e3a5f;
+  --brand-navy-dark:   #16304f;
+  --brand-navy-light:  #2d5a8e;
+  --brand-teal:        #0d9488;
+  --brand-teal-dark:   #0f766e;
+  --brand-teal-light:  #14b8a6;
+  --brand-green:       #0d9488;
+  --brand-green-hover: #0f766e;
+
+  /* Text */
+  --text-primary:    #0f172a;
+  --text-secondary:  #475569;
+  --text-muted:      #94a3b8;
+  --text-on-primary: #ffffff;
+
+  /* Backgrounds */
+  --bg-page:      #f8fafc;
+  --bg-card:      #ffffff;
+  --bg-card-hover:#f8fafc;
+  --bg-subtle:    #f1f5f9;
+
+  /* Borders */
+  --border-hairline: #e2e8f0;
+  --border-medium:   #cbd5e1;
+
+  /* Status: Success */
+  --success-bg:     #f0fdfa;
+  --success-text:   #0f766e;
+  --success-border: #5eead4;
+
+  /* Status: Warning/Pending */
+  --pending-bg:     #fffbeb;
+  --pending-text:   #b45309;
+  --pending-border: #fcd34d;
+
+  /* Status: Danger/Urgent */
+  --urgent-bg:     #fef2f2;
+  --urgent-text:   #b91c1c;
+  --urgent-border: #fca5a5;
+
+  /* Status: Info */
+  --info-bg:     #eff6ff;
+  --info-text:   #1d4ed8;
+  --info-border: #93c5fd;
 }
 
+/* ────────────────────────────────────────────────────────────
+   DARK MODE
+   ──────────────────────────────────────────────────────────── */
+.dark {
+  --background: #0d1b2e;
+  --foreground: #f1f5f9;
+  --card: #1a2d44;
+  --card-foreground: #f1f5f9;
+  --popover: #1a2d44;
+  --popover-foreground: #f1f5f9;
+  --primary: #60a5fa;
+  --primary-foreground: #0d1b2e;
+  --secondary: #2dd4bf;
+  --secondary-foreground: #0d1b2e;
+  --muted: #1e3a5f;
+  --muted-foreground: #94a3b8;
+  --accent: #2dd4bf;
+  --accent-foreground: #0d1b2e;
+  --destructive: #f87171;
+  --destructive-foreground: #0d1b2e;
+  --border: #1e3a5f;
+  --input: #1e3a5f;
+  --ring: #2dd4bf;
+
+  /* Brand */
+  --brand-navy:        #3b82f6;
+  --brand-navy-dark:   #2563eb;
+  --brand-navy-light:  #60a5fa;
+  --brand-teal:        #2dd4bf;
+  --brand-teal-dark:   #14b8a6;
+  --brand-teal-light:  #5eead4;
+  --brand-green:       #14b8a6;
+  --brand-green-hover: #0d9488;
+
+  /* Text */
+  --text-primary:    #f1f5f9;
+  --text-secondary:  #94a3b8;
+  --text-muted:      #64748b;
+  --text-on-primary: #0d1b2e;
+
+  /* Backgrounds */
+  --bg-page:      #0d1b2e;
+  --bg-card:      #1a2d44;
+  --bg-card-hover:#1e3a5f;
+  --bg-subtle:    #1a2d44;
+
+  /* Borders */
+  --border-hairline: #1e3a5f;
+  --border-medium:   #2d4a6e;
+
+  /* Status: Success */
+  --success-bg:     #042f2e;
+  --success-text:   #5eead4;
+  --success-border: #0f766e;
+
+  /* Status: Warning/Pending */
+  --pending-bg:     #1c1407;
+  --pending-text:   #fcd34d;
+  --pending-border: #b45309;
+
+  /* Status: Danger/Urgent */
+  --urgent-bg:     #1c0a0a;
+  --urgent-text:   #fca5a5;
+  --urgent-border: #b91c1c;
+
+  /* Status: Info */
+  --info-bg:     #0a1628;
+  --info-text:   #93c5fd;
+  --info-border: #1d4ed8;
+}
+
+/* ────────────────────────────────────────────────────────────
+   BASE STYLES
+   ──────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
     font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  input, textarea, select {
+    color: var(--text-primary);
+  }
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
   }
 }
 
-/* User Custom Styles */
+/* ────────────────────────────────────────────────────────────
+   UTILITY & COMPONENT CLASSES
+   ──────────────────────────────────────────────────────────── */
+
+/* Icons */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
+/* Cards */
+.card-surface {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(30, 58, 95, 0.06);
+}
 .card-shadow {
-  box-shadow: 0px 8px 24px rgba(0, 90, 194, 0.08);
+  box-shadow: 0px 4px 24px rgba(30, 58, 95, 0.08);
 }
 .hover-lift {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
 }
 .hover-lift:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0px 16px 40px rgba(0, 90, 194, 0.15);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0px 12px 32px rgba(30, 58, 95, 0.12);
 }
 
+/* Inputs */
+.glass-input {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.glass-input:focus {
+  outline: none;
+  border-color: var(--brand-teal);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── Primary CTA Button (Teal → Navy gradient pill) ── */
 .btn-primary {
-  @apply bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-full font-bold shadow-[0_8px_16px_rgba(37,99,235,0.2)] transition-all duration-300 border-none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #0d9488 0%, #1e3a5f 100%);
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+  transition: all 0.25s ease;
+  text-decoration: none;
 }
 .btn-primary:hover:not(:disabled) {
-  @apply from-teal-600 to-blue-700 shadow-[0_8px_20px_rgba(37,99,235,0.3)] !important;
+  background: linear-gradient(135deg, #0f766e 0%, #16304f 100%);
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+  transform: translateY(-1px);
 }
 .btn-primary:active:not(:disabled) {
-  @apply scale-[0.98] !important;
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
 }
 .btn-primary:disabled {
-  @apply opacity-50 cursor-not-allowed !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Secondary Outline Button ── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--brand-teal);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--brand-teal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--success-bg);
+  color: var(--brand-teal-dark);
+}
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Status Badges ── */
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  display: inline-block;
+}
+.badge-pending {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+  border: 1px solid var(--pending-border);
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  display: inline-block;
+}
+.badge-urgent {
+  background: var(--urgent-bg);
+  color: var(--urgent-text);
+  border: 1px solid var(--urgent-border);
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  display: inline-block;
 }
