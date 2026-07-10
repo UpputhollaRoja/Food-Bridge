@@ -299,10 +299,10 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={isPending || uploadingDoc || (isBusinessRole && !coords.address) || (!isBusinessRole && !volunteerAddress)}
+                disabled={isPending || uploadingDoc}
                 className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isPending ? 'Saving profile...' : (isBusinessRole && !coords.address) ? 'Set Location to Continue' : (!isBusinessRole && !volunteerAddress) ? 'Enter Address to Continue' : 'Complete Registration'}
+                {isPending ? 'Saving profile...' : 'Complete Registration'}
               </button>
             </div>
           </form>
