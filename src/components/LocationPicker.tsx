@@ -278,10 +278,10 @@ export default function LocationPicker({
         </div>
         <div>
           <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
-            Pickup Location
+            {label}
           </p>
           <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-            Set where volunteers will collect this donation
+            Set your exact location on the map
           </p>
         </div>
       </div>
@@ -321,7 +321,7 @@ export default function LocationPicker({
           <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" style={{ color: 'var(--success-text)' }} />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold" style={{ color: 'var(--success-text)' }}>
-              Pickup location saved!
+              Location saved!
             </p>
             <p className="text-xs mt-0.5 break-words" style={{ color: 'var(--text-secondary)' }}>
               {location.address}
@@ -420,8 +420,8 @@ export default function LocationPicker({
         <div className="space-y-1.5">
           <p className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
             {status === 'saved'
-              ? 'Confirmed pickup location'
-              : 'Click anywhere on the map to set pickup location'}
+              ? 'Confirmed location'
+              : 'Click anywhere on the map to set location'}
           </p>
           <div
             ref={mapRef}
