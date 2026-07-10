@@ -3,6 +3,8 @@ import { getUserProfile } from '@/lib/auth-helpers'
 import { createClient } from '@/lib/supabase/server'
 import FoodBrowser from './FoodBrowser'
 
+export const dynamic = 'force-dynamic'
+
 export default async function BrowsePage() {
   const result = await getUserProfile()
 

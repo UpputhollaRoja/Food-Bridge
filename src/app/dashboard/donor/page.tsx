@@ -3,6 +3,8 @@ import { getUserProfile } from '@/lib/auth-helpers'
 import { createClient } from '@/lib/supabase/server'
 import DonorDashboardClient from './DonorDashboardClient'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DonorDashboard() {
   const result = await getUserProfile()
 

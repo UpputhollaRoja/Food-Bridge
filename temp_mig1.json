@@ -1,0 +1,33 @@
+{
+    "query":  {
+                  "value":  "-- Migration: Fix donations status CHECK constraint to include pending_approval\n-- and create the get_nearby_donations RPC used by the NGO browse page.\n\n-- -------------------------------------------------------------------------\n-- 1. Fix the status CHECK constraint on donations to include \u0027pending_approval\u0027\n-- -------------------------------------------------------------------------\nALTER TABLE public.donations\n  DROP CONSTRAINT IF EXISTS donations_status_check;\n\nALTER TABLE public.donations\n  ADD CONSTRAINT donations_status_check\n  CHECK (status IN (\n    \u0027pending_approval\u0027,\n    \u0027available\u0027,\n    \u0027reserved\u0027,\n    \u0027pickup_scheduled\u0027,\n    \u0027collected\u0027,\n    \u0027delivered\u0027,\n    \u0027completed\u0027,\n    \u0027expired\u0027,\n    \u0027cancelled\u0027\n  ));\n\n-- -------------------------------------------------------------------------\n-- 2. Create get_nearby_donations RPC\n--    Used by /dashboard/ngo/browse to fetch available donations sorted by\n--    distance from the NGO\u0027s registered location.\n--    Returns only status = \u0027available\u0027 donations.\n-- -------------------------------------------------------------------------\nCREATE OR REPLACE FUNCTION public.get_nearby_donations(\n  p_lat  numeric,\n  p_lng  numeric,\n  p_max_distance_km numeric DEFAULT 100.0\n)\nRETURNS TABLE (\n  id                  uuid,\n  donor_id            uuid,\n  title               text,\n  category            text,\n  quantity            numeric,\n  quantity_unit       text,\n  estimated_meals     integer,\n  expiry_at           timestamptz,\n  pickup_location     text,\n  pickup_latitude     numeric,\n  pickup_longitude    numeric,\n  pickup_window_start timestamptz,\n  pickup_window_end   timestamptz,\n  storage_instructions text,\n  allergen_info       text,\n  images              text[],\n  status              text,\n  priority_score      numeric,\n  created_at          timestamptz,\n  updated_at          timestamptz,\n  donor_name          text,\n  donor_org           text,\n  distance_km         numeric\n)\nLANGUAGE sql\nSTABLE\nSECURITY DEFINER\nSET search_path = public\nAS $$\n  SELECT\n    d.id,\n    d.donor_id,\n    d.title,\n    d.category,\n    d.quantity,\n    d.quantity_unit,\n    d.estimated_meals,\n    d.expiry_at,\n    d.pickup_location,\n    d.pickup_latitude,\n    d.pickup_longitude,\n    d.pickup_window_start,\n    d.pickup_window_end,\n    d.storage_instructions,\n    d.allergen_info,\n    d.images,\n    d.status,\n    d.priority_score,\n    d.created_at,\n    d.updated_at,\n    p.full_name        AS donor_name,\n    p.organization_name AS donor_org,\n    -- Haversine approximation in km\n    ROUND(\n      (\n        6371 * acos(\n          LEAST(1.0, GREATEST(-1.0,\n            cos(radians(p_lat))\n            * cos(radians(d.pickup_latitude))\n            * cos(radians(d.pickup_longitude) - radians(p_lng))\n            + sin(radians(p_lat))\n            * sin(radians(d.pickup_latitude))\n          ))\n        )\n      )::numeric, 2\n    ) AS distance_km\n  FROM public.donations d\n  JOIN public.profiles p ON p.id = d.donor_id\n  WHERE\n    d.status = \u0027available\u0027\n    AND d.expiry_at \u003e now()\n    AND (\n      6371 * acos(\n        LEAST(1.0, GREATEST(-1.0,\n          cos(radians(p_lat))\n          * cos(radians(d.pickup_latitude))\n          * cos(radians(d.pickup_longitude) - radians(p_lng))\n          + sin(radians(p_lat))\n          * sin(radians(d.pickup_latitude))\n        ))\n      )\n    ) \u003c= p_max_distance_km\n  ORDER BY\n    d.priority_score DESC NULLS LAST,\n    distance_km ASC,\n    d.expiry_at ASC;\n$$;\n\n-- Grant execute to authenticated users\nGRANT EXECUTE ON FUNCTION public.get_nearby_donations(numeric, numeric, numeric) TO authenticated;\n",
+                  "PSPath":  "C:\\Users\\admin\\Documents\\TA project\\supabase\\migrations\\20260708000000_fix_status_and_nearby_rpc.sql",
+                  "PSParentPath":  "C:\\Users\\admin\\Documents\\TA project\\supabase\\migrations",
+                  "PSChildName":  "20260708000000_fix_status_and_nearby_rpc.sql",
+                  "PSDrive":  {
+                                  "CurrentLocation":  "Users\\admin\\Documents\\TA project",
+                                  "Name":  "C",
+                                  "Provider":  "Microsoft.PowerShell.Core\\FileSystem",
+                                  "Root":  "C:\\",
+                                  "Description":  "",
+                                  "MaximumSize":  null,
+                                  "Credential":  "System.Management.Automation.PSCredential",
+                                  "DisplayRoot":  null
+                              },
+                  "PSProvider":  {
+                                     "ImplementingType":  "Microsoft.PowerShell.Commands.FileSystemProvider",
+                                     "HelpFile":  "System.Management.Automation.dll-Help.xml",
+                                     "Name":  "FileSystem",
+                                     "PSSnapIn":  "Microsoft.PowerShell.Core",
+                                     "ModuleName":  "Microsoft.PowerShell.Core",
+                                     "Module":  null,
+                                     "Description":  "",
+                                     "Capabilities":  52,
+                                     "Home":  "C:\\Users\\admin",
+                                     "Drives":  "B C"
+                                 },
+                  "ReadCount":  1
+              },
+    "name":  "20260708000000_fix_status_and_nearby_rpc",
+    "project_id":  "dyegriefrxgoqwgtkqdm"
+}
