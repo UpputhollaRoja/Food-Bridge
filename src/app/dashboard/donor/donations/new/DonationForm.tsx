@@ -4,8 +4,8 @@ import React, { useActionState } from 'react'
 import Link from 'next/link'
 import { createDonation } from './actions'
 import ImageUploader from '@/components/ImageUploader'
+import { ArrowLeft, Plus, Calendar, AlertTriangle, Info, ShieldAlert, Loader2, MapPin, Navigation } from 'lucide-react'
 import LocationPickerMap from '@/components/LocationPickerMap'
-import { ArrowLeft, Plus, Calendar, AlertTriangle, Info, ShieldAlert, Loader2 } from 'lucide-react'
 
 interface DonationFormProps {
   defaultAddress: string
@@ -19,6 +19,14 @@ export default function DonationForm({ defaultAddress, verificationStatus }: Don
   const [images, setImages] = React.useState<string[]>([])
   const [isUploading, setIsUploading] = React.useState(false)
   const [uploadError, setUploadError] = React.useState<string | null>(null)
+
+  // Pickup location state — set by inline GPS/map picker
+  const [pickedAddress, setPickedAddress] = React.useState(defaultAddress || '')
+  const [pickedLat, setPickedLat] = React.useState<number | null>(null)
+  const [pickedLng, setPickedLng] = React.useState<number | null>(null)
+  const [locating, setLocating] = React.useState(false)
+  const [locError, setLocError] = React.useState('')
+  const [showMapPicker, setShowMapPicker] = React.useState(false)
 
   const isSubmitDisabled = isPending || isUploading || !!uploadError
 
@@ -195,20 +203,118 @@ export default function DonationForm({ defaultAddress, verificationStatus }: Don
               />
             </div>
 
-            {/* Pickup Location */}
-            <div className="space-y-1.5">
-              <label htmlFor="pickupLocation" className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+            {/* Pickup Location — GPS + Map Picker */}
+            <div className="col-span-1 md:col-span-2 space-y-2 rounded-2xl border p-4" style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-subtle)' }}>
+              <label className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
                 Pickup Address
               </label>
-              <input
-                id="pickupLocation"
-                name="pickupLocation"
-                type="text"
-                required
-                defaultValue={defaultAddress}
-                placeholder="e.g. Suite 400, 100 Main St"
-                className="block w-full rounded-xl glass-input px-3 py-2.5 text-sm transition-colors"
-              />
+
+              {/* Hidden fields submitted with the form */}
+              <input type="hidden" name="pickupLocation" value={pickedAddress} />
+              <input type="hidden" name="pickupLat" value={pickedLat ?? ''} />
+              <input type="hidden" name="pickupLng" value={pickedLng ?? ''} />
+
+              {/* GPS button */}
+              {!pickedAddress && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLocating(true)
+                      setLocError('')
+                      if (!navigator.geolocation) {
+                        setLocating(false)
+                        setLocError('Geolocation not supported.')
+                        setShowMapPicker(true)
+                        return
+                      }
+                      navigator.geolocation.getCurrentPosition(
+                        async (pos) => {
+                          const lat = pos.coords.latitude
+                          const lng = pos.coords.longitude
+                          try {
+                            const res = await fetch(
+                              `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+                              { headers: { 'Accept-Language': 'en' } }
+                            )
+                            const data = await res.json()
+                            const addr = data.display_name ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+                            setPickedAddress(addr)
+                            setPickedLat(lat)
+                            setPickedLng(lng)
+                          } catch {
+                            setPickedAddress(`${lat.toFixed(5)}, ${lng.toFixed(5)}`)
+                            setPickedLat(lat)
+                            setPickedLng(lng)
+                          } finally {
+                            setLocating(false)
+                          }
+                        },
+                        (err) => {
+                          setLocating(false)
+                          setLocError(
+                            err.code === 1
+                              ? 'Permission denied. Use the map to set your location.'
+                              : `Location error: ${err.message}`
+                          )
+                          setShowMapPicker(true)
+                        },
+                        { enableHighAccuracy: true, timeout: 10_000 }
+                      )
+                    }}
+                    disabled={locating}
+                    className="btn-primary w-full py-3 px-6"
+                  >
+                    {locating ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" /> Detecting location…</>
+                    ) : (
+                      <><Navigation className="h-4 w-4" /> Use My Current Location</>
+                    )}
+                  </button>
+
+                  {locError && (
+                    <p className="text-xs mt-1" style={{ color: 'var(--urgent-text)' }}>{locError}</p>
+                  )}
+
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px" style={{ background: 'var(--border-hairline)' }} />
+                    <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>or</span>
+                    <div className="flex-1 h-px" style={{ background: 'var(--border-hairline)' }} />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowMapPicker((v) => !v)}
+                    className="btn-secondary w-full py-3 px-6"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    Choose on Map
+                  </button>
+                </>
+              )}
+
+              {/* Confirmed address pill */}
+              {pickedAddress && (
+                <div className="flex items-start gap-2 rounded-xl p-3 border" style={{ background: 'var(--success-bg)', borderColor: 'var(--success-border)' }}>
+                  <MapPin className="h-4 w-4 shrink-0 mt-0.5" style={{ color: 'var(--success-text)' }} />
+                  <span className="text-xs font-medium flex-1" style={{ color: 'var(--success-text)' }}>{pickedAddress}</span>
+                  <button type="button" onClick={() => { setPickedAddress(''); setPickedLat(null); setPickedLng(null); setShowMapPicker(false) }}
+                    className="text-xs underline shrink-0" style={{ color: 'var(--text-muted)' }}>Change</button>
+                </div>
+              )}
+
+              {/* Leaflet map picker */}
+              {(showMapPicker || (pickedLat && pickedLng)) && (
+                <LocationPickerMap
+                  defaultAddress={pickedAddress}
+                  onSelect={(address, lat, lng) => {
+                    setPickedAddress(address)
+                    setPickedLat(lat)
+                    setPickedLng(lng)
+                    setShowMapPicker(false)
+                  }}
+                />
+              )}
             </div>
 
             {/* Pickup Window Start */}
