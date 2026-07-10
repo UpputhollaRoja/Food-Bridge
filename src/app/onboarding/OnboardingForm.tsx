@@ -5,7 +5,8 @@ import { saveOnboarding } from './actions'
 import LocationPicker from '@/components/LocationPicker'
 import { createClient } from '@/lib/supabase/client'
 import { MapPin, Phone, Building2, Upload, ShieldCheck, ShieldAlert, Sparkles, Heart } from 'lucide-react'
-import { generateAndSaveUserKeys, type KeyPair } from '@/lib/keys'
+import { generateAndSaveUserKeys } from '@/lib/keys'
+import type { KeyPair } from '@/lib/keys'
 import { encryptForSelf } from '@/lib/crypto'
 
 function getErrorMessage(err: any): string {
@@ -146,7 +147,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('donor')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-blue-600 text-white shadow-md' : 't[...']}
                 >
                   <Building2 className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">Donor</span>
@@ -154,7 +155,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('ngo')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-blue-600 text-white shadow-md' : 'tex[...']}
                 >
                   <Heart className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">NGO</span>
@@ -162,7 +163,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <button
                   type="button"
                   onClick={() => setSelectedRole('volunteer')}
-                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'volunteer' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'volunteer' ? 'bg-blue-600 text-white shadow-md' : 'bg-transparent'}`}
                 >
                   <Sparkles className="h-5 w-5 mb-1" />
                   <span className="text-[11px] font-bold">Volunteer</span>
@@ -189,7 +190,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                     type="text"
                     required
                     placeholder="e.g. Hope Food Kitchen"
-                    className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
+                    className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:r[...]"
                   />
                 </div>
               </div>
@@ -210,7 +211,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                   type="tel"
                   required
                   placeholder="+1 (555) 000-0000"
-                  className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
+                  className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:rin[...]"
                 />
               </div>
             </div>
@@ -247,7 +248,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                     type="text"
                     required
                     placeholder="123 Sustainability Way, Green City"
-                    className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
+                    className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:r[...]"
                   />
                 </div>
               )}
@@ -263,7 +264,8 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                 <label className="text-sm font-bold text-slate-700">
                   Verification Document (PDF/Image)
                 </label>
-                <div className="relative rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-100">
+                <div className="relative rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-10[...]"
+                  >
                   {docPath ? (
                     <div className="flex items-center gap-2 text-blue-600">
                       <ShieldCheck className="h-5 w-5" />
@@ -296,7 +298,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
               <button
                 type="submit"
                 disabled={isPending || uploadingDoc || (isBusinessRole && !coords.address)}
-                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all duration-300 disabled:[...]"
               >
                 {isPending ? 'Saving profile...' : (isBusinessRole && !coords.address) ? 'Set Location to Continue' : 'Complete Registration'}
               </button>
