@@ -303,7 +303,8 @@
   border-radius: 1.25rem;
 }
 .stat-card-button {
-  background: var(--bg-card);
+  background: #ffffff;
+  color: #1a2d44; /* Dark text for readability */
   border: 2px solid #007BFF;
   border-radius: 1.25rem;
   cursor: pointer;
@@ -316,8 +317,11 @@
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
 }
 .stat-card-button .text-muted-foreground {
-  color: var(--text-primary) !important;
+  color: #1a2d44 !important;
   font-weight: 700 !important;
+}
+.stat-card-button p, .stat-card-button span, .stat-card-button h2, .stat-card-button h3, .stat-card-button h4 {
+  color: #1a2d44 !important; /* Ensure all text inside is dark */
 }
 .card-shadow {
   box-shadow: 0px 4px 24px rgba(30, 58, 95, 0.08);

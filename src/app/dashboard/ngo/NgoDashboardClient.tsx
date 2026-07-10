@@ -192,7 +192,7 @@ export default function NgoDashboardClient({ profile, stats, initialClaims }: Ng
               return (
                 <div 
                   key={claim.id}
-                  className="rounded-2xl glass-card p-5 space-y-4 hover:border-primary/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between"
+                  className="stat-card-button p-5 space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">

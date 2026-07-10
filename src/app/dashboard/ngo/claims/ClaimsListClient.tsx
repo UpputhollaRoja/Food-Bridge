@@ -170,7 +170,7 @@ export default function ClaimsListClient({ initialClaims, ngoLat, ngoLng, ngoAdd
             return (
               <div
                 key={claim.id}
-                className="relative rounded-2xl glass-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-md hover:shadow-lg transition-all duration-300"
+                className="relative stat-card-button p-6 flex flex-col md:flex-row md:items-center justify-between gap-6"
               >
                 {/* Details */}
                 <div className="space-y-3 flex-1">

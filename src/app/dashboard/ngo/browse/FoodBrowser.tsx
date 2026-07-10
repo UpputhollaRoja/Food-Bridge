@@ -301,7 +301,7 @@ export default function FoodBrowser({ initialDonations, verificationStatus }: Fo
             return (
               <div
                 key={donation.id}
-                className="group relative rounded-2xl glass-card overflow-hidden flex flex-col justify-between shadow-lg hover-lift"
+                className="group relative stat-card-button overflow-hidden flex flex-col justify-between"
               >
                 <div>
                   {/* Preview Image / Placeholder */}

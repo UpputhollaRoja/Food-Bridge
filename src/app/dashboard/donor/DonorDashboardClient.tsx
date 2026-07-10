@@ -226,7 +226,7 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
                   return (
                     <div 
                       key={donation.id}
-                      className="rounded-2xl glass-card p-5 flex flex-col gap-4 hover:border-primary/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
+                      className="stat-card-button p-5 flex flex-col gap-4"
                     >
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full">
                         <div className="space-y-2">
@@ -310,7 +310,7 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
 
         {/* Right Side: Recommendation Drawer/Panel */}
         <div className="lg:col-span-4">
-          <div className="rounded-2xl glass-card p-6 space-y-4 sticky top-6">
+          <div className="stat-card-button p-6 space-y-4 sticky top-6">
             <h3 className="font-heading font-bold text-foreground text-md flex items-center gap-2 border-b border-border pb-3">
               <Sparkles className="h-4.5 w-4.5 text-primary" />
               <span>Recipient Recommendations</span>

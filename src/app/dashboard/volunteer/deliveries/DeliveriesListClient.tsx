@@ -265,7 +265,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
               return (
                 <div 
                   key={del.id}
-                  className="rounded-2xl glass-card p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-lg transition-all duration-300 shadow-md"
+                  className="stat-card-button p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6"
                 >
                   <div className="space-y-4 flex-1">
                     <div className="flex items-center gap-2">
@@ -344,7 +344,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
               return (
                 <div 
                   key={del.id}
-                  className="rounded-2xl glass-card p-6 space-y-6 shadow-md"
+                  className="stat-card-button p-6 space-y-6"
                 >
                   {/* Title & Category */}
                   <div className="flex items-center justify-between border-b border-slate-200/50 pb-4">

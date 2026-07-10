@@ -354,7 +354,7 @@ export default function AdminDashboardClient({
                   {pendingUsers.map((user) => (
                     <div
                       key={user.id}
-                      className="rounded-2xl glass-card p-5 space-y-4 shadow-sm hover:shadow-md transition-shadow"
+                      className="stat-card-button p-5 space-y-4"
                     >
                       {/* Header */}
                       <div className="flex items-center justify-between border-b border-border pb-2">
@@ -455,8 +455,7 @@ export default function AdminDashboardClient({
                     pendingDonations.map((d) => (
                       <div
                         key={d.id}
-                        className="rounded-2xl border p-4 space-y-3 shadow-sm hover-lift"
-                        style={{ borderColor: 'var(--pending-text)', background: 'var(--pending-bg)' }}
+                        className="stat-card-button p-4 space-y-3"
                       >
                         {/* Top row: image + title + status badge */}
                         <div className="flex items-start gap-3">
@@ -759,7 +758,7 @@ export default function AdminDashboardClient({
               {reports.map((report) => (
                 <div 
                   key={report.id}
-                  className="rounded-2xl glass-card p-5 border shadow-sm space-y-4"
+                  className="stat-card-button p-5 space-y-4"
                   style={{ borderColor: 'var(--border-hairline)' }}
                 >
                   <div className="flex items-center justify-between border-b pb-2" style={{ borderColor: 'var(--border-hairline)' }}>

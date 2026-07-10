@@ -140,7 +140,7 @@ export default function VolunteerDashboardClient({ profile, stats, activeDeliver
               return (
                 <div 
                   key={del.id}
-                  className="rounded-2xl glass-card p-5 flex flex-col justify-between hover:border-primary/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                  className="stat-card-button p-5 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
