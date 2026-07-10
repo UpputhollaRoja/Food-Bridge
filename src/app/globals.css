@@ -305,16 +305,16 @@
 .stat-card-button {
   background: #ffffff;
   color: #1a2d44; /* Dark text for readability */
-  border: 2px solid #007BFF;
+  border: 2px solid #1C2E4A;
   border-radius: 1.25rem;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 .stat-card-button:hover {
-  border-color: #0056b3;
+  border-color: #0f1c30; /* slightly darker navy on hover */
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(28, 46, 74, 0.15);
 }
 .stat-card-button .text-muted-foreground {
   color: #1a2d44 !important;

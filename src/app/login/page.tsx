@@ -136,7 +136,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isLoginPending}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
                 style={{ backgroundColor: '#1C2E4A' }}
               >
                 {isLoginPending ? 'Logging in...' : 'Log In'}
@@ -219,7 +219,7 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isForgotPending}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full text-sm font-bold text-white transition-all duration-300 disabled:opacity-50 shadow-lg hover:opacity-90 focus:outline-none"
                 style={{ backgroundColor: '#1C2E4A' }}
               >
                 {isForgotPending ? (
