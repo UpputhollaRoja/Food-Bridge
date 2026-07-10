@@ -83,28 +83,24 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
   const isBusinessRole = selectedRole === 'donor' || selectedRole === 'ngo'
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-3xl"></div>
-        <div className="absolute top-[60%] -right-[10%] w-[30%] h-[50%] rounded-full bg-tertiary/5 blur-3xl"></div>
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-3xl"></div>
+        <div className="absolute top-[60%] -right-[10%] w-[30%] h-[50%] rounded-full bg-teal-100/30 blur-3xl"></div>
       </div>
-      <div className="w-full max-w-xl space-y-8 z-10">
+      <div className="w-full max-w-lg space-y-8 z-10">
         <div className="flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border border-primary/20 bg-primary/10 text-primary">
-            <Sparkles className="h-3 w-3" />
-            Complete Onboarding
-          </span>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-on-background sm:text-4xl">
+          <h2 className="text-4xl font-extrabold tracking-tight text-slate-800">
             Welcome, {userFullName}!
           </h2>
-          <p className="mt-2 text-sm max-w-sm text-on-surface-variant">
+          <p className="mt-3 text-sm max-w-sm text-slate-500">
             Let&apos;s finish setting up your profile to activate your account as a{' '}
-            <span className="font-semibold capitalize text-primary">{selectedRole}</span>.
+            <span className="font-bold capitalize text-slate-800">{selectedRole}</span>.
           </p>
         </div>
 
-        <div className="relative rounded-3xl bg-surface-container-lowest border-2 border-outline-variant/30 p-8 sm:p-10 shadow-2xl">
+        <div className="relative rounded-[2rem] bg-white p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
           <form action={formAction} className="space-y-6">
             {getErrorMessage(state?.error) && (
               <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500 dark:text-red-400">
@@ -117,32 +113,32 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             <input type="hidden" name="docUrl" value={docPath} />
 
             {/* Role Cards Selectors */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-on-surface">Confirm Your Role</label>
-              <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-slate-700">Confirm Your Role</label>
+              <div className="flex rounded-full border border-slate-200 bg-white p-1">
                 <button
                   type="button"
                   onClick={() => setSelectedRole('donor')}
-                  className={`flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200 ${selectedRole === 'donor' ? 'border-2 border-primary bg-primary/10 text-primary shadow-md shadow-primary/20' : 'border border-outline-variant bg-surface text-on-surface-variant hover:bg-surface-container-low'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'donor' ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
-                  <Building2 className={`h-5 w-5 mb-1.5 ${selectedRole === 'donor' ? 'text-primary' : 'text-on-surface-variant'}`} />
-                  <span className="text-xs font-bold">Donor</span>
+                  <Building2 className="h-5 w-5 mb-1" />
+                  <span className="text-[11px] font-bold">Donor</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedRole('ngo')}
-                  className={`flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200 ${selectedRole === 'ngo' ? 'border-2 border-primary bg-primary/10 text-primary shadow-md shadow-primary/20' : 'border border-outline-variant bg-surface text-on-surface-variant hover:bg-surface-container-low'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'ngo' ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
-                  <Heart className={`h-5 w-5 mb-1.5 ${selectedRole === 'ngo' ? 'text-primary' : 'text-on-surface-variant'}`} />
-                  <span className="text-xs font-bold">NGO</span>
+                  <Heart className="h-5 w-5 mb-1" />
+                  <span className="text-[11px] font-bold">NGO</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedRole('volunteer')}
-                  className={`flex flex-col items-center justify-center rounded-xl p-3 text-center transition-all duration-200 ${selectedRole === 'volunteer' ? 'border-2 border-primary bg-primary/10 text-primary shadow-md shadow-primary/20' : 'border border-outline-variant bg-surface text-on-surface-variant hover:bg-surface-container-low'}`}
+                  className={`flex flex-1 flex-col items-center justify-center rounded-full py-2.5 transition-all duration-300 ${selectedRole === 'volunteer' ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-md' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
                 >
-                  <Sparkles className={`h-5 w-5 mb-1.5 ${selectedRole === 'volunteer' ? 'text-primary' : 'text-on-surface-variant'}`} />
-                  <span className="text-xs font-bold">Volunteer</span>
+                  <Sparkles className="h-5 w-5 mb-1" />
+                  <span className="text-[11px] font-bold">Volunteer</span>
                 </button>
               </div>
             </div>
@@ -153,11 +149,11 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
             {/* Business Role Fields (Donor/NGO) */}
             {isBusinessRole && (
               <div className="space-y-1.5">
-                <label htmlFor="organizationName" className="text-sm font-semibold text-on-surface">
+                <label htmlFor="organizationName" className="text-sm font-bold text-slate-700">
                   Organization Name
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                     <Building2 className="h-4 w-4" />
                   </div>
                   <input
@@ -166,7 +162,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                     type="text"
                     required
                     placeholder="e.g. Hope Food Kitchen"
-                    className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
                   />
                 </div>
               </div>
@@ -174,11 +170,11 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
 
             {/* Phone Number */}
             <div className="space-y-1.5">
-              <label htmlFor="phone" className="text-sm font-semibold text-on-surface">
+              <label htmlFor="phone" className="text-sm font-bold text-slate-700">
                 Contact Phone Number
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                   <Phone className="h-4 w-4" />
                 </div>
                 <input
@@ -187,18 +183,18 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                   type="tel"
                   required
                   placeholder="+1 (555) 000-0000"
-                  className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
                 />
               </div>
             </div>
 
             {/* Address */}
             <div className="space-y-1.5">
-              <label htmlFor="address" className="text-sm font-semibold text-on-surface">
+              <label htmlFor="address" className="text-sm font-bold text-slate-700">
                 Operating Address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-on-surface-variant">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <input
@@ -207,7 +203,7 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                   type="text"
                   required
                   placeholder="123 Sustainability Way, Green City"
-                  className="block w-full rounded-xl bg-surface border border-outline-variant pl-10 pr-3 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  className="block w-full rounded-xl bg-slate-50 border-0 py-3 pl-10 pr-4 text-sm text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:leading-6"
                 />
               </div>
             </div>
@@ -218,20 +214,20 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
 
             {/* Document Upload for verification (Only for Donor/NGO) */}
             {isBusinessRole && (
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-on-surface">
+              <div className="space-y-1.5">
+                <label className="text-sm font-bold text-slate-700">
                   Verification Document (PDF/Image)
                 </label>
-                <div className="relative rounded-xl border-2 border-dashed border-outline-variant bg-surface p-4 flex flex-col items-center justify-center text-center transition-colors hover:bg-surface-container-low">
+                <div className="relative rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-100">
                   {docPath ? (
-                    <div className="flex items-center gap-2 text-primary">
+                    <div className="flex items-center gap-2 text-teal-600">
                       <ShieldCheck className="h-5 w-5" />
                       <span className="text-xs font-bold">Document Uploaded Successfully!</span>
                     </div>
                   ) : (
                     <>
-                      <Upload className="h-6 w-6 text-on-surface-variant mb-2" />
-                      <span className="text-xs font-medium text-on-surface-variant mb-1">
+                      <Upload className="h-6 w-6 text-slate-400 mb-2" />
+                      <span className="text-xs font-medium text-slate-500 mb-1">
                         {uploadingDoc ? 'Uploading...' : 'Upload proof of establishment / tax ID'}
                       </span>
                       <input
@@ -245,19 +241,21 @@ export default function OnboardingForm({ userEmail, userRole, userFullName }: On
                   )}
                 </div>
                 {getErrorMessage(uploadError) && (
-                  <p className="text-xs text-error mt-1 font-medium">{getErrorMessage(uploadError)}</p>
+                  <p className="text-xs text-red-500 mt-1 font-medium">{getErrorMessage(uploadError)}</p>
                 )}
               </div>
             )}
 
             {/* Submit button */}
-            <button
-              type="submit"
-              disabled={isPending || uploadingDoc}
-              className="w-full flex justify-center py-3.5 px-4 rounded-xl text-sm font-bold text-on-primary bg-primary hover:bg-surface-tint active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-md hover:shadow-lg"
-            >
-              {isPending ? 'Saving profile...' : 'Complete Registration'}
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={isPending || uploadingDoc}
+                className="w-full flex justify-center py-3.5 px-4 rounded-full text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:scale-100 shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
+              >
+                {isPending ? 'Saving profile...' : 'Complete Registration'}
+              </button>
+            </div>
           </form>
         </div>
       </div>

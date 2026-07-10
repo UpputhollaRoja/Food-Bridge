@@ -243,6 +243,7 @@ export default function NgoDashboardClient({ profile, stats, initialClaims }: Ng
                         destLng={profile?.longitude ? Number(profile.longitude) : undefined}
                         destLabel={profile?.address}
                         volunteerName={volunteer?.full_name}
+                        deliveryStatus={delivery.status}
                       />
                     </div>
                   )}

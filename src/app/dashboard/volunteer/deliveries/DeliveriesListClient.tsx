@@ -321,6 +321,7 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                         destLng={ngo.longitude ? Number(ngo.longitude) : undefined}
                         destLabel={ngo.organization_name || ngo.full_name}
                         volunteerName="You"
+                        deliveryStatus={del.status}
                       />
                     </div>
                   )}

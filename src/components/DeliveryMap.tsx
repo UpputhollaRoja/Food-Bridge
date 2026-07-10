@@ -13,6 +13,7 @@ interface DeliveryMapProps {
   destLng?: number
   destLabel?: string
   volunteerName?: string
+  deliveryStatus?: string
 }
 
 export default function DeliveryMap({
@@ -24,6 +25,7 @@ export default function DeliveryMap({
   destLng,
   destLabel = 'Destination',
   volunteerName = 'Volunteer',
+  deliveryStatus,
 }: DeliveryMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -337,12 +339,14 @@ export default function DeliveryMap({
           {status === 'live' && (
             <span className="flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live · {lastUpdate}
+              {(deliveryStatus === 'pickup_completed' || deliveryStatus === 'in_transit') 
+                ? 'Picked up, heading to drop-off' 
+                : 'Volunteer is on the way'} · {lastUpdate}
             </span>
           )}
           {status === 'offline' && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <WifiOff className="h-3 w-3" /> Volunteer not broadcasting
+              <WifiOff className="h-3 w-3" /> Not yet broadcasting
             </span>
           )}
         </div>

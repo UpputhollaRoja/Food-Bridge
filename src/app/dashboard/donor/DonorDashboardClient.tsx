@@ -296,6 +296,7 @@ export default function DonorDashboardClient({ profile, stats, initialDonations 
                             destLng={claim.ngo?.longitude ? Number(claim.ngo.longitude) : undefined}
                             destLabel={claim.ngo?.address}
                             volunteerName={delivery.volunteer?.full_name}
+                            deliveryStatus={delivery.status}
                           />
                         </div>
                       )}
