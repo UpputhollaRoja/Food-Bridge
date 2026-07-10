@@ -30,7 +30,10 @@ export async function login(prevState: any, formData: FormData) {
   if (error) {
     let msg = cleanErrorMessage(error)
     if (msg.toLowerCase().includes('email not confirmed') || msg.toLowerCase().includes('email not verified')) {
-      msg = 'Please verify your email before logging in.'
+      msg = 'pls verify before login'
+    } else if (msg === 'Invalid login credentials') {
+      // Supabase masks unverified email errors as invalid credentials by default to prevent enumeration
+      msg = 'Invalid login credentials (or pls verify before login)'
     }
     return { error: msg }
   }

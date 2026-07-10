@@ -1,36 +1,43 @@
-"use client";
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import ClientScrollAnimations from '@/components/ClientScrollAnimations';
+import { createAdminClient } from '@/lib/supabase/server';
 
-export default function LandingPage() {
-  useEffect(() => {
-    // Bouncy micro-interactions for cards
-    document.querySelectorAll('.hover-lift').forEach((card) => {
-      const htmlCard = card as HTMLElement;
-      htmlCard.addEventListener('mouseenter', () => {
-        htmlCard.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-      });
-    });
+export default async function LandingPage() {
+  const supabase = createAdminClient();
+  let totalDonations = 0;
+  let mealsDelivered = 0;
+  let kgSaved = 0;
+  let weeklyRescued = 0;
 
-    // Simple scroll observer for animations
-    const observerOptions = { threshold: 0.1 };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-10');
+  if (supabase) {
+    const { count } = await supabase.from('donations').select('*', { count: 'exact', head: true });
+    totalDonations = count || 0;
+
+    const { data: delivered } = await supabase
+      .from('donations')
+      .select('estimated_meals, quantity, created_at')
+      .in('status', ['delivered', 'completed']);
+
+    if (delivered) {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      
+      delivered.forEach(d => {
+        mealsDelivered += Number(d.estimated_meals) || 0;
+        kgSaved += Number(d.quantity) || 0;
+        if (new Date(d.created_at) >= oneWeekAgo) {
+          weeklyRescued += Number(d.quantity) || 0;
         }
       });
-    }, observerOptions);
+    }
+  }
 
-    document.querySelectorAll('section').forEach(section => {
-      section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
-      observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const formatNumber = (num: number) => {
+    if (num === 0) return '0';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return num.toString();
+  };
 
   return (
     <div className="bg-background text-on-surface overflow-x-hidden min-h-screen">
@@ -89,7 +96,7 @@ export default function LandingPage() {
               <div className="col-span-2 bg-white p-6 rounded-3xl card-shadow hover-lift flex justify-between items-center border-2 border-primary-fixed">
                 <div>
                   <p className="text-xs text-primary font-bold uppercase tracking-widest">Impact Tracker</p>
-                  <h3 className="text-4xl font-bold text-on-background mt-1">2.5k Kg</h3>
+                  <h3 className="text-4xl font-bold text-on-background mt-1">{formatNumber(weeklyRescued)} Kg</h3>
                   <p className="text-sm text-on-surface-variant font-medium">food rescued this week</p>
                 </div>
                 <div className="h-20 w-32 flex items-end gap-2">
@@ -159,15 +166,15 @@ export default function LandingPage() {
         <section className="max-w-[1280px] mx-auto px-4 md:px-8 transition-all duration-1000 opacity-100 translate-y-0 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div className="p-8 rounded-3xl bg-surface-container hover-lift border border-primary/5" style={{ transition: '0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
-              <div className="text-5xl font-bold text-primary mb-2">15,240</div>
+              <div className="text-5xl font-bold text-primary mb-2">{totalDonations.toLocaleString()}</div>
               <div className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">Donations Made</div>
             </div>
             <div className="p-8 rounded-3xl bg-primary-fixed/30 hover-lift border border-primary/5">
-              <div className="text-5xl font-bold text-primary mb-2">45,720</div>
+              <div className="text-5xl font-bold text-primary mb-2">{mealsDelivered.toLocaleString()}</div>
               <div className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">Meals Delivered</div>
             </div>
             <div className="p-8 rounded-3xl bg-surface-container-highest/30 hover-lift border border-primary/5" style={{ transition: '0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
-              <div className="text-5xl font-bold text-primary mb-2">38,100</div>
+              <div className="text-5xl font-bold text-primary mb-2">{kgSaved.toLocaleString()}</div>
               <div className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">Kg Food Saved</div>
             </div>
           </div>
