@@ -62,7 +62,7 @@ export default async function LandingPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="max-w-[1280px] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center transition-all duration-1000 opacity-100 translate-y-0 py-12 lg:py-16">
+        <section className="max-w-[1280px] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center transition-all duration-1000 opacity-100 translate-y-0 py-12 lg:py-16 animate-fade-in-up">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-xs font-bold uppercase tracking-wider">
               <span className="material-symbols-outlined text-[18px]">eco</span>
@@ -90,7 +90,7 @@ export default async function LandingPage() {
             </div>
           </div>
           {/* Bento Dashboard Preview */}
-          <div className="relative">
+          <div className="relative animate-fade-in-up delay-100">
             <div className="grid grid-cols-2 gap-6">
               {/* Impact Tracker Card */}
               <div className="col-span-2 bg-white p-6 rounded-3xl card-shadow hover-lift flex justify-between items-center border-2 border-primary-fixed">
@@ -223,7 +223,7 @@ export default async function LandingPage() {
         </section>
 
         {/* Environmental Section */}
-        <section className="bg-primary-container text-on-primary text-on-primary-container overflow-hidden relative m-4 md:m-8 rounded-[3rem] transition-all duration-1000 opacity-100 translate-y-0 py-16">
+        <section className="bg-primary-container text-on-primary text-on-primary-container overflow-hidden relative m-4 md:m-8 rounded-[3rem] py-16 animate-fade-in-up delay-200">
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 4px 4px, white 2px, transparent 0)', backgroundSize: '30px 30px' }}></div>
           <div className="max-w-[1280px] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
             <div className="space-y-8">
@@ -231,7 +231,7 @@ export default async function LandingPage() {
                 <span className="material-symbols-outlined text-[18px]">star</span>
                 <span>Joyful Impact Report</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight">Saving the Planet, <br/><span className="text-surface-container-highest">One Delicious Meal</span> at a Time</h2>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">Saving the Planet, <br/><span className="text-primary">One Delicious Meal</span> at a Time</h2>
               <p className="text-lg opacity-90 leading-relaxed font-medium">
                 Food waste generates nearly 10% of global emissions. For every 1 kg redirected through Food Bridge, we avoid 2.5 kg of CO2e. That's a huge win for Earth!
               </p>
@@ -252,7 +252,7 @@ export default async function LandingPage() {
               <div className="relative w-full aspect-square max-w-md bg-white/20 rounded-full flex items-center justify-center p-8">
                 <div className="absolute inset-0 border-8 border-white/30 rounded-full animate-[spin_12s_linear_infinite]"></div>
                 <div className="absolute inset-8 border-4 border-dashed border-white/40 rounded-full animate-[spin_8s_linear_infinite_reverse]"></div>
-                <div className="text-center p-10 bg-white rounded-full aspect-square flex flex-col justify-center items-center shadow-2xl scale-110">
+                <div className="text-center p-10 bg-white rounded-full aspect-square flex flex-col justify-center items-center shadow-2xl scale-110 animate-float">
                   <span className="material-symbols-outlined text-[100px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
                   <div className="mt-4 text-2xl font-black text-on-surface tracking-tighter">MISSION ZERO</div>
                 </div>
