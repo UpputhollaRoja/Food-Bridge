@@ -378,9 +378,20 @@ export default function DonorLocationPicker({
         </div>
       )}
 
-      {/* Manual address search (shown when map is visible) */}
-      {showMap && (
-        <div className="relative">
+      {/* Divider */}
+      {status !== 'saved' && (
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex-1 h-px" style={{ background: 'var(--border-hairline)' }} />
+          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
+            or
+          </span>
+          <div className="flex-1 h-px" style={{ background: 'var(--border-hairline)' }} />
+        </div>
+      )}
+
+      {/* Manual address search (always shown unless saved) */}
+      {status !== 'saved' && (
+        <div className="relative mb-2">
           <div className="relative">
             <Search
               className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none"
@@ -454,26 +465,18 @@ export default function DonorLocationPicker({
         </div>
       )}
 
-      {/* Divider + fallback CTA when map not yet shown */}
+      {/* Fallback CTA when map not yet shown */}
       {!showMap && status === 'idle' && (
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px" style={{ background: 'var(--border-hairline)' }} />
-          <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>
-            or
-          </span>
-          <div className="flex-1 h-px" style={{ background: 'var(--border-hairline)' }} />
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => setShowMap(true)}
+            className="btn-secondary w-full py-3 px-6 flex items-center justify-center gap-2"
+          >
+            <MapPin className="h-4 w-4" />
+            <span>Choose on Map Instead</span>
+          </button>
         </div>
-      )}
-
-      {!showMap && status === 'idle' && (
-        <button
-          type="button"
-          onClick={() => setShowMap(true)}
-          className="btn-secondary w-full py-3 px-6 flex items-center justify-center gap-2"
-        >
-          <MapPin className="h-4 w-4" />
-          <span>Choose on Map Instead</span>
-        </button>
       )}
     </div>
   )
