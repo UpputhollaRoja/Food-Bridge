@@ -234,7 +234,11 @@ export default function FoodBrowser({ initialDonations, verificationStatus }: Fo
             type="text"
             placeholder="Search food items or donors..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              // Sanitize input to only allow alphanumeric and spaces
+              const cleanText = e.target.value.replace(/[^a-zA-Z0-9\s-]/g, '')
+              setSearch(cleanText)
+            }}
             className="block w-full rounded-xl glass-input pl-10 pr-3 py-2.5 text-sm transition-colors"
           />
         </div>
