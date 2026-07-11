@@ -282,9 +282,9 @@ export default async function LandingPage() {
           <div className="space-y-6">
             <p className="text-xs font-black text-primary uppercase tracking-widest">Support</p>
             <ul className="space-y-3">
-              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">FAQ</Link></li>
-              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</Link></li>
-              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</Link></li>
+              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="/faq">FAQ</Link></li>
+              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="mailto:hello@foodbridge.app">Contact</Link></li>
+              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="/terms">Terms of Service</Link></li>
             </ul>
           </div>
           <div className="space-y-6">
