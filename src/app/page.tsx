@@ -48,10 +48,10 @@ export default async function LandingPage() {
             <span className="text-2xl font-bold text-primary tracking-tight">Food Bridge</span>
           </div>
           <nav className="hidden md:flex items-center gap-10">
-            <Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">How It Works</Link>
-            <Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Impact</Link>
-            <Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">About</Link>
-            <Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">FAQ</Link>
+            <Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="#how-it-works">How It Works</Link>
+<Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="#impact">Impact</Link>
+<Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="/about">About</Link>
+<Link className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors duration-200" href="/faq">FAQ</Link>     
           </nav>
           <div className="flex items-center gap-4">
             <Link href="/login" className="px-4 py-1 text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Log In</Link>
