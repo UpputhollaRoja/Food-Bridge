@@ -149,7 +149,7 @@ export default async function AdminDashboard() {
         stats={stats || { active_users: 0, recovery_rate: 0, completion_rate: 0 }} 
         pendingUsers={pendingUsers || []} 
         donations={donations || []} 
-        allUsers={allUsers || []}
+        allUsers={(allUsers || []).filter(u => u.id !== profile.id)}
         reports={reports || []}
         deliveries={deliveries || []}
       />
