@@ -163,7 +163,7 @@ export default async function LandingPage() {
         </section>
 
         {/* Key Metrics Grid */}
-        <section className="max-w-[1280px] mx-auto px-4 md:px-8 transition-all duration-1000 opacity-100 translate-y-0 py-12">
+        <section id="impact" className="max-w-[1280px] mx-auto px-4 md:px-8 transition-all duration-1000 opacity-100 translate-y-0 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div className="p-8 rounded-3xl bg-surface-container hover-lift border border-primary/5" style={{ transition: '0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
               <div className="text-5xl font-bold text-primary mb-2">{totalDonations.toLocaleString()}</div>
@@ -182,7 +182,7 @@ export default async function LandingPage() {
         </section>
 
         {/* How It Works */}
-        <section className="max-w-[1280px] mx-auto px-4 md:px-8 transition-all duration-1000 opacity-100 translate-y-0 py-12">
+        <section id="how-it-works" className="max-w-[1280px] mx-auto px-4 md:px-8 transition-all duration-1000 opacity-100 translate-y-0 py-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-on-surface mb-4">How It Works</h2>
             <p className="text-lg text-on-surface-variant max-w-xl mx-auto">Our coordinated logic ensures that no edible food ends up in a landfill.</p>
