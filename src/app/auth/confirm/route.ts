@@ -27,6 +27,10 @@ export async function GET(request: Request) {
     )
     const { error } = await supabase.auth.verifyOtp({ type, token_hash })
     if (!error) {
+      if (type === 'signup') {
+        await supabase.auth.signOut()
+        return NextResponse.redirect(`${origin}/login?message=${encodeURIComponent('Email confirmed successfully. Please log in.')}`)
+      }
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

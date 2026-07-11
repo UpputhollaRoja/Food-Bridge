@@ -27,7 +27,11 @@ export async function GET(request: Request) {
     )
     const { data: sessionData, error } = await supabase.auth.exchangeCodeForSession(code)
     
-    if (!error && sessionData.user) {
+    if (error) {
+      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`)
+    }
+    
+    if (sessionData.user) {
       if (next !== '/') {
         return NextResponse.redirect(`${origin}${next}`)
       }
@@ -65,6 +69,14 @@ export async function GET(request: Request) {
         }
       }
 
+      const type = searchParams.get('type')
+      
+      if (type === 'signup') {
+        // Sign the user out so they have to manually log in
+        await supabase.auth.signOut()
+        return NextResponse.redirect(`${origin}/login?message=${encodeURIComponent('Email confirmed successfully. Please log in.')}`)
+      }
+
       const hasPlaintext = Boolean(profile?.phone && profile?.address)
       const hasEncrypted = Boolean(profile?.encrypted_data && Object.keys(profile.encrypted_data).length > 0)
       const isComplete = hasPlaintext || hasEncrypted
@@ -74,7 +86,7 @@ export async function GET(request: Request) {
       }
 
       if (profile?.role === 'donor' && profile?.verification_status !== 'verified') {
-        return NextResponse.redirect(`${origin}/login?error=Your donor account is pending approval. Please wait for an admin to verify your account.`)
+        return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent('Your donor account is pending approval. Please wait for an admin to verify your account.')}`)
       }
 
       if (profile?.role) {
@@ -86,6 +98,6 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.redirect(
-    `${origin}/login?error=Could not verify reset link. Please request a new one.`
+    `${origin}/login?error=${encodeURIComponent('Invalid authentication request. Please try again.')}`
   )
 }
