@@ -274,9 +274,9 @@ export default async function LandingPage() {
           <div className="space-y-6">
             <p className="text-xs font-black text-primary uppercase tracking-widest">Quick Links</p>
             <ul className="space-y-3">
-              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">About</Link></li>
-              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Impact</Link></li>
-              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</Link></li>
+              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="/about">About</Link></li>
+              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="#impact">Impact</Link></li>
+              <li><Link className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors" href="mailto:careers@foodbridge.app">Careers</Link></li>
             </ul>
           </div>
           <div className="space-y-6">
@@ -297,7 +297,7 @@ export default async function LandingPage() {
           </div>
         </div>
         <div className="max-w-[1280px] mx-auto mt-20 pt-10 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs font-bold text-on-surface-variant">© 2024 Food Bridge. Let's make a difference together!</p>
+ <p className="text-xs font-bold text-on-surface-variant">© {new Date().getFullYear()} Food Bridge. Let&apos;s make a difference together!</p>
           <div className="flex gap-8">
             <Link className="text-on-surface-variant hover:text-primary transition-transform hover:scale-125" href="#"><span className="material-symbols-outlined text-[24px]">public</span></Link>
             <Link className="text-on-surface-variant hover:text-primary transition-transform hover:scale-125" href="#"><span className="material-symbols-outlined text-[24px]">group</span></Link>
