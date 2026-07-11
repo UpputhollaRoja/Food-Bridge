@@ -90,7 +90,7 @@ export default function FoodBrowser({ initialDonations, verificationStatus }: Fo
     try {
       const res = await claimDonationAction(donationId)
       if (res && 'error' in res) {
-        setClaimError(res.error)
+        setClaimError(res.error || 'An unknown error occurred')
       } else if (res && res.success) {
         router.push('/dashboard/ngo/claims')
       }
