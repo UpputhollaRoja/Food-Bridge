@@ -42,5 +42,5 @@ export async function claimDonationAction(donationId: string) {
 
   revalidatePath('/dashboard/ngo/claims')
   revalidatePath('/dashboard/ngo/browse')
-  redirect('/dashboard/ngo/claims')
+  return { success: true }
 }

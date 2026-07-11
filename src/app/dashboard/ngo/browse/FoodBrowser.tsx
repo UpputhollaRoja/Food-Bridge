@@ -18,6 +18,7 @@ import {
   ImageOff,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import ImageLightbox from '@/components/ImageLightbox'
 import { formatHydrationDate, formatHydrationTime } from '@/lib/utils'
 
@@ -41,6 +42,7 @@ export default function FoodBrowser({ initialDonations, verificationStatus }: Fo
   const [lightboxAlt, setLightboxAlt] = React.useState('')
 
   const supabase = createClient()
+  const router = useRouter()
 
   // Categories list
   const categories = [
@@ -89,6 +91,8 @@ export default function FoodBrowser({ initialDonations, verificationStatus }: Fo
       const res = await claimDonationAction(donationId)
       if (res && 'error' in res) {
         setClaimError(res.error)
+      } else if (res && res.success) {
+        router.push('/dashboard/ngo/claims')
       }
     } catch (err: any) {
       console.error(err)

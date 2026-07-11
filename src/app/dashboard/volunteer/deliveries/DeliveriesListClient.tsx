@@ -31,6 +31,19 @@ import { formatHydrationTime } from '@/lib/utils'
 import ReportModal from '@/components/ReportModal'
 import DeliveryMap from '@/components/DeliveryMap'
 
+function getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371e3;
+  const p1 = lat1 * Math.PI/180;
+  const p2 = lat2 * Math.PI/180;
+  const dp = (lat2-lat1) * Math.PI/180;
+  const dl = (lon2-lon1) * Math.PI/180;
+  const a = Math.sin(dp/2) * Math.sin(dp/2) +
+          Math.cos(p1) * Math.cos(p2) *
+          Math.sin(dl/2) * Math.sin(dl/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
 interface DeliveriesListClientProps {
   initialUnassigned: any[]
   initialAssigned: any[]
@@ -39,6 +52,7 @@ interface DeliveriesListClientProps {
 
 export default function DeliveriesListClient({ initialUnassigned, initialAssigned, volunteerId }: DeliveriesListClientProps) {
   const [mounted, setMounted] = React.useState(false)
+  const [currentLoc, setCurrentLoc] = React.useState<{ lat: number, lng: number } | null>(null)
 
   // Failure reporting state
   const [reportingIssueFor, setReportingIssueFor] = React.useState<string | null>(null)
@@ -47,9 +61,10 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
   React.useEffect(() => {
     setMounted(true)
     let intervalId: NodeJS.Timeout
+    let watchId: number
 
     const fetchNearby = async (lat: number, lng: number) => {
-      const res = await fetchNearbyDeliveriesAction(lat, lng, 15)
+      const res = await fetchNearbyDeliveriesAction(lat, lng, 20000)
       if (res.data) setUnassigned(res.data)
     }
 
@@ -64,10 +79,19 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
         (err) => console.error("Geolocation error:", err),
         { enableHighAccuracy: true }
       )
+
+      watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          setCurrentLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+        },
+        (err) => console.error("Geolocation watch error:", err),
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      )
     }
 
     return () => {
       if (intervalId) clearInterval(intervalId)
+      if (watchId !== undefined && navigator.geolocation) navigator.geolocation.clearWatch(watchId)
     }
   }, [])
 
@@ -341,6 +365,14 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
 
               if (!donation || !ngo) return null
 
+              const isNearPickup = currentLoc && donation.pickup_latitude && donation.pickup_longitude 
+                ? getDistanceMeters(currentLoc.lat, currentLoc.lng, Number(donation.pickup_latitude), Number(donation.pickup_longitude)) < 150 
+                : false;
+                
+              const isNearDropoff = currentLoc && ngo.latitude && ngo.longitude
+                ? getDistanceMeters(currentLoc.lat, currentLoc.lng, Number(ngo.latitude), Number(ngo.longitude)) < 150
+                : false;
+
               return (
                 <div 
                   key={del.id}
@@ -476,13 +508,20 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                   <div className="flex justify-end pt-2">
                     {/* Confirm Pickup */}
                     {del.status === 'assigned' && (
-                      <button
-                        onClick={() => handleConfirmPickup(del.id)}
-                        disabled={submittingId !== null}
-                        className="btn-primary py-3.5 px-6"
-                      >
-                        {submittingId === del.id ? 'Updating...' : 'Confirm Food Picked Up'}
-                      </button>
+                      <div className="flex flex-col items-end">
+                        <button
+                          onClick={() => handleConfirmPickup(del.id)}
+                          disabled={submittingId !== null || !isNearPickup}
+                          className="btn-primary py-3.5 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {submittingId === del.id ? 'Updating...' : 'Confirm Food Picked Up'}
+                        </button>
+                        {!isNearPickup && (
+                          <span className="text-[10px] text-amber-600 font-semibold mt-1">
+                            {currentLoc ? "You must be at the pickup location to confirm" : "Locating you..."}
+                          </span>
+                        )}
+                      </div>
                     )}
 
                     {/* Start Transit */}
@@ -547,12 +586,19 @@ export default function DeliveriesListClient({ initialUnassigned, initialAssigne
                               </button>
                               <button
                                 onClick={() => handleCompleteDelivery(del.id)}
-                                disabled={submittingId !== null || (proofPaths[del.id] || []).length < 2}
+                                disabled={submittingId !== null || (proofPaths[del.id] || []).length < 2 || !isNearDropoff}
                                 className="btn-primary py-2.5 px-6 disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 {submittingId === del.id ? 'Submitting...' : 'Mark as Delivered'}
                               </button>
                             </div>
+                            {!isNearDropoff && (
+                              <div className="text-right mt-1">
+                                <span className="text-[10px] text-amber-600 font-semibold mt-1">
+                                  {currentLoc ? "You must be at the destination to deliver" : "Locating you..."}
+                                </span>
+                              </div>
+                            )}
                           </>
                         )}
                       </div>

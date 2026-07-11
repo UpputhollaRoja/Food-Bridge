@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -51,6 +51,7 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
     address,
     latitude,
     longitude,
+    is_onboarded: true,
     updated_at: new Date().toISOString(),
   }
 
@@ -63,7 +64,7 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
     updateData.organization_name = organizationName
     // Keep verification status as pending so admins must approve them
     updateData.verification_status = 'pending'
-    if (docUrl && !encryptedData) {
+    if (docUrl) {
       updateData.verification_documents = [docUrl]
     }
   } else {
@@ -71,7 +72,12 @@ export async function saveOnboarding(prevState: unknown, formData: FormData) {
     updateData.verification_status = 'verified'
   }
 
-  const { error } = await supabase
+  const adminClient = createAdminClient()
+  if (!adminClient) {
+    return { error: 'Failed to initialize admin client' }
+  }
+
+  const { error } = await adminClient
     .from('profiles')
     .upsert(updateData)
 

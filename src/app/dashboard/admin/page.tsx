@@ -80,7 +80,43 @@ export default async function AdminDashboard() {
         status
       )
     `)
-    .in('role', ['donor', 'ngo'])
+    .order('created_at', { ascending: false })
+
+  // Fetch all deliveries (Orders)
+  const { data: deliveries } = await supabase
+    .from('deliveries')
+    .select(`
+      id,
+      status,
+      volunteer_id,
+      distance_km,
+      pickup_completed_at,
+      completed_at,
+      proof_image_url,
+      proof_image_2_url,
+      created_at,
+      claims (
+        id,
+        donations (
+          id,
+          title,
+          category,
+          quantity,
+          quantity_unit,
+          pickup_location
+        ),
+        profiles (
+          organization_name,
+          full_name,
+          address
+        )
+      ),
+      volunteer:profiles!deliveries_volunteer_id_fkey (
+        id,
+        full_name,
+        phone
+      )
+    `)
     .order('created_at', { ascending: false })
 
   // Fetch reports queue
@@ -115,6 +151,7 @@ export default async function AdminDashboard() {
         donations={donations || []} 
         allUsers={allUsers || []}
         reports={reports || []}
+        deliveries={deliveries || []}
       />
     </div>
   )

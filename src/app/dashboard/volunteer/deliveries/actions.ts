@@ -187,23 +187,33 @@ export async function fetchNearbyDeliveriesAction(lat: number, lng: number, radi
       id,
       status,
       created_at,
-      claim:claims (
+      claims (
         id,
-        donation:donations (
+        notes,
+        donations (
           id,
           title,
+          category,
+          quantity,
+          quantity_unit,
           pickup_location,
+          pickup_latitude,
+          pickup_longitude,
+          expiry_at,
           pickup_window_start,
           pickup_window_end,
-          donor:profiles!donor_id (
+          profiles (
             full_name,
             phone
           )
         ),
-        ngo:profiles!ngo_id (
+        profiles (
+          full_name,
           organization_name,
+          phone,
           address,
-          phone
+          latitude,
+          longitude
         )
       )
     `)

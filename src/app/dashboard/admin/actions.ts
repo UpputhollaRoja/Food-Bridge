@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function verifyUserAction(userId: string, status: 'verified' | 'rejected') {
@@ -71,7 +71,24 @@ export async function rejectDonationAction(donationId: string) {
  */
 export async function generateSignedUrl(bucket: string, path: string, expiresIn = 600) {
   const supabase = await createClient()
-  const { data, error } = await supabase.storage
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return { error: 'Not authenticated' }
+  }
+
+  // Ensure the user is an admin
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (profile?.role !== 'admin') {
+    return { error: 'Unauthorized' }
+  }
+
+  const adminClient = createAdminClient()
+  if (!adminClient) {
+    return { error: 'Admin client failed' }
+  }
+
+  const { data, error } = await adminClient.storage
     .from(bucket)
     .createSignedUrl(path, expiresIn)
 
@@ -105,6 +122,38 @@ export async function suspendUserAction(userId: string) {
         message: `Your account has been suspended by the administrator.`
       }
     })
+
+  revalidatePath('/dashboard/admin')
+  return { success: true }
+}
+
+export async function updateUserRoleAction(userId: string, newRole: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ role: newRole, updated_at: new Date().toISOString() })
+    .eq('id', userId)
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/dashboard/admin')
+  return { success: true }
+}
+
+export async function updateDeliveryStatusAction(deliveryId: string, newStatus: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('deliveries')
+    .update({ status: newStatus, updated_at: new Date().toISOString() })
+    .eq('id', deliveryId)
+
+  if (error) {
+    return { error: error.message }
+  }
 
   revalidatePath('/dashboard/admin')
   return { success: true }

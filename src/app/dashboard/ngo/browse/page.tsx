@@ -23,7 +23,7 @@ export default async function BrowsePage() {
   const { data: donations, error } = await supabase.rpc('get_nearby_donations', {
     p_lat: profile.latitude || 37.7749,
     p_lng: profile.longitude || -122.4194,
-    p_max_distance_km: 100.0,
+    p_max_distance_km: 20000.0,
   })
 
   if (error) {

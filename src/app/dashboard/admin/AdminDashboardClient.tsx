@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
-import { verifyUserAction, approveDonationAction, rejectDonationAction, generateSignedUrl, suspendUserAction } from './actions'
+import { verifyUserAction, approveDonationAction, rejectDonationAction, generateSignedUrl, suspendUserAction, updateUserRoleAction, updateDeliveryStatusAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
 import { signout } from '@/app/auth/actions'
 import NotificationBell from '@/components/NotificationBell'
@@ -31,7 +31,10 @@ import {
   Scale,
   UserMinus,
   AlertOctagon,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Truck,
+  Edit,
+  CheckCircle
 } from 'lucide-react'
 import EmptyState from '@/components/EmptyState'
 
@@ -42,6 +45,7 @@ interface AdminDashboardClientProps {
   donations: any[]
   allUsers: any[]
   reports: any[]
+  deliveries: any[]
 }
 
 export default function AdminDashboardClient({ 
@@ -50,13 +54,15 @@ export default function AdminDashboardClient({
   pendingUsers: initialPending, 
   donations: initialDonations,
   allUsers: initialAllUsers,
-  reports: initialReports
+  reports: initialReports,
+  deliveries: initialDeliveries
 }: AdminDashboardClientProps) {
   const [pendingUsers, setPendingUsers] = React.useState(initialPending)
   const [donations, setDonations] = React.useState(initialDonations)
   const [allUsers, setAllUsers] = React.useState(initialAllUsers)
   const [reports, setReports] = React.useState(initialReports)
-  const [activeTab, setActiveTab] = React.useState<'overview' | 'users' | 'reports'>('overview')
+  const [deliveries, setDeliveries] = React.useState(initialDeliveries)
+  const [activeTab, setActiveTab] = React.useState<'overview' | 'users' | 'reports' | 'orders'>('overview')
   const [report, setReport] = React.useState({ headline: 'Analyzing Platform Impact...', summary: 'Generating platform environmental statistics...' })
   const [loadingId, setLoadingId] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
@@ -152,6 +158,40 @@ export default function AdminDashboardClient({
       }
     } catch {
       setError(`An error occurred during donation ${action}`)
+    } finally {
+      setLoadingId(null)
+    }
+  }
+
+  const handleUpdateRole = async (userId: string, newRole: string) => {
+    setLoadingId(userId)
+    setError(null)
+    try {
+      const res = await updateUserRoleAction(userId, newRole)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        setAllUsers(allUsers.map(u => u.id === userId ? { ...u, role: newRole } : u))
+      }
+    } catch {
+      setError('An error occurred while updating the role')
+    } finally {
+      setLoadingId(null)
+    }
+  }
+
+  const handleUpdateDeliveryStatus = async (deliveryId: string, newStatus: string) => {
+    setLoadingId(deliveryId)
+    setError(null)
+    try {
+      const res = await updateDeliveryStatusAction(deliveryId, newStatus)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        setDeliveries(deliveries.map(d => d.id === deliveryId ? { ...d, status: newStatus } : d))
+      }
+    } catch {
+      setError('An error occurred while updating the delivery status')
     } finally {
       setLoadingId(null)
     }
@@ -277,6 +317,17 @@ export default function AdminDashboardClient({
               {reports.length}
             </span>
           )}
+        </button>
+        <button
+          onClick={() => setActiveTab('orders')}
+          className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 -mb-px ${
+            activeTab === 'orders'
+              ? 'text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+          style={{ borderBottomColor: activeTab === 'orders' ? 'var(--brand-green)' : 'transparent', color: activeTab === 'orders' ? 'var(--brand-green)' : undefined }}
+        >
+          Logistics & Orders
         </button>
       </div>
 
@@ -677,7 +728,20 @@ export default function AdminDashboardClient({
                             <div>{user.organization_name || user.full_name}</div>
                             {user.organization_name && <div className="text-[10px] text-muted-foreground font-normal">Contact: {user.full_name}</div>}
                           </td>
-                          <td className="p-4 capitalize">{user.role}</td>
+                          <td className="p-4">
+                            <select
+                              value={user.role}
+                              onChange={(e) => handleUpdateRole(user.id, e.target.value)}
+                              disabled={loadingId === user.id}
+                              className="text-xs p-1.5 rounded border border-border bg-card font-medium capitalize"
+                              style={{ color: 'var(--text-primary)' }}
+                            >
+                              <option value="donor">Donor</option>
+                              <option value="ngo">NGO</option>
+                              <option value="volunteer">Volunteer</option>
+                              <option value="admin">Admin</option>
+                            </select>
+                          </td>
                           <td className="p-4">
                             <span 
                               className="px-2 py-0.5 rounded text-[9px] font-bold uppercase"
@@ -822,6 +886,96 @@ export default function AdminDashboardClient({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === 'orders' && (
+        <div className="space-y-6">
+          <h2 className="font-heading text-lg font-bold text-foreground tracking-tight flex items-center gap-2">
+            <Truck className="h-5 w-5 text-primary" />
+            <span>Platform Logistics & Orders</span>
+          </h2>
+
+          <div className="rounded-2xl glass-card overflow-hidden border shadow-sm" style={{ borderColor: 'var(--border-hairline)' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b font-bold" style={{ borderColor: 'var(--border-hairline)', background: 'var(--bg-page)', color: 'var(--text-secondary)' }}>
+                    <th className="p-4">Delivery ID / Date</th>
+                    <th className="p-4">Route Info</th>
+                    <th className="p-4">Volunteer Courier</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y" style={{ borderTopColor: 'var(--border-hairline)', borderColor: 'var(--border-hairline)' }}>
+                  {deliveries.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="p-8 text-center text-muted-foreground">No active deliveries on the platform.</td>
+                    </tr>
+                  ) : (
+                    deliveries.map((del) => {
+                      const claim = del.claims
+                      const donation = claim?.donations
+                      const ngo = claim?.profiles
+                      
+                      return (
+                        <tr key={del.id} className="transition-colors hover:opacity-80">
+                          <td className="p-4 font-semibold" style={{ color: 'var(--text-primary)' }}>
+                            <div className="font-mono text-[10px] truncate max-w-[120px]" title={del.id}>{del.id.split('-')[0]}...</div>
+                            <div className="text-[10px] text-muted-foreground font-normal mt-1">{formatDateTime(del.created_at)}</div>
+                          </td>
+                          <td className="p-4 space-y-1">
+                            <div className="flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
+                              <MapPin className="h-3 w-3" style={{ color: 'var(--brand-green)' }} />
+                              <span className="font-bold">{donation?.title || 'Unknown Donation'}</span>
+                            </div>
+                            <div className="text-[10px] text-muted-foreground ml-4">From: {donation?.pickup_location || 'Unknown'}</div>
+                            <div className="text-[10px] text-muted-foreground ml-4">To: {ngo?.organization_name || ngo?.full_name || 'Unknown NGO'}</div>
+                            {del.distance_km && <div className="text-[10px] font-semibold ml-4" style={{ color: 'var(--text-primary)' }}>{del.distance_km.toFixed(1)} km route</div>}
+                          </td>
+                          <td className="p-4">
+                            {del.volunteer ? (
+                              <div>
+                                <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{del.volunteer.full_name}</div>
+                                {del.volunteer.phone && <div className="text-[10px] text-muted-foreground">{del.volunteer.phone}</div>}
+                              </div>
+                            ) : (
+                              <span className="text-[10px] italic text-muted-foreground">Unassigned</span>
+                            )}
+                          </td>
+                          <td className="p-4">
+                            <span 
+                              className="px-2 py-0.5 rounded text-[9px] font-bold uppercase status-badge"
+                              style={getStatusBadgeStyle(del.status)}
+                            >
+                              {del.status.replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                          <td className="p-4 text-right">
+                            <select
+                              value={del.status}
+                              onChange={(e) => handleUpdateDeliveryStatus(del.id, e.target.value)}
+                              disabled={loadingId === del.id}
+                              className="text-xs p-1.5 rounded border border-border bg-card font-medium capitalize ml-auto"
+                              style={{ color: 'var(--text-primary)' }}
+                            >
+                              <option value="assigned">Assigned</option>
+                              <option value="pickup_completed">Picked Up</option>
+                              <option value="in_transit">In Transit</option>
+                              <option value="delivered">Delivered</option>
+                              <option value="confirmed">Confirmed (Complete)</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>

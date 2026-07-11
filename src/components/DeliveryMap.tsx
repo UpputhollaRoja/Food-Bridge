@@ -32,12 +32,17 @@ export default function DeliveryMap({
   const volunteerMarkerRef = useRef<any>(null)
   const pickupMarkerRef = useRef<any>(null)
   const destMarkerRef = useRef<any>(null)
-  const polylineRef = useRef<any>(null)
+  const roadPolylineRef = useRef<any>(null)
+  const volunteerPolylineRef = useRef<any>(null)
 
   const [status, setStatus] = useState<'loading' | 'live' | 'offline'>('loading')
   const [lastUpdate, setLastUpdate] = useState<string | null>(null)
   const [volunteerPos, setVolunteerPos] = useState<{ lat: number; lng: number } | null>(null)
   const [mapReady, setMapReady] = useState(false)
+  const [roadRoute, setRoadRoute] = useState<[number, number][] | null>(null)
+  const [volunteerRoute, setVolunteerRoute] = useState<[number, number][] | null>(null)
+  const [routeInfo, setRouteInfo] = useState<{ distanceKm: number; durationMin: number } | null>(null)
+  const lastRouteFetchPosRef = useRef<{ lat: number, lng: number } | null>(null)
 
   const getGoogleMapsUrl = () => {
     const startLat = volunteerPos?.lat
@@ -205,6 +210,8 @@ export default function DeliveryMap({
         volunteerMarkerRef.current = null
         pickupMarkerRef.current = null
         destMarkerRef.current = null
+        roadPolylineRef.current = null
+        volunteerPolylineRef.current = null
       }
       // Clear Leaflet's DOM stamp so a re-mount can safely re-initialize
       if (mapRef.current) {
@@ -214,33 +221,103 @@ export default function DeliveryMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update polyline when volunteerPos changes
+  // Fetch actual road route via OSRM
   useEffect(() => {
-    if (!mapReady || !mapInstanceRef.current) return
+    if (pickupLat && pickupLng && destLat && destLng) {
+      const url = `https://router.project-osrm.org/route/v1/driving/${pickupLng},${pickupLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (data.routes && data.routes.length > 0) {
+            setRoadRoute(data.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]));
+          }
+        })
+        .catch(err => console.error('Error fetching route:', err));
+    }
+  }, [pickupLat, pickupLng, destLat, destLng])
+
+  // Initial draw / roadRoute changes
+  useEffect(() => {
+    if (!mapReady || !mapInstanceRef.current) return;
     import('leaflet').then((L) => {
-      if (polylineRef.current) {
-        polylineRef.current.remove()
-        polylineRef.current = null
-      }
-      const path = []
-      if (pickupLat && pickupLng) path.push([pickupLat, pickupLng])
-      if (volunteerPos) path.push([volunteerPos.lat, volunteerPos.lng])
-      if (destLat && destLng) path.push([destLat, destLng])
-      if (path.length > 1) {
-        polylineRef.current = L.polyline(path as [number, number][], {
-          color: '#8b5cf6',
-          weight: 4,
-          opacity: 0.8,
-          dashArray: '6 4',
+      if (!roadPolylineRef.current) {
+        roadPolylineRef.current = L.polyline([], {
+           color: '#8b5cf6',
+           weight: 4,
+           opacity: 0.8,
         }).addTo(mapInstanceRef.current)
       }
-    })
-  }, [volunteerPos, mapReady, pickupLat, pickupLng, destLat, destLng])
+      
+      if (roadRoute && roadRoute.length > 0) {
+         roadPolylineRef.current.setLatLngs(roadRoute);
+         roadPolylineRef.current.setStyle({ dashArray: undefined });
+      } else if (pickupLat && pickupLng && destLat && destLng) {
+         roadPolylineRef.current.setLatLngs([[pickupLat, pickupLng], [destLat, destLng]]);
+         roadPolylineRef.current.setStyle({ dashArray: '6 4' });
+      }
+    });
+  }, [mapReady, roadRoute, pickupLat, pickupLng, destLat, destLng])
+
+  // Update volunteer line during animation
+  useEffect(() => {
+    if (!mapReady || !mapInstanceRef.current) return;
+    import('leaflet').then((L) => {
+      if (!volunteerPolylineRef.current) {
+         volunteerPolylineRef.current = L.polyline([], {
+             color: '#a855f7',
+             weight: 3,
+             opacity: 0.7,
+             dashArray: '4 4'
+         }).addTo(mapInstanceRef.current);
+      }
+
+      if (volunteerPos) {
+        if (volunteerRoute && volunteerRoute.length > 0) {
+          volunteerPolylineRef.current.setLatLngs([[volunteerPos.lat, volunteerPos.lng], ...volunteerRoute.slice(1)]);
+        } else {
+          const isHeadingToDest = deliveryStatus === 'pickup_completed' || deliveryStatus === 'in_transit' || deliveryStatus === 'delivered';
+          const targetLat = isHeadingToDest ? destLat : pickupLat;
+          const targetLng = isHeadingToDest ? destLng : pickupLng;
+
+          if (targetLat && targetLng) {
+             volunteerPolylineRef.current.setLatLngs([[volunteerPos.lat, volunteerPos.lng], [targetLat, targetLng]]);
+          }
+        }
+      }
+    });
+  }, [volunteerPos, mapReady, volunteerRoute, pickupLat, pickupLng, destLat, destLng, deliveryStatus])
 
   // Supabase realtime subscription
   useEffect(() => {
     let isMounted = true
     const supabase = createClient()
+    
+    const isHeadingToDest = deliveryStatus === 'pickup_completed' || deliveryStatus === 'in_transit' || deliveryStatus === 'delivered';
+    const targetLat = isHeadingToDest ? destLat : pickupLat;
+    const targetLng = isHeadingToDest ? destLng : pickupLng;
+
+    const fetchVolunteerRoute = async (fromLat: number, fromLng: number) => {
+      if (!targetLat || !targetLng) return;
+      const lastPos = lastRouteFetchPosRef.current;
+      if (lastPos && Math.abs(lastPos.lat - fromLat) < 0.0001 && Math.abs(lastPos.lng - fromLng) < 0.0001) return;
+      lastRouteFetchPosRef.current = { lat: fromLat, lng: fromLng };
+      
+      const url = `https://router.project-osrm.org/route/v1/driving/${fromLng},${fromLat};${targetLng},${targetLat}?overview=full&geometries=geojson`;
+      try {
+        const r = await fetch(url);
+        const data = await r.json();
+        if (data.routes && data.routes.length > 0 && isMounted) {
+          const route = data.routes[0];
+          setVolunteerRoute(route.geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]));
+          setRouteInfo({
+            distanceKm: route.distance / 1000,
+            durationMin: Math.ceil(route.duration / 60)
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching volunteer route:', err);
+      }
+    };
 
     const fetchInitialAndSubscribe = async () => {
       const { data: initialLoc, error: queryError } = await supabase
@@ -263,6 +340,7 @@ export default function DeliveryMap({
         }
         setLastUpdate(new Date(initialLoc.recorded_at).toLocaleTimeString())
         setStatus('live')
+        fetchVolunteerRoute(lat, lng)
       } else {
         if (pickupLat && pickupLng) {
           currentCoordsRef.current = { lat: pickupLat, lng: pickupLng }
@@ -291,6 +369,7 @@ export default function DeliveryMap({
             currentCoordsRef.current = { lat: toLat, lng: toLng }
             setLastUpdate(new Date(recordedAt).toLocaleTimeString())
             setStatus('live')
+            fetchVolunteerRoute(toLat, toLng)
           }
         )
         .subscribe()
@@ -305,7 +384,7 @@ export default function DeliveryMap({
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
       cleanupPromise.then((unsubscribe) => unsubscribe?.())
     }
-  }, [deliveryId, pickupLat, pickupLng])
+  }, [deliveryId, pickupLat, pickupLng, destLat, destLng, deliveryStatus])
 
   return (
     <div className="rounded-2xl overflow-hidden border border-border shadow-md">
@@ -341,7 +420,13 @@ export default function DeliveryMap({
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               {(deliveryStatus === 'pickup_completed' || deliveryStatus === 'in_transit') 
                 ? 'Picked up, heading to drop-off' 
-                : 'Volunteer is on the way'} · {lastUpdate}
+                : 'Volunteer is on the way'}
+              {routeInfo && (
+                <span className="text-emerald-700/80 font-bold tracking-tight bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                  {routeInfo.distanceKm.toFixed(1)} km (~{routeInfo.durationMin} min)
+                </span>
+              )}
+              <span className="text-emerald-700/50">· {lastUpdate}</span>
             </span>
           )}
           {status === 'offline' && (
