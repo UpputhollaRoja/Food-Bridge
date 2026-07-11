@@ -158,3 +158,28 @@ export async function updateDeliveryStatusAction(deliveryId: string, newStatus: 
   revalidatePath('/dashboard/admin')
   return { success: true }
 }
+
+export async function deleteUserAction(userId: string) {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+  if (profile?.role !== 'admin') {
+    return { error: 'Unauthorized: Only admins can delete users.' }
+  }
+
+  const adminClient = createAdminClient()
+  if (!adminClient) {
+    return { error: 'Admin client failed. Check your environment variables.' }
+  }
+
+  const { error } = await adminClient.auth.admin.deleteUser(userId)
+  if (error) {
+    return { error: error.message }
+  }
+
+  revalidatePath('/dashboard/admin')
+  return { success: true }
+}

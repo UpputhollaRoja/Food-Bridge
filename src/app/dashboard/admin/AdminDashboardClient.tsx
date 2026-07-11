@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
-import { verifyUserAction, approveDonationAction, rejectDonationAction, generateSignedUrl, suspendUserAction, updateUserRoleAction, updateDeliveryStatusAction } from './actions'
+import { verifyUserAction, approveDonationAction, rejectDonationAction, generateSignedUrl, suspendUserAction, updateUserRoleAction, updateDeliveryStatusAction, deleteUserAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
 import { signout } from '@/app/auth/actions'
 import NotificationBell from '@/components/NotificationBell'
@@ -34,7 +34,8 @@ import {
   FileSpreadsheet,
   Truck,
   Edit,
-  CheckCircle
+  CheckCircle,
+  Trash2
 } from 'lucide-react'
 import EmptyState from '@/components/EmptyState'
 
@@ -175,6 +176,25 @@ export default function AdminDashboardClient({
       }
     } catch {
       setError('An error occurred while updating the role')
+    } finally {
+      setLoadingId(null)
+    }
+  }
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm('Are you sure you want to completely delete this user? This action cannot be undone.')) return
+    
+    setLoadingId(userId)
+    setError(null)
+    try {
+      const res = await deleteUserAction(userId)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        setAllUsers(allUsers.filter(u => u.id !== userId))
+      }
+    } catch {
+      setError('An error occurred while deleting the user')
     } finally {
       setLoadingId(null)
     }
@@ -780,37 +800,47 @@ export default function AdminDashboardClient({
                             {user.address && <div className="text-[10px] truncate max-w-xs">{user.address}</div>}
                           </td>
                           <td className="p-4 text-right">
-                            {user.verification_status === 'suspended' ? (
-                              <span className="text-[11px] font-semibold text-red-600 block">Account Suspended</span>
-                            ) : user.verification_status === 'pending' ? (
-                              <div className="flex justify-end gap-2">
+                            <div className="flex flex-col items-end gap-2">
+                              {user.verification_status === 'suspended' ? (
+                                <span className="text-[11px] font-semibold text-red-600 block">Account Suspended</span>
+                              ) : user.verification_status === 'pending' ? (
+                                <div className="flex justify-end gap-2">
+                                  <button
+                                    onClick={() => handleVerify(user.id, 'verified')}
+                                    disabled={loadingId === user.id}
+                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-green-200 text-green-700 hover:bg-green-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
+                                  >
+                                    <Check className="h-3.5 w-3.5" />
+                                    <span>Approve</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleVerify(user.id, 'rejected')}
+                                    disabled={loadingId === user.id}
+                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
+                                  >
+                                    <X className="h-3.5 w-3.5" />
+                                    <span>Reject</span>
+                                  </button>
+                                </div>
+                              ) : (
                                 <button
-                                  onClick={() => handleVerify(user.id, 'verified')}
-                                  disabled={loadingId === user.id}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-green-200 text-green-700 hover:bg-green-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
-                                >
-                                  <Check className="h-3.5 w-3.5" />
-                                  <span>Approve</span>
-                                </button>
-                                <button
-                                  onClick={() => handleVerify(user.id, 'rejected')}
+                                  onClick={() => handleSuspend(user.id)}
                                   disabled={loadingId === user.id}
                                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
                                 >
-                                  <X className="h-3.5 w-3.5" />
-                                  <span>Reject</span>
+                                  <UserMinus className="h-3.5 w-3.5" />
+                                  <span>Suspend</span>
                                 </button>
-                              </div>
-                            ) : (
+                              )}
                               <button
-                                onClick={() => handleSuspend(user.id)}
+                                onClick={() => handleDeleteUser(user.id)}
                                 disabled={loadingId === user.id}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-[11px] font-semibold transition-colors disabled:opacity-50"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-red-200 text-white bg-red-600 hover:bg-red-700 text-[11px] font-semibold transition-colors disabled:opacity-50"
                               >
-                                <UserMinus className="h-3.5 w-3.5" />
-                                <span>Suspend</span>
+                                <Trash2 className="h-3.5 w-3.5" />
+                                <span>Delete</span>
                               </button>
-                            )}
+                            </div>
                           </td>
                         </tr>
                       )
