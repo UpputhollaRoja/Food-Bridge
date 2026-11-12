@@ -48,9 +48,8 @@ export async function GET(request: Request) {
   }
 
   if (user) {
-    if (next !== '/') {
-      return NextResponse.redirect(`${origin}${next}`)
-    }
+    // next unte mundu daniki vellakunda, profile check chesi appudu pampu
+    // next = /onboarding ayithe danike velthadhi
 
     let { data: profile } = await supabase
       .from('profiles')
@@ -82,16 +81,7 @@ export async function GET(request: Request) {
       }
     }
 
-    // Signup ayithe signOut cheyaku - direct ga onboarding / dashboard ki pampu
-    if (type === 'signup' || type === 'email') {
-      const hasPlaintext = Boolean(profile?.phone && profile?.address)
-      const hasEncrypted = Boolean(profile?.encrypted_data && Object.keys(profile.encrypted_data).length > 0)
-      const isComplete = hasPlaintext || hasEncrypted
-      if (!isComplete) {
-        return NextResponse.redirect(`${origin}/onboarding`)
-      }
-    }
-
+    // Profile incomplete ayithe - Direct ga Profile Setup / Onboarding ki
     const hasPlaintext = Boolean(profile?.phone && profile?.address)
     const hasEncrypted = Boolean(profile?.encrypted_data && Object.keys(profile.encrypted_data).length > 0)
     const isComplete = hasPlaintext || hasEncrypted
@@ -100,8 +90,9 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}/onboarding`)
     }
 
-    if (profile?.role === 'donor' && profile?.verification_status !== 'verified') {
-      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent('Your donor account is pending approval. Please wait for an admin to verify your account.')}`)
+    // Profile complete ayithe - next unte daniki, lekapothe dashboard ki
+    if (next !== '/' && next !== '/onboarding') {
+      return NextResponse.redirect(`${origin}${next}`)
     }
 
     if (profile?.role) {
