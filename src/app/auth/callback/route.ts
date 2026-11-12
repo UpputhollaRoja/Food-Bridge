@@ -56,7 +56,16 @@ export async function GET(request: Request) {
   }
 
   if (authError) {
-    return redirectWithCookies(`${origin}/login?error=${encodeURIComponent(authError.message)}`)
+  // Token oka sari use ayithe, already verified ane artham
+  // Error kadu, Login ki pampu
+  if (
+    authError.message.includes('expired') ||
+    authError.message.includes('invalid') ||
+    authError.message.includes('already')
+  ) {
+    return redirectWithCookies(`${origin}/login?message=Email already verified, Login avandi`)
+  }
+  return redirectWithCookies(`${origin}/login?error=${encodeURIComponent(authError.message)}`)
   }
 
   if (user) {
