@@ -12,6 +12,11 @@ export async function GET(request: Request) {
   const role = searchParams.get('role')
 
   const cookieStore = await cookies()
+
+  // Response ni mundhe create chesi, danilo ne cookie pedtham
+  // Lekapothe redirect ki cookie velladhu - Idhe nee problem
+  let response = NextResponse.next({ request })
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -19,38 +24,42 @@ export async function GET(request: Request) {
       cookies: {
         getAll() { return cookieStore.getAll() },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set(name, value, options)
-          )
+            response.cookies.set(name, value, options)
+          })
         },
       },
     }
   )
 
+  // Final redirect ki kuda cookies copy chese helper
+  const redirectWithCookies = (url: string) => {
+    const redirect = NextResponse.redirect(url)
+    response.cookies.getAll().forEach((c) => {
+      redirect.cookies.set(c.name, c.value, c)
+    })
+    return redirect
+  }
+
   let user: any = null
   let authError: any = null
 
-  // 1. Kottha rakam link - token_hash
   if (token_hash && type) {
     const { data, error } = await supabase.auth.verifyOtp({ token_hash, type })
     if (error) authError = error
     else user = data.user
-  }
-  // 2. Paatha rakam link - code
-  else if (code) {
+  } else if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (error) authError = error
     else user = data.user
   }
 
   if (authError) {
-    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(authError.message)}`)
+    return redirectWithCookies(`${origin}/login?error=${encodeURIComponent(authError.message)}`)
   }
 
   if (user) {
-    // next unte mundu daniki vellakunda, profile check chesi appudu pampu
-    // next = /onboarding ayithe danike velthadhi
-
     let { data: profile } = await supabase
       .from('profiles')
       .select('role, verification_status, phone, address, encrypted_data')
@@ -81,28 +90,26 @@ export async function GET(request: Request) {
       }
     }
 
-    // Profile incomplete ayithe - Direct ga Profile Setup / Onboarding ki
     const hasPlaintext = Boolean(profile?.phone && profile?.address)
     const hasEncrypted = Boolean(profile?.encrypted_data && Object.keys(profile.encrypted_data).length > 0)
     const isComplete = hasPlaintext || hasEncrypted
 
     if (!isComplete) {
-      return NextResponse.redirect(`${origin}/onboarding`)
+      return redirectWithCookies(`${origin}/onboarding`)
     }
 
-    // Profile complete ayithe - next unte daniki, lekapothe dashboard ki
     if (next !== '/' && next !== '/onboarding') {
-      return NextResponse.redirect(`${origin}${next}`)
+      return redirectWithCookies(`${origin}${next}`)
     }
 
     if (profile?.role) {
-      return NextResponse.redirect(`${origin}/dashboard/${profile.role}`)
+      return redirectWithCookies(`${origin}/dashboard/${profile.role}`)
     }
 
-    return NextResponse.redirect(`${origin}${next}`)
+    return redirectWithCookies(`${origin}${next}`)
   }
 
-  return NextResponse.redirect(
+  return redirectWithCookies(
     `${origin}/login?error=${encodeURIComponent('Invalid authentication request. Please try again.')}`
   )
 }
